@@ -124,11 +124,11 @@ export function DashboardSidebar() {
       <div className="px-4 py-4 border-t border-silver/8">
         <div className="flex items-center gap-3 px-2">
           <div className="w-8 h-8 rounded-full bg-forest-mid/30 border border-forest-mid/40 flex items-center justify-center text-xs font-medium text-forest-glow">
-            AO
+            LL
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-medium text-foreground truncate">Apex Outdoors</p>
-            <p className="text-[11px] text-silver-dim truncate">Alpha Plan</p>
+            <p className="text-xs font-medium text-foreground truncate">{SITE.name}</p>
+            <p className="text-[11px] text-silver-dim truncate">Agency Portal</p>
           </div>
         </div>
       </div>

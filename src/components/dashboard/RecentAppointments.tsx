@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Appointment, AppointmentStatus } from "@/lib/dashboard/types";
 import { formatDateTime } from "@/lib/dashboard/format";
 
@@ -21,58 +22,67 @@ export function RecentAppointments({ appointments }: RecentAppointmentsProps) {
             Recent Appointments
           </p>
           <p className="text-sm text-silver-muted mt-0.5">
-            Upcoming and recent calls
+            {appointments.length === 0 ? "None scheduled" : "Upcoming and recent calls"}
           </p>
         </div>
-        <button
-          type="button"
+        <Link
+          href="/dashboard/crm"
           className="text-[12px] text-silver-muted hover:text-foreground transition-colors"
         >
-          View calendar
-        </button>
+          Open CRM
+        </Link>
       </div>
 
-      <div className="divide-y divide-silver/6">
-        {appointments.map((appt) => {
-          const style = STATUS_STYLES[appt.status];
-          return (
-            <div
-              key={appt.id}
-              className="px-5 py-4 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
-            >
-              <div className="shrink-0 w-10 h-10 rounded-md bg-black/50 border border-silver/8 flex flex-col items-center justify-center">
-                <span className="text-[10px] text-silver-dim uppercase leading-none">
-                  {new Date(appt.scheduledAt).toLocaleDateString("en-US", { month: "short" })}
-                </span>
-                <span className="text-sm font-medium tabular-nums text-foreground leading-none mt-0.5">
-                  {new Date(appt.scheduledAt).getDate()}
-                </span>
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-foreground truncate">
-                  {appt.leadName}
-                </p>
-                <p className="text-[12px] text-silver-dim truncate">
-                  {appt.company} · {appt.type}
-                </p>
-              </div>
-
-              <div className="text-right shrink-0">
-                <p className="text-[12px] text-silver-muted tabular-nums">
-                  {formatDateTime(appt.scheduledAt)}
-                </p>
-                <div className="flex items-center justify-end gap-1.5 mt-1">
-                  <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-                  <span className={`text-[11px] capitalize ${style.label}`}>
-                    {appt.status}
+      {appointments.length === 0 ? (
+        <div className="px-5 py-12 text-center">
+          <p className="text-sm text-silver-muted mb-1">No appointments on the books.</p>
+          <p className="text-[12px] text-silver-dim">
+            Move leads to &ldquo;Appointment Booked&rdquo; in the CRM to see them here.
+          </p>
+        </div>
+      ) : (
+        <div className="divide-y divide-silver/6">
+          {appointments.map((appt) => {
+            const style = STATUS_STYLES[appt.status];
+            return (
+              <div
+                key={appt.id}
+                className="px-5 py-4 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
+              >
+                <div className="shrink-0 w-10 h-10 rounded-md bg-black/50 border border-silver/8 flex flex-col items-center justify-center">
+                  <span className="text-[10px] text-silver-dim uppercase leading-none">
+                    {new Date(appt.scheduledAt).toLocaleDateString("en-US", { month: "short" })}
+                  </span>
+                  <span className="text-sm font-medium tabular-nums text-foreground leading-none mt-0.5">
+                    {new Date(appt.scheduledAt).getDate()}
                   </span>
                 </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-medium text-foreground truncate">
+                    {appt.leadName}
+                  </p>
+                  <p className="text-[12px] text-silver-dim truncate">
+                    {appt.company} · {appt.type}
+                  </p>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <p className="text-[12px] text-silver-muted tabular-nums">
+                    {formatDateTime(appt.scheduledAt)}
+                  </p>
+                  <div className="flex items-center justify-end gap-1.5 mt-1">
+                    <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                    <span className={`text-[11px] capitalize ${style.label}`}>
+                      {appt.status}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

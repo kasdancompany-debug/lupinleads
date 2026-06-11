@@ -6,14 +6,17 @@ import { LatestLeads } from "@/components/dashboard/LatestLeads";
 import { RecentAppointments } from "@/components/dashboard/RecentAppointments";
 import { getDashboardData } from "@/lib/dashboard/data";
 
-export default function DashboardPage() {
-  const data = getDashboardData();
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const data = await getDashboardData();
 
   return (
     <div className="px-6 py-8 lg:px-10 max-w-[1400px]">
       <DashboardHeader
         clientName={data.clientName}
         periodLabel={data.periodLabel}
+        isLive={data.isLive}
       />
 
       <div className="space-y-6">

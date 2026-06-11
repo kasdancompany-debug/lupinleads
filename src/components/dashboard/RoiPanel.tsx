@@ -58,17 +58,23 @@ export function RoiPanel({ summary }: RoiPanelProps) {
           </div>
         </div>
 
-        <div className="rounded-md bg-black/30 border border-silver/6 px-4 py-3">
-          <p className="text-[11px] uppercase tracking-[0.1em] text-silver-dim mb-2">
-            Formula
+        {summary.totalSpend === 0 ? (
+          <p className="text-[12px] text-silver-dim">
+            Add ad spend in Reports to calculate ROI. Revenue comes from CRM leads marked &ldquo;Won&rdquo;.
           </p>
-          <p className="text-[13px] text-silver-muted font-mono">
-            ROI = (Revenue − Spend) ÷ Spend × 100
-          </p>
-          <p className="text-[13px] text-silver-dim font-mono mt-1">
-            = ({formatCurrency(summary.revenueClosed)} − {formatCurrency(summary.totalSpend)}) ÷ {formatCurrency(summary.totalSpend)} × 100
-          </p>
-        </div>
+        ) : (
+          <div className="rounded-md bg-black/30 border border-silver/6 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-[0.1em] text-silver-dim mb-2">
+              Formula
+            </p>
+            <p className="text-[13px] text-silver-muted font-mono">
+              ROI = (Revenue − Spend) ÷ Spend × 100
+            </p>
+            <p className="text-[13px] text-silver-dim font-mono mt-1">
+              = ({formatCurrency(summary.revenueClosed)} − {formatCurrency(summary.totalSpend)}) ÷ {formatCurrency(summary.totalSpend)} × 100
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

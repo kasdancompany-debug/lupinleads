@@ -1,27 +1,208 @@
-import type { DashboardData, DashboardSummary, MonthlyMetrics } from "./types";
+import { SITE } from "@/lib/constants";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import type {
+  Appointment,
+  AppointmentStatus,
+  DashboardData,
+  DashboardSummary,
+  Lead,
+  LeadStatus,
+  MonthlyMetrics,
+} from "./types";
 
-const MONTHLY_TRENDS: MonthlyMetrics[] = [
-  { month: "2025-09", label: "Sep", leadsGenerated: 142, costPerLead: 68, appointmentsBooked: 28, revenueClosed: 42000, totalSpend: 9656 },
-  { month: "2025-10", label: "Oct", leadsGenerated: 168, costPerLead: 62, appointmentsBooked: 34, revenueClosed: 58000, totalSpend: 10416 },
-  { month: "2025-11", label: "Nov", leadsGenerated: 195, costPerLead: 58, appointmentsBooked: 41, revenueClosed: 72000, totalSpend: 11310 },
-  { month: "2025-12", label: "Dec", leadsGenerated: 178, costPerLead: 55, appointmentsBooked: 38, revenueClosed: 65000, totalSpend: 9790 },
-  { month: "2026-01", label: "Jan", leadsGenerated: 210, costPerLead: 52, appointmentsBooked: 47, revenueClosed: 89000, totalSpend: 10920 },
-  { month: "2026-02", label: "Feb", leadsGenerated: 224, costPerLead: 49, appointmentsBooked: 52, revenueClosed: 94000, totalSpend: 10976 },
-];
-
-function pctChange(current: number, previous: number): number {
-  if (previous === 0) return 0;
-  return Math.round(((current - previous) / previous) * 1000) / 10;
+interface ConsultationRow {
+  id: string;
+  name: string;
+  email: string;
+  company: string | null;
+  phone: string | null;
+  message: string | null;
+  status: string;
+  created_at: string;
 }
+
+interface CrmLeadRow {
+  id: string;
+  name: string;
+  email: string;
+  service_requested: string;
+  estimated_value: number;
+  source: string;
+  stage: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export function calculateRoi(revenue: number, spend: number): number {
   if (spend === 0) return 0;
   return Math.round(((revenue - spend) / spend) * 1000) / 10;
 }
 
+function pctChange(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 1000) / 10;
+}
+
+function monthKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function monthLabel(key: string): string {
+  const [, m] = key.split("-");
+  return MONTH_LABELS[parseInt(m, 10) - 1] ?? m;
+}
+
+function getLast6MonthKeys(): string[] {
+  const keys: string[] = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    keys.push(monthKey(d));
+  }
+  return keys;
+}
+
+function consultationToStatus(status: string): LeadStatus {
+  switch (status) {
+    case "contacted":
+      return "contacted";
+    case "scheduled":
+      return "qualified";
+    case "closed":
+      return "converted";
+    default:
+      return "new";
+  }
+}
+
+function crmStageToStatus(stage: string): LeadStatus {
+  switch (stage) {
+    case "attempted_contact":
+      return "contacted";
+    case "appointment_booked":
+    case "estimate_sent":
+      return "qualified";
+    case "won":
+      return "converted";
+    case "lost":
+      return "lost";
+    default:
+      return "new";
+  }
+}
+
+function consultationToLead(row: ConsultationRow): Lead {
+  return {
+    id: `consultation-${row.id}`,
+    name: row.name,
+    company: row.company?.trim() || "—",
+    email: row.email,
+    source: "Strategy Call",
+    status: consultationToStatus(row.status),
+    estimatedValue: 0,
+    createdAt: row.created_at,
+  };
+}
+
+function crmToLead(row: CrmLeadRow): Lead {
+  return {
+    id: row.id,
+    name: row.name,
+    company: row.service_requested?.trim() || "—",
+    email: row.email,
+    source: row.source || "CRM",
+    status: crmStageToStatus(row.stage),
+    estimatedValue: Number(row.estimated_value) || 0,
+    createdAt: row.created_at,
+  };
+}
+
+function consultationToAppointment(row: ConsultationRow): Appointment | null {
+  if (row.status !== "scheduled" && row.status !== "closed") return null;
+
+  const status: AppointmentStatus =
+    row.status === "closed" ? "completed" : "scheduled";
+
+  return {
+    id: `consultation-${row.id}`,
+    leadName: row.name,
+    company: row.company?.trim() || "—",
+    scheduledAt: row.created_at,
+    type: "Strategy Call",
+    status,
+  };
+}
+
+function crmToAppointment(row: CrmLeadRow): Appointment | null {
+  if (row.stage !== "appointment_booked" && row.stage !== "estimate_sent") {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    leadName: row.name,
+    company: row.service_requested?.trim() || "—",
+    scheduledAt: row.updated_at,
+    type: row.stage === "estimate_sent" ? "Estimate Sent" : "Appointment",
+    status: "scheduled",
+  };
+}
+
+function isInMonth(isoDate: string, key: string): boolean {
+  return monthKey(new Date(isoDate)) === key;
+}
+
+function buildTrends(
+  consultations: ConsultationRow[],
+  crmLeads: CrmLeadRow[],
+  monthKeys: string[]
+): MonthlyMetrics[] {
+  return monthKeys.map((key) => {
+    const leadsGenerated =
+      consultations.filter((r) => isInMonth(r.created_at, key)).length +
+      crmLeads.filter((r) => isInMonth(r.created_at, key)).length;
+
+    const appointmentsBooked =
+      consultations.filter(
+        (r) =>
+          isInMonth(r.created_at, key) &&
+          (r.status === "scheduled" || r.status === "closed")
+      ).length +
+      crmLeads.filter(
+        (r) =>
+          isInMonth(r.updated_at, key) &&
+          (r.stage === "appointment_booked" || r.stage === "estimate_sent")
+      ).length;
+
+    const revenueClosed = crmLeads
+      .filter((r) => r.stage === "won" && isInMonth(r.updated_at, key))
+      .reduce((sum, r) => sum + (Number(r.estimated_value) || 0), 0);
+
+    const totalSpend = 0;
+
+    return {
+      month: key,
+      label: monthLabel(key),
+      leadsGenerated,
+      costPerLead: leadsGenerated > 0 && totalSpend > 0 ? Math.round(totalSpend / leadsGenerated) : 0,
+      appointmentsBooked,
+      revenueClosed,
+      totalSpend,
+    };
+  });
+}
+
 function buildSummary(trends: MonthlyMetrics[]): DashboardSummary {
-  const current = trends[trends.length - 1];
-  const previous = trends[trends.length - 2];
+  const current = trends[trends.length - 1] ?? {
+    leadsGenerated: 0,
+    costPerLead: 0,
+    appointmentsBooked: 0,
+    revenueClosed: 0,
+    totalSpend: 0,
+  };
+  const previous = trends[trends.length - 2] ?? current;
 
   const currentRoi = calculateRoi(current.revenueClosed, current.totalSpend);
   const previousRoi = calculateRoi(previous.revenueClosed, previous.totalSpend);
@@ -41,28 +222,99 @@ function buildSummary(trends: MonthlyMetrics[]): DashboardSummary {
   };
 }
 
-export function getDashboardData(): DashboardData {
-  const summary = buildSummary(MONTHLY_TRENDS);
+function emptyDashboardData(): DashboardData {
+  const now = new Date();
+  const periodLabel = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const monthKeys = getLast6MonthKeys();
+  const trends = buildTrends([], [], monthKeys);
 
   return {
-    clientName: "Apex Outdoors Co.",
-    periodLabel: "February 2026",
+    clientName: SITE.name,
+    periodLabel,
+    summary: buildSummary(trends),
+    trends,
+    latestLeads: [],
+    recentAppointments: [],
+    isLive: false,
+  };
+}
+
+async function fetchConsultations(
+  supabase: NonNullable<ReturnType<typeof createAdminClient>>
+): Promise<ConsultationRow[]> {
+  const { data, error } = await supabase
+    .from("consultation_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("getDashboardData consultation_requests:", error);
+    return [];
+  }
+
+  return (data ?? []) as ConsultationRow[];
+}
+
+async function fetchCrmLeads(
+  supabase: NonNullable<ReturnType<typeof createAdminClient>>
+): Promise<CrmLeadRow[]> {
+  const { data, error } = await supabase
+    .from("crm_leads")
+    .select("*")
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    // Table may not exist until migration 002 is run
+    if (error.code !== "42P01" && error.code !== "PGRST205") {
+      console.error("getDashboardData crm_leads:", error);
+    }
+    return [];
+  }
+
+  return (data ?? []) as CrmLeadRow[];
+}
+
+export async function getDashboardData(): Promise<DashboardData> {
+  if (!isSupabaseConfigured()) {
+    return emptyDashboardData();
+  }
+
+  const supabase = createAdminClient();
+  if (!supabase) {
+    return emptyDashboardData();
+  }
+
+  const [consultations, crmLeads] = await Promise.all([
+    fetchConsultations(supabase),
+    fetchCrmLeads(supabase),
+  ]);
+
+  const monthKeys = getLast6MonthKeys();
+  const trends = buildTrends(consultations, crmLeads, monthKeys);
+  const summary = buildSummary(trends);
+
+  const latestLeads = [...consultations.map(consultationToLead), ...crmLeads.map(crmToLead)]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 8);
+
+  const recentAppointments = [
+    ...consultations.map(consultationToAppointment),
+    ...crmLeads.map(crmToAppointment),
+  ]
+    .filter((appt): appt is Appointment => appt !== null)
+    .sort((a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime())
+    .slice(0, 6);
+
+  const now = new Date();
+  const periodLabel = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  return {
+    clientName: SITE.name,
+    periodLabel,
     summary,
-    trends: MONTHLY_TRENDS,
-    latestLeads: [
-      { id: "ld_8f2a", name: "Sarah Chen", company: "Northwind Gear", email: "s.chen@northwindgear.com", source: "Outbound", status: "qualified", estimatedValue: 12000, createdAt: "2026-02-10T14:32:00Z" },
-      { id: "ld_7e1b", name: "Marcus Webb", company: "Trailforge Inc.", email: "mwebb@trailforge.io", source: "LinkedIn", status: "new", estimatedValue: 8500, createdAt: "2026-02-10T11:15:00Z" },
-      { id: "ld_6d0c", name: "Elena Vasquez", company: "Summit Supply Co.", email: "elena@summitsupply.co", source: "Referral", status: "contacted", estimatedValue: 22000, createdAt: "2026-02-09T16:48:00Z" },
-      { id: "ld_5c9d", name: "James Okonkwo", company: "Alpine Ventures", email: "j.okonkwo@alpinevc.com", source: "Outbound", status: "converted", estimatedValue: 45000, createdAt: "2026-02-09T09:22:00Z" },
-      { id: "ld_4b8e", name: "Rachel Kim", company: "Wildcraft Studio", email: "rachel@wildcraft.studio", source: "Content", status: "qualified", estimatedValue: 15000, createdAt: "2026-02-08T13:05:00Z" },
-      { id: "ld_3a7f", name: "David Torres", company: "Ridge Equipment", email: "d.torres@ridgeeq.com", source: "Outbound", status: "new", estimatedValue: 9200, createdAt: "2026-02-08T08:41:00Z" },
-    ],
-    recentAppointments: [
-      { id: "ap_1", leadName: "James Okonkwo", company: "Alpine Ventures", scheduledAt: "2026-02-11T15:00:00Z", type: "Discovery Call", status: "scheduled" },
-      { id: "ap_2", leadName: "Sarah Chen", company: "Northwind Gear", scheduledAt: "2026-02-11T10:30:00Z", type: "Strategy Review", status: "scheduled" },
-      { id: "ap_3", leadName: "Elena Vasquez", company: "Summit Supply Co.", scheduledAt: "2026-02-10T14:00:00Z", type: "Demo", status: "completed" },
-      { id: "ap_4", leadName: "Rachel Kim", company: "Wildcraft Studio", scheduledAt: "2026-02-09T11:00:00Z", type: "Discovery Call", status: "completed" },
-      { id: "ap_5", leadName: "Tom Bradley", company: "Peak Performance", scheduledAt: "2026-02-07T16:30:00Z", type: "Follow-up", status: "no-show" },
-    ],
+    trends,
+    latestLeads,
+    recentAppointments,
+    isLive: true,
   };
 }

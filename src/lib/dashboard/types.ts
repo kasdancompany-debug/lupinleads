@@ -53,4 +53,5 @@ export interface DashboardData {
   trends: MonthlyMetrics[];
   latestLeads: Lead[];
   recentAppointments: Appointment[];
+  isLive: boolean;
 }

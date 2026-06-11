@@ -1,18 +1,24 @@
 interface DashboardHeaderProps {
   clientName: string;
   periodLabel: string;
+  isLive?: boolean;
 }
 
-export function DashboardHeader({ clientName, periodLabel }: DashboardHeaderProps) {
+export function DashboardHeader({ clientName, periodLabel, isLive = true }: DashboardHeaderProps) {
   return (
     <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
       <div>
         <p className="text-[11px] uppercase tracking-[0.15em] text-silver-dim mb-1">
-          Dashboard
+          Agency Dashboard
         </p>
         <h1 className="text-xl font-medium text-foreground tracking-tight">
           {clientName}
         </h1>
+        {!isLive && (
+          <p className="text-[12px] text-amber-400/80 mt-1">
+            Supabase not connected — metrics will appear once env vars are set.
+          </p>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
@@ -23,12 +29,12 @@ export function DashboardHeader({ clientName, periodLabel }: DashboardHeaderProp
           </svg>
           {periodLabel}
         </div>
-        <button
-          type="button"
-          className="dashboard-card px-3 py-1.5 text-[13px] text-silver-muted hover:text-foreground transition-colors"
-        >
-          Export
-        </button>
+        {isLive && (
+          <span className="inline-flex items-center gap-1.5 dashboard-card px-3 py-1.5 text-[12px] text-forest-glow">
+            <span className="w-1.5 h-1.5 rounded-full bg-forest-glow animate-pulse" />
+            Live data
+          </span>
+        )}
       </div>
     </header>
   );

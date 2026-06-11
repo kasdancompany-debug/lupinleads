@@ -45,7 +45,11 @@ export function MetricCard({ label, value, change, format, invertChange = false 
             {formatPercent(Math.abs(change))}
           </span>
         )}
-        <span className="text-[11px] text-silver-dim">vs last month</span>
+        {change === 0 && value === 0 ? (
+          <span className="text-[11px] text-silver-dim">No data this month</span>
+        ) : (
+          <span className="text-[11px] text-silver-dim">vs last month</span>
+        )}
       </div>
     </div>
   );

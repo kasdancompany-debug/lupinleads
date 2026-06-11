@@ -1,6 +1,5 @@
 import type { ContractorLead, PipelineStage } from "./types";
 import { PIPELINE_STAGES } from "./types";
-import { SEED_LEADS } from "./data";
 import { STORAGE_KEY } from "./constants";
 
 export function createLeadId(): string {
@@ -8,7 +7,7 @@ export function createLeadId(): string {
 }
 
 export function loadLeads(): ContractorLead[] {
-  if (typeof window === "undefined") return SEED_LEADS;
+  if (typeof window === "undefined") return [];
 
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -16,9 +15,9 @@ export function loadLeads(): ContractorLead[] {
       return JSON.parse(stored) as ContractorLead[];
     }
   } catch {
-    // fall through to seed data
+    // ignore corrupt local storage
   }
-  return SEED_LEADS;
+  return [];
 }
 
 export function saveLeads(leads: ContractorLead[]): void {
