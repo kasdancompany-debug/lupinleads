@@ -34,12 +34,6 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <Link
-                href="/dashboard"
-                className="text-sm text-silver-muted hover:text-foreground transition-colors tracking-wide"
-              >
-                Dashboard
-              </Link>
               <Button
                 size="sm"
                 onClick={() => {
@@ -78,13 +72,6 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <Link
-                href="/dashboard"
-                className="block text-silver-muted hover:text-foreground transition-colors"
-                onClick={() => setOpen(false)}
-              >
-                Dashboard
-              </Link>
               <Button
                 size="sm"
                 className="w-full"
