@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { WolfMark } from "@/components/ui/WolfMark";
 import { SITE } from "@/lib/constants";
 
@@ -79,8 +80,30 @@ const NAV_ITEMS = [
   },
 ];
 
+function isNavItemActive(pathname: string, hash: string, href: string): boolean {
+  const [basePath, fragment] = href.split("#");
+
+  if (fragment) {
+    return pathname === basePath && hash === `#${fragment}`;
+  }
+
+  if (href === "/dashboard") {
+    return pathname === "/dashboard" && !hash;
+  }
+
+  return pathname === basePath || pathname.startsWith(`${basePath}/`);
+}
+
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const syncHash = () => setHash(window.location.hash);
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, [pathname]);
 
   return (
     <aside className="hidden lg:flex flex-col w-56 shrink-0 border-r border-silver/8 bg-black h-screen sticky top-0">
@@ -95,13 +118,7 @@ export function DashboardSidebar() {
 
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         {NAV_ITEMS.map((item) => {
-          const basePath = item.href.split("#")[0];
-          const active =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : item.href.includes("#")
-                ? pathname === basePath
-                : pathname === basePath || pathname.startsWith(`${basePath}/`);
+          const active = isNavItemActive(pathname, hash, item.href);
           return (
             <Link
               key={item.href}
