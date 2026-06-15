@@ -18,12 +18,52 @@ export const NAV_LINKS = [
   { label: "FAQ", href: "#faq" },
 ] as const;
 
-export const TRUST_STATS = [
-  { value: "2,400+", label: "Leads Generated" },
-  { value: "$18M+", label: "Revenue for Clients" },
-  { value: "4.8×", label: "Avg. ROAS" },
-  { value: "48hr", label: "Launch Time" },
+export const TRUST_POINTS = [
+  { value: "48hr", label: "Typical Launch Time" },
+  { value: "< 5 min", label: "Lead Alert Target" },
+  { value: "30-day", label: "Satisfaction Guarantee" },
+  { value: "1 per market", label: "Territory Exclusivity" },
 ] as const;
+
+export const FOUNDING_PARTNER = {
+  name: "Founding Partner",
+  introPrice: 299,
+  regularPrice: 499,
+  slotsTotal: 5,
+  slotsRemaining: 5,
+  currency: "CAD" as const,
+  description:
+    "We're onboarding our first 5 contractor partners across Canada. Lock in founding partner pricing, help shape the platform, and get priority support while we build your lead engine.",
+  features: [
+    "Everything in Starter",
+    "$299 CAD first month, then $499/mo locked in",
+    "Meta Ads setup, forms, CRM & follow-up",
+    "30-day satisfaction guarantee on management fees",
+    "Direct line for feedback — you shape what we build",
+    "Case study & testimonial opportunity",
+  ],
+  terms: [
+    "One contractor per trade per market",
+    "You pay Meta ad spend directly ($2K–5K/mo typical)",
+    "Limited to 5 founding partners total",
+  ],
+} as const;
+
+export const CASE_STUDIES: readonly {
+  client: string;
+  industry: string;
+  headline: string;
+  description: string;
+  metrics: readonly { label: string; value: string }[];
+}[] = [];
+
+export const TESTIMONIALS: readonly {
+  quote: string;
+  name: string;
+  role: string;
+  company: string;
+  result: string;
+}[] = [];
 
 export const FEATURES = [
   {
@@ -64,81 +104,12 @@ export const FEATURES = [
   },
 ] as const;
 
-export const CASE_STUDIES = [
-  {
-    client: "Hayes Home Remodeling",
-    industry: "Kitchen & Bath",
-    headline: "47 estimates in 60 days",
-    description:
-      "Meta Ads targeting homeowners in a 25-mile radius. AI follow-up booked 31 appointments in the first month.",
-    metrics: [
-      { label: "Estimates", value: "47" },
-      { label: "Cost Per Lead", value: "$38" },
-      { label: "Jobs Closed", value: "12" },
-    ],
-  },
-  {
-    client: "Summit Roofing Co.",
-    industry: "Roofing",
-    headline: "$340K in booked jobs",
-    description:
-      "Replaced door-knocking with a predictable lead engine. ROAS hit 5.2× within 90 days of launch.",
-    metrics: [
-      { label: "Revenue", value: "$340K" },
-      { label: "ROAS", value: "5.2×" },
-      { label: "Close Rate", value: "28%" },
-    ],
-  },
-  {
-    client: "Delgado Landscaping",
-    industry: "Outdoor Living",
-    headline: "From seasonal to year-round",
-    description:
-      "Filled the winter pipeline with hardscape and drainage projects — keeping crews busy 12 months a year.",
-    metrics: [
-      { label: "Monthly Leads", value: "85+" },
-      { label: "Pipeline Value", value: "$1.2M" },
-      { label: "YoY Growth", value: "+180%" },
-    ],
-  },
-] as const;
-
-export const TESTIMONIALS = [
-  {
-    quote:
-      "We went from chasing referrals to having a full calendar every week. The AI follow-up alone paid for itself in the first month.",
-    name: "Mike Torres",
-    role: "Owner",
-    company: "Torres Electric & HVAC",
-    result: "34 jobs closed in Q1",
-  },
-  {
-    quote:
-      "I was skeptical about Meta Ads for contractors. LUPIN LEADS proved me wrong — $38 per lead and they're actually ready to buy.",
-    name: "Jennifer Walsh",
-    role: "General Manager",
-    company: "Walsh Kitchen & Bath",
-    result: "5.1× ROAS",
-  },
-  {
-    quote:
-      "The reporting alone is worth it. I finally know my cost per lead, close rate, and which campaigns are printing money.",
-    name: "Chris Delgado",
-    role: "Founder",
-    company: "Delgado Landscaping",
-    result: "$1.2M pipeline",
-  },
-  {
-    quote:
-      "Best decision we made last year. Our estimator went from 8 appointments a month to 22 — and we're hiring two more crews.",
-    name: "Robert Hayes",
-    role: "Owner",
-    company: "Hayes Home Remodeling",
-    result: "3× appointment volume",
-  },
-] as const;
-
 export const FAQ_ITEMS = [
+  {
+    question: "What's the Founding Partner program?",
+    answer:
+      "We're onboarding our first 5 contractors at $299 CAD for month one, then $499/mo after that — locked in as long as you stay. You get everything in Starter, priority support, and a direct say in how we build the platform. One contractor per trade per market. Book a strategy call to apply.",
+  },
   {
     question: "What types of contractors do you work with?",
     answer:

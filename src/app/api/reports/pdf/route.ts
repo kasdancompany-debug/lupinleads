@@ -34,8 +34,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const clientId = searchParams.get("clientId") ?? "apex-outdoors";
+  const clientId = searchParams.get("clientId");
   const reportMonth = searchParams.get("month") ?? undefined;
+
+  if (!clientId) {
+    return NextResponse.json({ error: "clientId is required" }, { status: 400 });
+  }
 
   try {
     const pdf = await generateReportPdf(clientId, reportMonth);

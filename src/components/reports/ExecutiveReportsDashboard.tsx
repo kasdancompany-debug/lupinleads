@@ -8,7 +8,7 @@ import { BrandingPanel } from "./BrandingPanel";
 import { formatCurrency } from "@/lib/dashboard/format";
 
 export function ExecutiveReportsDashboard() {
-  const [clientId, setClientId] = useState("apex-outdoors");
+  const [clientId, setClientId] = useState("");
   const [reportMonth, setReportMonth] = useState("");
   const [report, setReport] = useState<ExecutiveReport | null>(null);
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
@@ -16,6 +16,7 @@ export function ExecutiveReportsDashboard() {
   const [branding, setBranding] = useState<ClientBranding | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [empty, setEmpty] = useState(false);
 
   const loadReport = useCallback(async (cId: string, month?: string) => {
     setLoading(true);
@@ -26,22 +27,53 @@ export function ExecutiveReportsDashboard() {
       const res = await fetch(`/api/reports/data?${params}`);
       const data = await res.json();
 
+      if (data.empty || !data.report) {
+        setEmpty(true);
+        setReport(null);
+        setClients(data.clients ?? []);
+        setMonths([]);
+        setBranding(null);
+        return;
+      }
+
+      setEmpty(false);
       setReport(data.report);
       setClients(data.clients);
       setMonths(data.months);
-      if (!month) setReportMonth(data.report.reportMonth);
+      if (!month) {
+        setReportMonth((prev) => prev || data.report.reportMonth);
+      }
 
       const brandings = getBrandings();
       const b = brandings.find((x) => x.clientId === cId) ?? data.report.branding;
       setBranding(b);
     } catch {
-      // silent
+      setEmpty(true);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    fetch("/api/reports/data")
+      .then((res) => res.json())
+      .then((data) => {
+        setClients(data.clients ?? []);
+        if (!data.clients?.length) {
+          setEmpty(true);
+          setLoading(false);
+          return;
+        }
+        setClientId((prev) => prev || data.clients[0].id);
+      })
+      .catch(() => {
+        setEmpty(true);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!clientId) return;
     loadReport(clientId, reportMonth || undefined);
   }, [clientId, reportMonth, loadReport]);
 
@@ -89,7 +121,27 @@ export function ExecutiveReportsDashboard() {
     );
   }
 
-  if (!report || !branding) return null;
+  if (empty || !report || !branding) {
+    return (
+      <div>
+        <div className="mb-6">
+          <p className="text-[11px] uppercase tracking-[0.15em] text-silver-dim mb-1">
+            Executive Reporting
+          </p>
+          <h1 className="text-xl font-medium text-foreground">Monthly Performance</h1>
+        </div>
+        <div className="dashboard-card p-10 text-center max-w-xl">
+          <p className="text-foreground font-medium mb-2">No client reports yet</p>
+          <p className="text-[13px] text-silver-muted leading-relaxed">
+            Reports pull live data from <code className="text-forest-glow">crm_leads</code> by
+            client campaign tag. When you onboard a founding partner, set their{" "}
+            <code className="text-forest-glow">campaign</code> on leads and add branding in
+            Supabase to generate PDFs here.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const { current, previous, trends, highlights } = report;
 

@@ -8,7 +8,7 @@ export async function generateReportPdf(
   reportMonth?: string,
   brandingOverride?: Partial<ClientBranding>
 ): Promise<Buffer> {
-  const report = buildExecutiveReport(clientId, reportMonth, brandingOverride);
+  const report = await buildExecutiveReport(clientId, reportMonth, brandingOverride);
   const buffer = await renderToBuffer(
     ExecutiveReportDocument({ report })
   );

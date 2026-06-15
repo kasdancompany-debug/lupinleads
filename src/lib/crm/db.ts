@@ -14,6 +14,7 @@ interface DbLead {
   status: PipelineStage;
   stage: PipelineStage;
   form_submission_id: string | null;
+  consultation_request_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -35,8 +36,9 @@ function toLead(row: DbLead): ContractorLead {
   };
 }
 
-function toDbLead(lead: ContractorLead): Omit<DbLead, "form_submission_id" | "campaign"> & {
+function toDbLead(lead: ContractorLead): Omit<DbLead, "form_submission_id" | "consultation_request_id" | "campaign"> & {
   form_submission_id?: string | null;
+  consultation_request_id?: string | null;
   campaign?: string | null;
 } {
   return {
@@ -75,6 +77,7 @@ export async function listCrmLeads(): Promise<ContractorLead[]> {
 export async function createCrmLead(
   lead: Omit<ContractorLead, "id" | "createdAt" | "updatedAt"> & {
     formSubmissionId?: string;
+    consultationRequestId?: string;
     campaign?: string | null;
   }
 ): Promise<ContractorLead | null> {
@@ -95,6 +98,7 @@ export async function createCrmLead(
       status: lead.status,
       stage: lead.stage,
       form_submission_id: lead.formSubmissionId ?? null,
+      consultation_request_id: lead.consultationRequestId ?? null,
     })
     .select()
     .single();

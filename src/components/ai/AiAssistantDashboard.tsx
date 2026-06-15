@@ -23,8 +23,8 @@ export function AiAssistantDashboard() {
 
   useEffect(() => {
     async function init() {
-      const { leads: remote } = await fetchCrmLeads();
-      const data = remote.length > 0 ? remote : loadLeads();
+      const { leads: remote, source } = await fetchCrmLeads();
+      const data = source === "supabase" ? remote : loadLeads();
       setLeads(data.filter((l) => l.stage !== "won" && l.stage !== "lost"));
 
       const cached: Record<string, FollowUpAnalysis> = {};

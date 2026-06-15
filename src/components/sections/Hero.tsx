@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { WolfPortraitArt } from "@/components/ui/WolfPortraitArt";
-import { SITE, TRUST_STATS } from "@/lib/constants";
+import { FOUNDING_PARTNER, SITE, TRUST_POINTS } from "@/lib/constants";
 
 export function Hero() {
   function scrollToBook() {
@@ -13,7 +13,6 @@ export function Hero() {
     <section className="relative min-h-[92vh] flex items-center hero-gradient overflow-hidden">
       <div className="absolute inset-0 grain-overlay pointer-events-none" />
 
-      {/* Subtle wolf art — right side accent, not dominating */}
       <div className="absolute inset-y-0 right-0 w-[55%] max-w-[600px] pointer-events-none hidden md:block">
         <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-black/80" />
         <WolfPortraitArt className="absolute bottom-0 right-0 w-full h-auto opacity-90 translate-x-[8%]" />
@@ -27,7 +26,7 @@ export function Hero() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-forest-mid/30 bg-forest-mid/10 mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-forest-glow animate-pulse" />
               <span className="text-[11px] text-forest-glow tracking-wide uppercase">
-                For Home Service Contractors
+                For Canadian Home Service Contractors
               </span>
             </div>
 
@@ -60,17 +59,17 @@ export function Hero() {
               <svg className="w-4 h-4 text-forest-glow shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M3 8L6 11L13 4" />
               </svg>
-              Free strategy call · No obligation · 30-day guarantee
+              Free strategy call · {FOUNDING_PARTNER.slotsRemaining} founding partner spots · 30-day guarantee
             </p>
           </div>
 
           <div className="hidden lg:block animate-fade-up">
             <div className="glass-card glow-green p-8 rounded-sm">
               <p className="text-[11px] uppercase tracking-[0.2em] text-silver-dim mb-6">
-                Average Client Results
+                What You Can Expect
               </p>
               <div className="grid grid-cols-2 gap-6">
-                {TRUST_STATS.map((stat) => (
+                {TRUST_POINTS.map((stat) => (
                   <div key={stat.label} className="border-l-2 border-forest-mid/40 pl-4">
                     <p className="font-display text-3xl text-foreground tabular-nums mb-1">
                       {stat.value}
@@ -82,28 +81,19 @@ export function Hero() {
                 ))}
               </div>
               <div className="mt-8 pt-6 border-t border-silver/10">
-                <div className="flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    {["MT", "JW", "CD", "RH"].map((initials) => (
-                      <div
-                        key={initials}
-                        className="w-8 h-8 rounded-full bg-forest-mid/30 border border-forest-mid/50 flex items-center justify-center text-[10px] font-medium text-forest-glow"
-                      >
-                        {initials}
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-[13px] text-silver-muted">
-                    Trusted by <span className="text-foreground">120+ contractors</span> nationwide
-                  </p>
-                </div>
+                <p className="text-[13px] text-silver-muted leading-relaxed">
+                  Now accepting{" "}
+                  <span className="text-foreground">founding partners</span> across Canada —{" "}
+                  {formatPrice(FOUNDING_PARTNER.introPrice)} first month, then{" "}
+                  {formatPrice(FOUNDING_PARTNER.regularPrice)}/mo.
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="lg:hidden mt-12 grid grid-cols-2 gap-6">
-          {TRUST_STATS.map((stat) => (
+          {TRUST_POINTS.map((stat) => (
             <div key={stat.label}>
               <p className="font-display text-2xl text-foreground tabular-nums">{stat.value}</p>
               <p className="text-[10px] text-silver-dim uppercase tracking-wider mt-1">{stat.label}</p>
@@ -113,4 +103,12 @@ export function Hero() {
       </div>
     </section>
   );
+}
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD",
+    minimumFractionDigits: 0,
+  }).format(price);
 }

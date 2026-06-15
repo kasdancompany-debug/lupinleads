@@ -2,24 +2,12 @@ import { SITE } from "@/lib/constants";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import type {
   Appointment,
-  AppointmentStatus,
   DashboardData,
   DashboardSummary,
   Lead,
   LeadStatus,
   MonthlyMetrics,
 } from "./types";
-
-interface ConsultationRow {
-  id: string;
-  name: string;
-  email: string;
-  company: string | null;
-  phone: string | null;
-  message: string | null;
-  status: string;
-  created_at: string;
-}
 
 interface CrmLeadRow {
   id: string;
@@ -64,19 +52,6 @@ function getLast6MonthKeys(): string[] {
   return keys;
 }
 
-function consultationToStatus(status: string): LeadStatus {
-  switch (status) {
-    case "contacted":
-      return "contacted";
-    case "scheduled":
-      return "qualified";
-    case "closed":
-      return "converted";
-    default:
-      return "new";
-  }
-}
-
 function crmStageToStatus(stage: string): LeadStatus {
   switch (stage) {
     case "attempted_contact":
@@ -93,19 +68,6 @@ function crmStageToStatus(stage: string): LeadStatus {
   }
 }
 
-function consultationToLead(row: ConsultationRow): Lead {
-  return {
-    id: `consultation-${row.id}`,
-    name: row.name,
-    company: row.company?.trim() || "—",
-    email: row.email,
-    source: "Strategy Call",
-    status: consultationToStatus(row.status),
-    estimatedValue: 0,
-    createdAt: row.created_at,
-  };
-}
-
 function crmToLead(row: CrmLeadRow): Lead {
   return {
     id: row.id,
@@ -116,22 +78,6 @@ function crmToLead(row: CrmLeadRow): Lead {
     status: crmStageToStatus(row.stage),
     estimatedValue: Number(row.estimated_value) || 0,
     createdAt: row.created_at,
-  };
-}
-
-function consultationToAppointment(row: ConsultationRow): Appointment | null {
-  if (row.status !== "scheduled" && row.status !== "closed") return null;
-
-  const status: AppointmentStatus =
-    row.status === "closed" ? "completed" : "scheduled";
-
-  return {
-    id: `consultation-${row.id}`,
-    leadName: row.name,
-    company: row.company?.trim() || "—",
-    scheduledAt: row.created_at,
-    type: "Strategy Call",
-    status,
   };
 }
 
@@ -154,27 +100,15 @@ function isInMonth(isoDate: string, key: string): boolean {
   return monthKey(new Date(isoDate)) === key;
 }
 
-function buildTrends(
-  consultations: ConsultationRow[],
-  crmLeads: CrmLeadRow[],
-  monthKeys: string[]
-): MonthlyMetrics[] {
+function buildTrends(crmLeads: CrmLeadRow[], monthKeys: string[]): MonthlyMetrics[] {
   return monthKeys.map((key) => {
-    const leadsGenerated =
-      consultations.filter((r) => isInMonth(r.created_at, key)).length +
-      crmLeads.filter((r) => isInMonth(r.created_at, key)).length;
+    const leadsGenerated = crmLeads.filter((r) => isInMonth(r.created_at, key)).length;
 
-    const appointmentsBooked =
-      consultations.filter(
-        (r) =>
-          isInMonth(r.created_at, key) &&
-          (r.status === "scheduled" || r.status === "closed")
-      ).length +
-      crmLeads.filter(
-        (r) =>
-          isInMonth(r.updated_at, key) &&
-          (r.stage === "appointment_booked" || r.stage === "estimate_sent")
-      ).length;
+    const appointmentsBooked = crmLeads.filter(
+      (r) =>
+        isInMonth(r.updated_at, key) &&
+        (r.stage === "appointment_booked" || r.stage === "estimate_sent")
+    ).length;
 
     const revenueClosed = crmLeads
       .filter((r) => r.stage === "won" && isInMonth(r.updated_at, key))
@@ -226,7 +160,7 @@ function emptyDashboardData(): DashboardData {
   const now = new Date();
   const periodLabel = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const monthKeys = getLast6MonthKeys();
-  const trends = buildTrends([], [], monthKeys);
+  const trends = buildTrends([], monthKeys);
 
   return {
     clientName: SITE.name,
@@ -237,22 +171,6 @@ function emptyDashboardData(): DashboardData {
     recentAppointments: [],
     isLive: false,
   };
-}
-
-async function fetchConsultations(
-  supabase: NonNullable<ReturnType<typeof createAdminClient>>
-): Promise<ConsultationRow[]> {
-  const { data, error } = await supabase
-    .from("consultation_requests")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("getDashboardData consultation_requests:", error);
-    return [];
-  }
-
-  return (data ?? []) as ConsultationRow[];
 }
 
 async function fetchCrmLeads(
@@ -284,23 +202,18 @@ export async function getDashboardData(): Promise<DashboardData> {
     return emptyDashboardData();
   }
 
-  const [consultations, crmLeads] = await Promise.all([
-    fetchConsultations(supabase),
-    fetchCrmLeads(supabase),
-  ]);
+  const crmLeads = await fetchCrmLeads(supabase);
 
   const monthKeys = getLast6MonthKeys();
-  const trends = buildTrends(consultations, crmLeads, monthKeys);
+  const trends = buildTrends(crmLeads, monthKeys);
   const summary = buildSummary(trends);
 
-  const latestLeads = [...consultations.map(consultationToLead), ...crmLeads.map(crmToLead)]
+  const latestLeads = crmLeads.map(crmToLead)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 8);
 
-  const recentAppointments = [
-    ...consultations.map(consultationToAppointment),
-    ...crmLeads.map(crmToAppointment),
-  ]
+  const recentAppointments = crmLeads
+    .map(crmToAppointment)
     .filter((appt): appt is Appointment => appt !== null)
     .sort((a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime())
     .slice(0, 6);
