@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
-import { getCalendlyUrl } from "@/lib/calendly";
 import { SITE } from "@/lib/constants";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: `Book A Strategy Call — ${SITE.name}`,
@@ -9,8 +10,6 @@ export const metadata = {
 };
 
 export default function BookPage() {
-  const calendlyUrl = getCalendlyUrl();
-
   return (
     <div className="min-h-screen bg-black">
       <header className="border-b border-silver/10">
@@ -40,7 +39,7 @@ export default function BookPage() {
           </p>
         </div>
 
-        <CalendlyBooking calendlyUrl={calendlyUrl} />
+        <CalendlyBooking />
       </main>
     </div>
   );
