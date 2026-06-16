@@ -56,55 +56,29 @@ export function OnboardingTimeline({ steps }: OnboardingTimelineProps) {
 
   return (
     <>
-      {/* Desktop horizontal timeline */}
-      <div className="hidden lg:block">
-        <div className="relative mb-10">
-          <div className="absolute top-[27px] left-[10%] right-[10%] h-px bg-silver/10" aria-hidden />
-          {!reduce && (
-            <motion.div
-              className="absolute top-[26px] left-[10%] right-[10%] h-[2px] origin-left launch-timeline-glow rounded-full"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 1.4, ease: easePremium }}
-            />
-          )}
-          <div className="grid grid-cols-5 gap-4 relative">
-            {steps.map((step, index) => (
-              <TimelineNode
-                key={step.id}
-                step={step}
-                index={index}
-                reduce={!!reduce}
-                layout="horizontal"
-              />
-            ))}
-          </div>
-        </div>
-
-        <motion.div
-          className="grid grid-cols-5 gap-4"
-          initial={reduce ? false : "hidden"}
-          whileInView={reduce ? undefined : "visible"}
-          viewport={defaultViewport}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
-          }}
-        >
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.id}
-              variants={{
-                hidden: { opacity: 0, y: 32 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ ...defaultTransition, delay: index * 0.08 }}
-            >
-              <StepCard step={step} index={index} />
-            </motion.div>
-          ))}
-        </motion.div>
+      {/* Desktop — unified step cards (no duplicate timeline row) */}
+      <div className="hidden lg:grid lg:grid-cols-5 gap-4 relative">
+        <div className="absolute top-[27px] left-[10%] right-[10%] h-px bg-silver/10" aria-hidden />
+        {!reduce && (
+          <motion.div
+            className="absolute top-[26px] left-[10%] right-[10%] h-[2px] origin-left launch-timeline-glow rounded-full"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 1.4, ease: easePremium }}
+          />
+        )}
+        {steps.map((step, index) => (
+          <motion.div
+            key={step.id}
+            initial={reduce ? false : { opacity: 0, y: 24 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={defaultViewport}
+            transition={{ ...defaultTransition, delay: index * 0.08 }}
+          >
+            <UnifiedStepCard step={step} index={index} />
+          </motion.div>
+        ))}
       </div>
 
       {/* Mobile vertical timeline */}
@@ -187,6 +161,26 @@ function TimelineNode({
     return node;
   }
   return node;
+}
+
+function UnifiedStepCard({ step, index }: { step: OnboardingStep; index: number }) {
+  return (
+    <article className="value-card rounded-xl p-5 min-h-[168px] flex flex-col pt-14 relative">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[54px] h-[54px] rounded-2xl bg-forest-mid/20 border border-forest-glow/40 flex items-center justify-center text-forest-glow shadow-[0_0_24px_color-mix(in_srgb,var(--forest-glow)_20%,transparent)]">
+        {ICONS[step.icon]}
+      </div>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <h3 className="font-semibold text-foreground text-sm">{step.title}</h3>
+        <span className="text-[10px] uppercase tracking-wider text-forest-glow shrink-0">
+          {step.timing}
+        </span>
+      </div>
+      <span className="text-[10px] uppercase tracking-[0.15em] text-silver-dim mb-2">
+        Step {String(index + 1).padStart(2, "0")}
+      </span>
+      <p className="text-sm text-silver-muted leading-relaxed flex-1">{step.description}</p>
+    </article>
+  );
 }
 
 function StepCard({

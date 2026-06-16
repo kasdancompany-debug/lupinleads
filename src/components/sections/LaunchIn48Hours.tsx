@@ -15,7 +15,7 @@ export function LaunchIn48Hours() {
 
   return (
     <SectionShell id="launch-48-hours" variant="forest" className="!overflow-visible">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden w-full max-w-6xl">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden w-full max-w-6xl z-0">
         {!reduce && (
           <motion.span
             className="block text-center font-display text-[clamp(6rem,18vw,14rem)] font-bold leading-none text-forest-mid/[0.07] tracking-tighter"
@@ -30,7 +30,7 @@ export function LaunchIn48Hours() {
         )}
       </div>
 
-      <div className="relative max-w-6xl mx-auto section-body">
+      <div className="relative max-w-6xl mx-auto section-body z-10">
         <FadeIn>
           <SectionIntro
             align="center"

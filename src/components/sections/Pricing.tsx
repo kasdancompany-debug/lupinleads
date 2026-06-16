@@ -83,8 +83,7 @@ export function Pricing() {
               <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-forest-glow/60 to-transparent" />
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
                 <span className="bg-forest-mid text-foreground text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 rounded-sm whitespace-nowrap shadow-lg">
-                  {FOUNDING_PARTNER.slotsRemaining} of {FOUNDING_PARTNER.slotsTotal} spots · Founding
-                  Partner
+                  {FOUNDING_PARTNER.slotsLabel}
                 </span>
               </div>
 
@@ -138,7 +137,7 @@ export function Pricing() {
                   className="w-full sm:w-auto min-w-[240px]"
                   onClick={scrollToBookSection}
                 >
-                  {CTAS.territory}
+                  {CTAS.founding}
                 </Button>
 
                 <ul className="space-y-2 mt-6 pt-6 border-t border-silver/10">
@@ -222,7 +221,7 @@ export function Pricing() {
                         <span className="text-sm text-silver-dim font-sans">/mo</span>
                       </span>
                       <Button variant="ghost" size="sm" onClick={scrollToBookSection}>
-                        {CTAS.fit}
+                        {CTAS.short}
                       </Button>
                     </div>
                   </div>
@@ -243,9 +242,9 @@ export function Pricing() {
                 href="#book-call"
                 className="text-forest-glow hover:text-forest-light transition-colors"
               >
-                {CTAS.fit}
+                {CTAS.short}
               </a>{" "}
-              — we&apos;ll recommend ad spend and confirm the fit before you commit.
+              — we&apos;ll walk through pricing and ad spend before you commit.
             </p>
           </div>
         </FadeIn>

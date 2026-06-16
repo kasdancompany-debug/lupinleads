@@ -75,7 +75,7 @@ export function PlatformShowcase() {
             </p>
             <div className="section-cta-row section-cta-row--center">
               <Button size="lg" emphasis onClick={scrollToBook}>
-                {CTAS.fit}
+                {CTAS.primary}
               </Button>
             </div>
           </div>

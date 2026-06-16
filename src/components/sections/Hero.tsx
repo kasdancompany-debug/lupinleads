@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { WolfCrest } from "@/components/ui/WolfCrest";
 import { FloatingMockup } from "@/components/motion/FloatingMockup";
 import { HeroProductStack } from "@/components/marketing/mockups/HeroProductStack";
+import { LeadDashboardMockup } from "@/components/marketing/mockups/LeadDashboardMockup";
 import { FOUNDING_PARTNER, SITE, CTAS, TRUST_POINTS } from "@/lib/constants";
 import { scrollToBook } from "@/lib/marketing";
 import {
@@ -37,7 +38,7 @@ export function Hero() {
       <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-28 pb-14 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr] gap-12 lg:gap-10 xl:gap-14 items-center">
           <motion.div
-            className="max-w-[42rem] order-1"
+            className="max-w-[42rem] order-1 relative z-20"
             initial={reduce ? false : "hidden"}
             animate={mount}
             variants={slideLeft}
@@ -94,6 +95,16 @@ export function Hero() {
             </motion.div>
 
             <motion.p
+              className="text-silver-dim text-xs sm:text-sm leading-relaxed max-w-lg mb-5 sm:mb-6"
+              initial={reduce ? false : "hidden"}
+              animate={mount}
+              variants={fadeIn}
+              transition={{ ...defaultTransition, delay: 0.19 }}
+            >
+              {SITE.typicalAllIn}
+            </motion.p>
+
+            <motion.p
               className="text-silver-muted text-sm sm:text-[15px] leading-relaxed max-w-lg mb-8 sm:mb-10"
               initial={reduce ? false : "hidden"}
               animate={mount}
@@ -104,30 +115,20 @@ export function Hero() {
             </motion.p>
 
             <motion.div
-              className="hero-cta-rail rounded-xl p-2 sm:p-2.5 mb-7 sm:mb-8 max-w-md lg:max-w-none"
+              className="hero-cta-rail rounded-xl p-2 sm:p-2.5 mb-7 sm:mb-8 max-w-md"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
               transition={{ ...defaultTransition, delay: 0.24 }}
             >
-              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-                <Button
-                  size="lg"
-                  emphasis
-                  onClick={scrollToBook}
-                  className="w-full sm:flex-1 lg:flex-none text-base sm:text-lg min-h-[52px] px-8 sm:px-10 font-semibold"
-                >
-                  {CTAS.primary}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={scrollToBook}
-                  className="w-full sm:w-auto min-h-[52px]"
-                >
-                  {CTAS.fit}
-                </Button>
-              </div>
+              <Button
+                size="lg"
+                emphasis
+                onClick={scrollToBook}
+                className="w-full text-base sm:text-lg min-h-[52px] px-8 sm:px-10 font-semibold"
+              >
+                {CTAS.primary}
+              </Button>
             </motion.div>
 
             <motion.div
@@ -155,13 +156,36 @@ export function Hero() {
           </motion.div>
 
           <motion.div
-            className="relative order-2 hidden lg:flex items-center justify-center min-h-[520px] xl:min-h-[560px]"
+            className="relative order-2 lg:hidden mt-4 max-w-sm mx-auto w-full z-10"
+            initial={reduce ? false : "hidden"}
+            animate={mount}
+            variants={fadeIn}
+            transition={{ ...defaultTransition, delay: 0.22 }}
+          >
+            <LeadDashboardMockup />
+            <p className="text-center text-[10px] text-silver-dim mt-3 uppercase tracking-wider">
+              Product preview · sample data
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="relative order-2 hidden lg:flex xl:hidden items-center justify-center w-full z-10"
+            initial={reduce ? false : "hidden"}
+            animate={mount}
+            variants={fadeIn}
+            transition={{ ...defaultTransition, delay: 0.22 }}
+          >
+            <LeadDashboardMockup />
+          </motion.div>
+
+          <motion.div
+            className="relative order-2 hidden xl:flex items-center justify-center min-h-[520px] z-10"
             initial={reduce ? false : "hidden"}
             animate={mount}
             variants={slideRight}
             transition={{ ...defaultTransition, delay: 0.2 }}
           >
-            <div className="hero-visual-stage w-full max-w-[540px] xl:max-w-[580px] mx-auto">
+            <div className="hero-visual-stage w-full max-w-[480px] mx-auto overflow-hidden">
               <div className="hero-visual-ring-outer" aria-hidden="true" />
               <div className="hero-visual-ring" aria-hidden="true" />
               <WolfCrest

@@ -61,11 +61,11 @@ export function ResultsSection() {
       <FadeIn delay={0.14}>
         <div className="mt-10 lg:mt-14 pt-8 border-t border-silver/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <p className="text-sm text-silver-dim max-w-xl leading-relaxed">
-            {FOUNDING_PARTNER.slotsRemaining} of {FOUNDING_PARTNER.slotsTotal} founding partner
-            slots open. Be the next published result — with your numbers and your approval.
+            {FOUNDING_PARTNER.slotsLabel}. Be the first published result — with your numbers and
+            your approval.
           </p>
           <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 w-full sm:w-auto">
-            {CTAS.territory}
+            {CTAS.founding}
           </Button>
         </div>
       </FadeIn>
@@ -154,7 +154,7 @@ function CaseStudyCard({
           onClick={scrollToBook}
           className="mt-6 text-sm font-medium text-forest-glow hover:text-forest-light transition-colors"
         >
-          {CTAS.territory} →
+          {CTAS.founding} →
         </button>
       )}
     </article>

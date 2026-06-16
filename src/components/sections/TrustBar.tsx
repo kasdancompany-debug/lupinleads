@@ -16,7 +16,7 @@ const TRADES = [
 const TRUST_BADGES = [
   "Exclusive leads — never shared",
   "Canadian contractors only",
-  "One trade per market",
+  "Month-to-month — no lock-in",
   "30-day satisfaction guarantee",
 ];
 

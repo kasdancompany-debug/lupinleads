@@ -9,8 +9,6 @@ import {
   useScroll,
 } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { FloatingProductCard } from "@/components/marketing/mockups/FloatingProductCard";
-import { LeadDashboardMockup } from "@/components/marketing/mockups/LeadDashboardMockup";
 import { Button } from "@/components/ui/Button";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import {
@@ -123,11 +121,6 @@ export function ClickToClosedJob() {
       <div className="relative py-16 md:py-24 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 mesh-gradient pointer-events-none opacity-30" />
         <div className="absolute inset-0 grain-overlay pointer-events-none opacity-25" />
-        <div className="hidden xl:block absolute left-6 top-1/2 -translate-y-1/2 w-[270px] pointer-events-none z-10">
-          <FloatingProductCard>
-            <LeadDashboardMockup compact />
-          </FloatingProductCard>
-        </div>
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <FadeIn>
             <SectionIntro

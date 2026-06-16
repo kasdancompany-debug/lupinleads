@@ -69,8 +69,7 @@ export function StickyCta() {
                 From {formatPrice(FOUNDING_PARTNER.introPrice)} · full growth system
               </p>
               <p className="text-[11px] text-silver-dim truncate">
-                {FOUNDING_PARTNER.slotsRemaining} founding spots · then{" "}
-                {formatPrice(FOUNDING_PARTNER.regularPrice)}/mo
+                {FOUNDING_PARTNER.slotsLabel}
               </p>
             </div>
           </button>

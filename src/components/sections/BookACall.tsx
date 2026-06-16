@@ -1,14 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { WolfCrest } from "@/components/ui/WolfCrest";
 import { Button } from "@/components/ui/Button";
 import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
 import { SlideIn } from "@/components/motion/SlideIn";
 import { StepFlow } from "@/components/motion/StepFlow";
 import { RiseOnScroll } from "@/components/motion/RiseOnScroll";
-import { FloatingProductCard } from "@/components/marketing/mockups/FloatingProductCard";
-import { NewLeadNotificationMockup } from "@/components/marketing/mockups/NewLeadNotificationMockup";
 import { getCalendlyUrl } from "@/lib/calendly";
 import { CTAS } from "@/lib/constants";
 import { SectionIntro } from "@/components/ui/SectionIntro";
@@ -107,15 +104,6 @@ export function BookACall() {
       <div className="absolute inset-0 mesh-gradient pointer-events-none opacity-50" />
       <div className="absolute top-0 left-0 right-0 section-divider" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-forest-mid/15 rounded-full blur-[160px] pointer-events-none animate-pulse-glow" />
-      <WolfCrest
-        size={280}
-        className="absolute -left-20 bottom-12 text-forest-glow/15 pointer-events-none hidden xl:block animate-drift-slow"
-      />
-      <div className="hidden lg:block absolute left-[48%] top-32 w-[250px] pointer-events-none z-10 xl:left-auto xl:right-[52%] xl:top-24">
-        <FloatingProductCard float>
-          <NewLeadNotificationMockup />
-        </FloatingProductCard>
-      </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-start">

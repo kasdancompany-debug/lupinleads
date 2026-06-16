@@ -1,9 +1,8 @@
 export const CTAS = {
   primary: "Book My Strategy Call",
   short: "Book a Call",
-  fit: "See If We're a Fit",
+  founding: "Apply for Founding Partner",
   pricing: "See Pricing",
-  territory: "Claim Your Territory",
   estimates: "Get More Estimates",
   howItWorks: "See How It Works",
   talk: "Talk to Us",
@@ -23,6 +22,10 @@ export const SITE = {
   cta: CTAS.primary,
   ctaShort: CTAS.short,
   email: "hello@lupinleads.com",
+  typicalAllIn:
+    "Typical all-in: $2,300–$5,300/mo (Lupin fee + $2K–5K Meta ad spend on your account).",
+  guaranteeShort:
+    "Not satisfied in the first 30 days? Full refund on your Lupin management fee.",
 } as const;
 
 export const NAV_LINKS = [
@@ -55,9 +58,10 @@ export const TRUST_GUARANTEES = [
     description: "A named point of contact — not a ticket queue or rotating account manager.",
   },
   {
-    id: "territory",
-    title: "Territory exclusivity",
-    description: "One contractor per trade per market. Your leads are never sold to competitors.",
+    id: "your-leads",
+    title: "Your leads, your pipeline",
+    description:
+      "Leads from your ads and forms stay yours — never resold or shared with other contractors.",
   },
   {
     id: "launch",
@@ -147,6 +151,7 @@ export const FOUNDING_PARTNER = {
   regularPrice: 499,
   slotsTotal: 5,
   slotsRemaining: 5,
+  slotsLabel: "Limited to 5 founding partners across Canada",
   currency: "CAD" as const,
   description:
     "Try the full growth system at a lower entry point. Five contractor partners across Canada lock in founding rates and help shape what we build next.",
@@ -160,7 +165,7 @@ export const FOUNDING_PARTNER = {
     "30-day satisfaction guarantee",
   ],
   terms: [
-    "One contractor per trade per market",
+    "Leads captured on your branded forms — never resold",
     "Ad spend paid directly to Meta on your account ($2K–5K/mo typical)",
     "Limited to 5 founding partners total",
   ],
@@ -406,7 +411,7 @@ export const BUILDER_CREDIBILITY = {
     },
     {
       title: "Local markets",
-      body: "One contractor per trade per area. Realistic budgets. An honest conversation before you commit to anything.",
+      body: "Realistic ad budgets for your trade and service area. An honest conversation before you commit to anything.",
     },
   ],
   pullQuote:
@@ -420,6 +425,11 @@ export const BUILDER_CREDIBILITY = {
 
 export const FAQ_ITEMS = [
   {
+    question: "What does the 30-day satisfaction guarantee cover?",
+    answer:
+      "If you're not satisfied with Lupin's management in the first 30 days, we refund your Lupin management fee in full. Ad spend paid to Meta stays on your account — you keep ownership and control throughout.",
+  },
+  {
     question: "Is Lupin just a Facebook ads agency?",
     answer:
       "No. Lupin is a complete contractor growth system. We manage Meta Ads and custom creative, capture leads on branded forms, track them in CRM, power AI follow-up, and deliver monthly reporting. Ads are one piece — the system covers click to closed job.",
@@ -432,7 +442,7 @@ export const FAQ_ITEMS = [
   {
     question: "What's included in the Founding Partner program?",
     answer:
-      "The full growth system at $299 CAD for month one, then $499/mo locked in. Meta Ads management, custom creative, lead forms, CRM, AI follow-up, and monthly reporting. One contractor per trade per market. Five slots total — book a strategy call to apply.",
+      "The full growth system at $299 CAD for month one, then $499/mo locked in. Meta Ads management, custom creative, lead forms, CRM, AI follow-up, and monthly reporting. Five founding partner slots total — book a strategy call to apply.",
   },
   {
     question: "What types of contractors do you work with?",
