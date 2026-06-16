@@ -58,7 +58,7 @@ export function Hero() {
             </motion.div>
 
             <motion.h1
-              className="font-bold tracking-[-0.04em] leading-[0.95] mb-6 sm:mb-8 text-[clamp(2.875rem,6.5vw,4.5rem)] sm:text-[clamp(3.25rem,7vw,5rem)] lg:text-[clamp(4.5rem,4.8vw,5.75rem)] xl:text-[6rem]"
+              className="font-bold tracking-[-0.03em] leading-[1.05] sm:leading-[1.08] mb-6 sm:mb-8 text-[clamp(2.875rem,6.5vw,4.5rem)] sm:text-[clamp(3.25rem,7vw,5rem)] lg:text-[clamp(4.5rem,4.8vw,5.75rem)] xl:text-[6rem] overflow-visible"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
@@ -66,7 +66,9 @@ export function Hero() {
             >
               <span className="block text-foreground">More estimates.</span>
               <span className="block text-foreground">More jobs.</span>
-              <span className="block text-gradient-hero mt-1 sm:mt-2">Less guesswork.</span>
+              <span className="block mt-1 sm:mt-2 overflow-visible pb-1">
+                <span className="text-gradient-hero">Less guesswork.</span>
+              </span>
             </motion.h1>
 
             <motion.p

@@ -721,6 +721,10 @@ body {
 }
 
 .text-gradient-hero {
+  display: inline-block;
+  line-height: 1.12;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.06em;
   background: linear-gradient(
     135deg,
     var(--foreground) 0%,
@@ -730,6 +734,8 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .value-card {
