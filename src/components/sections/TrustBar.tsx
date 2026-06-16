@@ -1,35 +1,59 @@
-import { WolfDivider } from "@/components/ui/WolfDivider";
+"use client";
+
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+
+const TRADES = [
+  "Roofing",
+  "Remodeling",
+  "HVAC",
+  "Windows & Doors",
+  "Landscaping",
+  "Electrical",
+  "Plumbing",
+  "Painting",
+];
+
+const TRUST_BADGES = [
+  "Exclusive leads — never shared",
+  "Canadian contractors only",
+  "One trade per market",
+  "30-day satisfaction guarantee",
+];
 
 export function TrustBar() {
-  const trades = [
-    "Roofing",
-    "Remodeling",
-    "HVAC",
-    "Landscaping",
-    "Electrical",
-    "Plumbing",
-    "Painting",
-    "Fencing",
-  ];
-
   return (
-    <section className="py-8 border-y border-silver/8 bg-black-elevated overflow-hidden relative">
-      <div className="absolute inset-0 wolf-pattern-bg opacity-40 pointer-events-none" />
+    <section className="section-contrast py-10 relative overflow-hidden">
+      <div className="absolute inset-0 wolf-pattern-bg opacity-20 pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <WolfDivider variant="tracks" className="mb-6 max-w-md mx-auto" />
-        <p className="text-center text-[11px] uppercase tracking-[0.2em] text-silver-dim mb-5">
-          Built for contractors in every trade
-        </p>
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-3">
-          {trades.map((trade) => (
-            <span
-              key={trade}
-              className="text-sm text-silver-muted/70 hover:text-silver-muted transition-colors"
-            >
-              {trade}
-            </span>
-          ))}
-        </div>
+        <ScrollReveal>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {TRUST_BADGES.map((badge) => (
+              <span
+                key={badge}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] text-silver-muted border border-silver/15 bg-black-surface/80"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-forest-glow" />
+                {badge}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal delay={100}>
+          <p className="text-center text-[10px] uppercase tracking-[0.2em] text-silver-dim mb-5">
+            Built for every home-service trade
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+            {TRADES.map((trade) => (
+              <span
+                key={trade}
+                className="text-sm text-silver-muted/80 hover:text-forest-glow transition-colors"
+              >
+                {trade}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

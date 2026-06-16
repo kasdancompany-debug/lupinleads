@@ -16,19 +16,21 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: `${SITE.name} — Contractor Lead Generation | Meta Ads & AI Follow-Up`,
-  description: SITE.subheadline,
+  title: `${SITE.name} — Contractor Growth System | Meta Ads, CRM & Reporting`,
+  description: SITE.description,
   keywords: [
+    "contractor growth system",
     "contractor leads",
-    "home service marketing",
     "Meta ads for contractors",
-    "lead generation",
+    "contractor CRM",
     "AI follow up",
+    "lead capture forms",
+    "contractor reporting",
     "LUPIN LEADS",
   ],
   openGraph: {
     title: `${SITE.headline} | ${SITE.name}`,
-    description: SITE.subheadline,
+    description: SITE.description,
     type: "website",
     url: "https://lupinleads.com",
   },
@@ -43,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${cormorant.variable} ${dmSans.variable} antialiased bg-black text-foreground`}
+        className={`${cormorant.variable} ${dmSans.variable} antialiased bg-forest-black text-foreground`}
       >
         {children}
       </body>

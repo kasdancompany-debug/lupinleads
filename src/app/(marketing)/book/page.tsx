@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
-import { SITE } from "@/lib/constants";
+import { SITE, CTAS } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: `Book A Strategy Call — ${SITE.name}`,
+  title: `${CTAS.primary} — ${SITE.name}`,
   description: "Pick a time for your free strategy call with LUPIN LEADS.",
 };
 

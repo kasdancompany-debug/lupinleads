@@ -1,12 +1,17 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WolfCrest } from "@/components/ui/WolfCrest";
-import { WolfDivider } from "@/components/ui/WolfDivider";
 import { Button } from "@/components/ui/Button";
 import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
+import { SlideIn } from "@/components/motion/SlideIn";
+import { StepFlow } from "@/components/motion/StepFlow";
+import { RiseOnScroll } from "@/components/motion/RiseOnScroll";
+import { FloatingProductCard } from "@/components/marketing/mockups/FloatingProductCard";
+import { NewLeadNotificationMockup } from "@/components/marketing/mockups/NewLeadNotificationMockup";
 import { getCalendlyUrl } from "@/lib/calendly";
+import { CTAS } from "@/lib/constants";
+import { SectionIntro } from "@/components/ui/SectionIntro";
 
 type FormState = {
   name: string;
@@ -23,6 +28,24 @@ const initialForm: FormState = {
   phone: "",
   message: "",
 };
+
+const STEPS = [
+  {
+    title: "Review your market",
+    body: "We look at your trade, service area, competition, and current lead sources — what’s working and what isn’t.",
+    tag: "15 min",
+  },
+  {
+    title: "Map the full system",
+    body: "We walk through Meta Ads, creative, capture, CRM, follow-up, and reporting — and what a realistic ad budget looks like on your account.",
+    tag: "No pitch deck",
+  },
+  {
+    title: "Launch if it’s a fit",
+    body: "If we’re aligned, we set up your Meta account access, forms, CRM, and follow-up — typically live within 48 hours.",
+    tag: "Go live",
+  },
+];
 
 export function BookACall() {
   const calendlyUrl = getCalendlyUrl();
@@ -76,62 +99,41 @@ export function BookACall() {
   }
 
   const inputClass =
-    "w-full bg-black-surface border border-silver/15 rounded-sm px-4 py-3 text-foreground placeholder:text-silver-dim text-sm focus:outline-none focus:border-forest-mid/50 focus:ring-1 focus:ring-forest-mid/30 transition-colors";
+    "w-full bg-black-surface border border-silver/15 rounded-lg px-4 py-3 text-foreground placeholder:text-silver-dim text-sm focus:outline-none focus:border-forest-mid/50 focus:ring-1 focus:ring-forest-mid/30 transition-colors";
 
   return (
-    <section id="book-call" className="py-28 bg-black-elevated relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 px-6 lg:px-8">
-        <WolfDivider variant="crest" className="max-w-lg mx-auto" />
-      </div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-forest-mid/10 rounded-full blur-[150px] pointer-events-none" />
+    <section id="book-call" className="section-emerald py-16 md:py-24 lg:py-28 relative overflow-hidden">
+      <div className="absolute inset-0 section-glow-corner pointer-events-none opacity-70" />
+      <div className="absolute inset-0 mesh-gradient pointer-events-none opacity-50" />
+      <div className="absolute top-0 left-0 right-0 section-divider" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-forest-mid/15 rounded-full blur-[160px] pointer-events-none animate-pulse-glow" />
       <WolfCrest
-        size={300}
-        className="absolute -left-16 bottom-8 text-forest-glow/20 pointer-events-none hidden xl:block"
+        size={280}
+        className="absolute -left-20 bottom-12 text-forest-glow/15 pointer-events-none hidden xl:block animate-drift-slow"
       />
+      <div className="hidden lg:block absolute left-[48%] top-32 w-[250px] pointer-events-none z-10 xl:left-auto xl:right-[52%] xl:top-24">
+        <FloatingProductCard float>
+          <NewLeadNotificationMockup />
+        </FloatingProductCard>
+      </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          <div>
-            <SectionHeading
-              eyebrow="Free Strategy Call"
-              title="Book A Strategy Call"
-              description="Tell us about your trade, market, and goals. We'll show you exactly how many leads and estimates you can expect — no pitch deck, no pressure."
-              align="left"
-              ornament={false}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-start">
+          <SlideIn direction="left">
+            <SectionIntro
+              eyebrow="Free strategy call"
+              title="Let's map your"
+              highlight="growth system"
+              description="Tell us about your trade and market. We'll show you how the full system fits — ads, creative, capture, CRM, follow-up, and reporting. No pressure, no jargon."
+              className="!mb-8"
             />
 
-            <div className="space-y-6 text-sm text-silver-muted">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-sm border border-forest-mid/30 flex items-center justify-center text-forest-glow shrink-0">
-                  01
-                </div>
-                <div>
-                  <p className="text-foreground font-medium mb-1">Market Analysis</p>
-                  <p>We review your service area, competition, and current lead sources.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-sm border border-forest-mid/30 flex items-center justify-center text-forest-glow shrink-0">
-                  02
-                </div>
-                <div>
-                  <p className="text-foreground font-medium mb-1">Custom Plan</p>
-                  <p>Projected leads, cost per lead, and revenue based on your trade.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-sm border border-forest-mid/30 flex items-center justify-center text-forest-glow shrink-0">
-                  03
-                </div>
-                <div>
-                  <p className="text-foreground font-medium mb-1">Launch in 48 Hours</p>
-                  <p>If it&apos;s a fit, we launch Meta Ads and your AI follow-up system fast.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            <StepFlow steps={STEPS} slideFrom="left" />
+          </SlideIn>
 
-          <div className="glass-card rounded-sm p-8 glow-green">
+          <SlideIn direction="right" delay={0.15}>
+          <RiseOnScroll offset={20}>
+          <div className="value-card rounded-2xl p-8 glow-green border-forest-mid/30">
             {status === "success" ? (
               <div className="py-4">
                 <div className="text-center mb-6">
@@ -185,10 +187,11 @@ export function BookACall() {
                   <Button
                     type="button"
                     size="lg"
+                    emphasis
                     className="w-full"
                     onClick={() => window.location.assign("/book")}
                   >
-                    Pick a time on the calendar
+                    {CTAS.calendar}
                   </Button>
                 </div>
                 <p className="text-center text-[11px] uppercase tracking-[0.15em] text-silver-dim">
@@ -216,6 +219,8 @@ export function BookACall() {
               />
             )}
           </div>
+          </RiseOnScroll>
+          </SlideIn>
         </div>
       </div>
     </section>
@@ -322,8 +327,8 @@ function BookCallForm({
 
       {status === "error" && <p className="text-red-400 text-sm">{errorMessage}</p>}
 
-      <Button type="submit" size="lg" className="w-full" loading={loading}>
-        Book A Strategy Call
+      <Button type="submit" size="lg" emphasis className="w-full" loading={loading}>
+        {CTAS.primary}
       </Button>
 
       <p className="text-silver-dim text-xs text-center">No spam. No sharing your data. Ever.</p>

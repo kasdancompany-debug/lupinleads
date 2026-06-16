@@ -1,87 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { WolfCrest } from "@/components/ui/WolfCrest";
 import { Button } from "@/components/ui/Button";
-import { NAV_LINKS, SITE } from "@/lib/constants";
+import { NAV_LINKS, SITE, CTAS } from "@/lib/constants";
+import { scrollToBook } from "@/lib/marketing";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 24);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      <nav className="border-b border-silver/10 bg-black/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18 py-4">
-            <Link href="/" className="flex items-center gap-3 group">
+      <nav
+        className={`transition-all duration-300 ${
+          scrolled
+            ? "border-b border-forest-mid/25 bg-forest-black/95 backdrop-blur-xl shadow-lg shadow-forest-black/30"
+            : "border-b border-transparent bg-forest-black/50 backdrop-blur-sm"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[4.5rem]">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group min-w-0">
               <WolfCrest
-                size={40}
-                className="text-forest-glow transition-colors group-hover:text-forest-light drop-shadow-[0_0_8px_rgba(82,183,136,0.4)]"
+                size={32}
+                className="sm:w-9 sm:h-9 text-forest-glow transition-colors group-hover:text-forest-light shrink-0"
               />
-              <span className="font-display text-xl tracking-[0.15em] text-foreground">
+              <span className="font-display text-base sm:text-lg lg:text-xl tracking-[0.1em] text-foreground truncate">
                 {SITE.name}
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-silver-muted hover:text-foreground transition-colors tracking-wide"
+                  className="text-sm text-silver-muted hover:text-foreground transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
-              <Button
-                size="sm"
-                onClick={() => {
-                  document.getElementById("book-call")?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                {SITE.cta}
+              <Button size="sm" emphasis onClick={scrollToBook}>
+                {CTAS.short}
               </Button>
             </div>
 
-            <button
-              type="button"
-              className="md:hidden p-2 text-silver-muted hover:text-foreground"
-              onClick={() => setOpen(!open)}
-              aria-label="Toggle menu"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                {open ? (
-                  <path d="M6 6L18 18M6 18L18 6" />
-                ) : (
-                  <path d="M4 8H20M4 16H20" />
-                )}
-              </svg>
-            </button>
+            <div className="flex md:hidden items-center gap-2">
+              <Button size="sm" emphasis onClick={scrollToBook} className="text-xs px-3">
+                {CTAS.short}
+              </Button>
+              <button
+                type="button"
+                className="p-2 text-silver-muted hover:text-foreground"
+                onClick={() => setOpen(!open)}
+                aria-label="Toggle menu"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  {open ? <path d="M6 6L18 18M6 18L18 6" /> : <path d="M4 8H20M4 16H20" />}
+                </svg>
+              </button>
+            </div>
           </div>
 
           {open && (
-            <div className="md:hidden pb-6 border-t border-silver/10 pt-4 space-y-4">
+            <div className="md:hidden pb-5 border-t border-silver/10 pt-3 space-y-3">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="block text-silver-muted hover:text-foreground transition-colors"
+                  className="block py-1 text-silver-muted hover:text-foreground transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </a>
               ))}
-              <Button
-                size="sm"
-                className="w-full"
-                onClick={() => {
-                  setOpen(false);
-                  document.getElementById("book-call")?.scrollIntoView({ behavior: "smooth" });
-                }}
+              <a
+                href="#book-call"
+                className="block py-1 text-silver-muted hover:text-foreground transition-colors"
+                onClick={() => setOpen(false)}
               >
-                {SITE.cta}
-              </Button>
+                {CTAS.primary}
+              </a>
             </div>
           )}
         </div>

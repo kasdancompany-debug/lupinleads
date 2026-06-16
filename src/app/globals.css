@@ -4,6 +4,10 @@
   --black: #0a0a0a;
   --black-elevated: #111111;
   --black-surface: #161616;
+  --charcoal: #131315;
+  --charcoal-elevated: #1a1a1e;
+  --surface-premium: #1c1c20;
+  --forest-black: #070d0a;
   --forest-deep: #0d2818;
   --forest: #1b4332;
   --forest-mid: #2d6a4f;
@@ -13,7 +17,7 @@
   --silver-muted: #8b8d93;
   --silver-dim: #5a5c62;
   --foreground: #e8e8e8;
-  --background: var(--black);
+  --background: var(--forest-black);
 }
 
 @theme inline {
@@ -22,6 +26,10 @@
   --color-black: var(--black);
   --color-black-elevated: var(--black-elevated);
   --color-black-surface: var(--black-surface);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-elevated: var(--charcoal-elevated);
+  --color-surface-premium: var(--surface-premium);
+  --color-forest-black: var(--forest-black);
   --color-forest-deep: var(--forest-deep);
   --color-forest: var(--forest);
   --color-forest-mid: var(--forest-mid);
@@ -42,10 +50,259 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography hierarchy */
+.section-eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--forest-glow);
+  margin-bottom: 1rem;
+}
+
+.section-headline {
+  font-size: clamp(1.875rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: var(--foreground);
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 1280px) {
+  .section-headline {
+    font-size: 3.25rem;
+  }
+}
+
+.section-headline-display {
+  font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--foreground);
+  margin-bottom: 1.5rem;
+}
+
+.section-lead {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--silver-muted);
+  max-width: 42rem;
+}
+
+@media (min-width: 640px) {
+  .section-lead {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+}
+
+.section-header {
+  margin-bottom: 3rem;
+  max-width: 48rem;
+}
+
+@media (min-width: 1024px) {
+  .section-header {
+    margin-bottom: 3.5rem;
+  }
+}
+
+.section-header--center {
+  text-align: center;
+}
+
+.section-header--center .section-lead {
+  max-width: 38rem;
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .section-body {
+    gap: 3.5rem;
+  }
+}
+
+.section-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 2rem;
+}
+
+.section-cta-row--center {
+  justify-content: center;
+}
+
+.text-eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.text-lead {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 640px) {
+  .text-lead {
+    font-size: 1.125rem;
+  }
 }
 
 .font-display {
   font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
+}
+
+.editorial-prose p {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--silver-muted);
+}
+
+.editorial-prose p + p {
+  margin-top: 1.25rem;
+}
+
+.editorial-pullquote {
+  font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--foreground);
+  border-left: 2px solid color-mix(in srgb, var(--forest-glow) 55%, transparent);
+  padding-left: 1.25rem;
+}
+
+.editorial-aside {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--charcoal-elevated) 80%, transparent),
+    color-mix(in srgb, var(--charcoal) 60%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 10%, transparent);
+}
+
+.editorial-pillar {
+  border-top: 1px solid color-mix(in srgb, var(--silver) 10%, transparent);
+  padding-top: 1.25rem;
+}
+
+.editorial-pillar:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.case-study-card {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--charcoal-elevated) 92%, transparent),
+    color-mix(in srgb, var(--forest-deep) 8%, var(--charcoal))
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.45s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.case-study-card:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 30%, transparent);
+  box-shadow: 0 24px 64px color-mix(in srgb, var(--forest-deep) 25%, transparent);
+}
+
+.case-study-card--featured:hover {
+  transform: translateY(-4px);
+}
+
+.case-study-metric-value {
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-study-metric-value--hero {
+  font-size: clamp(3.25rem, 9vw, 6.5rem);
+}
+
+.case-study-metric-value--highlight {
+  color: var(--forest-glow);
+}
+
+.case-study-metric-value--muted {
+  color: color-mix(in srgb, var(--silver-dim) 70%, var(--foreground));
+}
+
+.case-study-metric-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  margin-top: 0.75rem;
+  line-height: 1.35;
+}
+
+.trust-badge {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--charcoal-elevated) 88%, transparent),
+    color-mix(in srgb, var(--charcoal) 75%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 11%, transparent);
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.trust-badge:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 28%, transparent);
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--forest-deep) 18%, transparent);
+  transform: translateY(-2px);
+}
+
+.trust-badge-icon {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--forest-mid) 18%, transparent),
+    color-mix(in srgb, var(--forest-deep) 12%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--forest-mid) 22%, transparent);
+}
+
+@media (min-width: 640px) {
+  .case-study-metric-label {
+    font-size: 0.75rem;
+  }
+}
+
+.case-study-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .case-study-metrics-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
 }
 
 ::selection {
@@ -70,8 +327,118 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in srgb, var(--silver) 20%, transparent) 50%,
+    color-mix(in srgb, var(--silver) 14%, transparent) 35%,
+    color-mix(in srgb, var(--forest-mid) 18%, var(--silver) 12%) 50%,
+    color-mix(in srgb, var(--silver) 14%, transparent) 65%,
     transparent
+  );
+}
+
+/* ── Section backgrounds (5 premium dark variations) ── */
+
+/* 1. Deep forest black — rooted, cinematic base */
+.section-forest {
+  background: linear-gradient(
+    168deg,
+    var(--forest-black) 0%,
+    color-mix(in srgb, var(--forest-deep) 48%, var(--forest-black)) 42%,
+    color-mix(in srgb, var(--forest-deep) 28%, #080a09) 100%
+  );
+}
+
+/* 2. Rich charcoal — neutral warmth, easy scan separation */
+.section-charcoal {
+  background: linear-gradient(
+    180deg,
+    #111113 0%,
+    var(--charcoal) 38%,
+    color-mix(in srgb, var(--charcoal-elevated) 85%, #101012) 100%
+  );
+}
+
+/* 3. Emerald-tinted dark — brand atmosphere without brightness */
+.section-emerald {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--forest-deep) 62%, var(--forest-black)) 0%,
+    color-mix(in srgb, var(--forest) 22%, #0b100e) 48%,
+    color-mix(in srgb, var(--forest-deep) 38%, var(--forest-black)) 100%
+  );
+}
+
+/* 4. Dark gradient + subtle top lighting */
+.section-gradient {
+  background:
+    radial-gradient(ellipse 75% 55% at 50% -8%, color-mix(in srgb, var(--forest-mid) 16%, transparent), transparent 68%),
+    radial-gradient(ellipse 42% 38% at 92% 72%, color-mix(in srgb, var(--forest) 11%, transparent), transparent),
+    radial-gradient(ellipse 38% 32% at 6% 58%, color-mix(in srgb, var(--forest-deep) 22%, transparent), transparent),
+    linear-gradient(178deg, #0a0c0b 0%, color-mix(in srgb, var(--forest-deep) 18%, #0e0e11) 52%, #0a0a0c 100%);
+}
+
+/* 5. Slightly lighter premium surface — cards & closing sections */
+.section-surface {
+  background: linear-gradient(
+    180deg,
+    var(--charcoal-elevated) 0%,
+    var(--surface-premium) 45%,
+    color-mix(in srgb, var(--charcoal) 70%, var(--charcoal-elevated)) 100%
+  );
+  border-top: 1px solid color-mix(in srgb, var(--silver) 7%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--silver) 5%, transparent);
+}
+
+.section-footer {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--forest-deep) 35%, var(--forest-black)) 0%,
+    var(--forest-black) 100%
+  );
+}
+
+/* Ambient lighting overlays (pair with sections) */
+.section-glow-top {
+  background: radial-gradient(
+    ellipse 80% 45% at 50% 0%,
+    color-mix(in srgb, var(--forest-glow) 7%, transparent),
+    transparent 70%
+  );
+}
+
+.section-glow-corner {
+  background: radial-gradient(
+    ellipse 50% 50% at 100% 0%,
+    color-mix(in srgb, var(--forest-mid) 10%, transparent),
+    transparent 65%
+  );
+}
+
+/* Legacy aliases — map to new system */
+.section-elevated {
+  background: linear-gradient(
+    180deg,
+    var(--charcoal-elevated) 0%,
+    var(--surface-premium) 45%,
+    color-mix(in srgb, var(--charcoal) 70%, var(--charcoal-elevated)) 100%
+  );
+  border-top: 1px solid color-mix(in srgb, var(--silver) 7%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--silver) 5%, transparent);
+}
+
+.section-deep {
+  background: linear-gradient(
+    168deg,
+    var(--forest-black) 0%,
+    color-mix(in srgb, var(--forest-deep) 48%, var(--forest-black)) 42%,
+    color-mix(in srgb, var(--forest-deep) 28%, #080a09) 100%
+  );
+}
+
+.section-contrast {
+  background: linear-gradient(
+    180deg,
+    #111113 0%,
+    var(--charcoal) 38%,
+    color-mix(in srgb, var(--charcoal-elevated) 85%, #101012) 100%
   );
 }
 
@@ -79,6 +446,27 @@ body {
   background: color-mix(in srgb, var(--black-surface) 80%, transparent);
   border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
   backdrop-filter: blur(12px);
+}
+
+.mockup-glass {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--black-surface) 88%, transparent),
+    color-mix(in srgb, var(--forest-deep) 14%, var(--black-surface))
+  );
+  border: 1px solid color-mix(in srgb, var(--forest-mid) 22%, var(--silver) 10%);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px color-mix(in srgb, var(--forest-glow) 6%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--silver) 7%, transparent);
+}
+
+.mockup-glow-accent {
+  box-shadow:
+    0 0 32px color-mix(in srgb, var(--forest-mid) 28%, transparent),
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 color-mix(in srgb, var(--forest-glow) 12%, transparent);
 }
 
 .glow-green {
@@ -155,6 +543,319 @@ body {
   animation: drift-slow 12s ease-in-out infinite;
 }
 
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(0.5deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-10px) translateX(4px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 10s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 9s ease-in-out infinite 1s;
+}
+
+@keyframes reveal-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.05);
+  }
+}
+
+.animate-reveal-glow {
+  animation: reveal-glow 6s ease-in-out infinite;
+}
+
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, color-mix(in srgb, var(--forest-mid) 18%, transparent), transparent),
+    radial-gradient(ellipse 50% 40% at 80% 70%, color-mix(in srgb, var(--forest) 12%, transparent), transparent);
+}
+
+.hero-mesh {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% -25%, color-mix(in srgb, var(--forest-mid) 22%, transparent), transparent 55%),
+    radial-gradient(ellipse 65% 55% at 88% 12%, color-mix(in srgb, var(--forest-glow) 12%, transparent), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 8% 70%, color-mix(in srgb, var(--forest-deep) 28%, transparent), transparent),
+    radial-gradient(ellipse 50% 60% at 72% 55%, color-mix(in srgb, var(--forest-mid) 8%, transparent), transparent 70%),
+    linear-gradient(175deg, var(--forest-black) 0%, color-mix(in srgb, var(--forest-deep) 18%, var(--charcoal)) 55%, color-mix(in srgb, var(--forest-deep) 12%, var(--forest-black)) 100%);
+}
+
+.hero-vignette {
+  background: radial-gradient(
+    ellipse 85% 75% at 50% 45%,
+    transparent 35%,
+    color-mix(in srgb, var(--forest-black) 55%, transparent) 100%
+  );
+}
+
+.hero-spotlight-left {
+  background: radial-gradient(
+    ellipse 55% 45% at 18% 35%,
+    color-mix(in srgb, var(--forest-glow) 6%, transparent),
+    transparent 70%
+  );
+}
+
+.hero-spotlight-right {
+  background: radial-gradient(
+    ellipse 70% 65% at 75% 42%,
+    color-mix(in srgb, var(--forest-mid) 14%, transparent),
+    transparent 65%
+  );
+}
+
+.hero-visual-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-visual-stage::before {
+  content: "";
+  position: absolute;
+  inset: 8% 0 12% 5%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 50%,
+    color-mix(in srgb, var(--forest-glow) 18%, transparent),
+    color-mix(in srgb, var(--forest-mid) 8%, transparent) 45%,
+    transparent 72%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-visual-ring {
+  position: absolute;
+  inset: 10% 5% 15% 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--forest-mid) 18%, transparent);
+  box-shadow:
+    inset 0 0 80px color-mix(in srgb, var(--forest-glow) 6%, transparent),
+    0 0 60px color-mix(in srgb, var(--forest-mid) 10%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-visual-ring-outer {
+  position: absolute;
+  inset: 0 -5% 5% -8%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--silver) 6%, transparent);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-cta-rail {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--charcoal-elevated) 70%, transparent),
+    color-mix(in srgb, var(--forest-deep) 12%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--forest-mid) 22%, transparent);
+  box-shadow:
+    0 4px 32px color-mix(in srgb, var(--forest-black) 80%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--silver) 8%, transparent);
+}
+
+.hero-price-pill {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--forest-mid) 22%, transparent),
+    color-mix(in srgb, var(--forest-deep) 35%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--forest-glow) 35%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--forest-mid) 12%, transparent);
+}
+
+.hero-trust-strip {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--charcoal) 40%, transparent) 100%
+  );
+  border-top: 1px solid color-mix(in srgb, var(--silver) 8%, transparent);
+}
+
+.hero-eyebrow-rule {
+  width: 2rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--forest-glow),
+    color-mix(in srgb, var(--forest-mid) 40%, transparent)
+  );
+}
+
+.text-gradient-hero {
+  background: linear-gradient(
+    135deg,
+    var(--foreground) 0%,
+    var(--foreground) 40%,
+    var(--forest-glow) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.value-card {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--charcoal-elevated) 92%, transparent),
+    color-mix(in srgb, var(--forest-deep) 12%, var(--black-surface))
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 14%, transparent);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.value-card:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 45%, transparent);
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--forest-mid) 15%, transparent);
+  transform: translateY(-4px);
+}
+
+.launch-timeline-glow {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--forest-glow) 30%, transparent),
+    var(--forest-glow),
+    color-mix(in srgb, var(--forest-glow) 60%, transparent)
+  );
+  box-shadow: 0 0 16px color-mix(in srgb, var(--forest-glow) 45%, transparent);
+}
+
+.founding-spot-card {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--charcoal-elevated) 90%, transparent),
+    color-mix(in srgb, var(--forest-deep) 10%, var(--charcoal))
+  );
+  border: 1px dashed color-mix(in srgb, var(--silver) 18%, transparent);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.founding-spot-card:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 40%, transparent);
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--forest-mid) 12%, transparent);
+  transform: translateY(-3px);
+}
+
+.founding-spot-card--featured {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--forest-mid) 45%, transparent);
+  box-shadow:
+    0 0 40px color-mix(in srgb, var(--forest-mid) 15%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--forest-glow) 10%, transparent);
+}
+
+.problem-card {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--charcoal-elevated) 88%, transparent),
+    color-mix(in srgb, var(--charcoal) 75%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.problem-card:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 28%, var(--silver) 14%);
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--forest-deep) 35%, transparent);
+  transform: translateY(-2px);
+}
+
+.sticky-cta-bar {
+  background: color-mix(in srgb, var(--forest-black) 92%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--forest-mid) 40%, transparent);
+  box-shadow: 0 -8px 40px color-mix(in srgb, var(--forest-black) 80%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.browser-mockup {
+  border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--charcoal-elevated) 95%, transparent),
+    color-mix(in srgb, var(--charcoal) 90%, transparent)
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--forest-black) 80%, transparent),
+    0 24px 80px color-mix(in srgb, var(--forest-black) 70%, transparent),
+    0 8px 32px color-mix(in srgb, var(--black) 50%, transparent);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s ease;
+}
+
+.browser-mockup:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--forest-mid) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--forest-mid) 15%, transparent),
+    0 32px 100px color-mix(in srgb, var(--forest-deep) 45%, transparent),
+    0 12px 40px color-mix(in srgb, var(--black) 55%, transparent);
+}
+
+.browser-mockup-body {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--black-surface) 95%, transparent),
+    color-mix(in srgb, var(--charcoal) 85%, transparent)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .browser-mockup:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-float-reverse,
+  .animate-float-delayed,
+  .animate-drift-slow,
+  .animate-pulse-glow,
+  .animate-reveal-glow {
+    animation: none;
+  }
+}
+
 @keyframes stroke-reveal {
   from {
     stroke-dashoffset: 200;
@@ -162,6 +863,25 @@ body {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+.pipeline-connector-glow {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--forest-glow) 40%, transparent),
+    var(--forest-glow)
+  );
+  box-shadow: 0 0 12px color-mix(in srgb, var(--forest-glow) 50%, transparent);
+}
+
+.pipeline-connector-glow[style*="scaleY"],
+.pipeline-vertical-glow {
+  background: linear-gradient(
+    180deg,
+    var(--forest-glow),
+    color-mix(in srgb, var(--forest-mid) 60%, transparent)
+  );
+  box-shadow: 0 0 14px color-mix(in srgb, var(--forest-glow) 45%, transparent);
 }
 
 .wolf-stroke-draw path {

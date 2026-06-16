@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { WolfMark } from "@/components/ui/WolfMark";
 import { WolfWatermark } from "@/components/ui/WolfWatermark";
-import { NAV_LINKS, SITE } from "@/lib/constants";
+import { NAV_LINKS, SITE, CTAS } from "@/lib/constants";
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-silver/10 bg-black-elevated relative overflow-hidden">
+    <footer id="site-footer" className="border-t border-forest-mid/15 section-footer relative overflow-hidden">
+      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-20" />
       <WolfWatermark className="absolute right-0 bottom-0 w-[400px] h-[400px] translate-x-1/6 translate-y-1/6 pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -16,14 +17,14 @@ export function Footer() {
               <WolfMark size={32} className="text-forest-glow" />
               <span className="font-display text-2xl text-foreground">{SITE.name}</span>
             </Link>
-            <p className="text-silver-muted max-w-sm leading-relaxed mb-4">
-              {SITE.subheadline}
+            <p className="text-silver-muted max-w-sm leading-relaxed mb-4 text-sm">
+              {SITE.heroOneLiner} {SITE.subheadline}
             </p>
             <a
               href="#book-call"
-              className="inline-flex text-sm font-medium text-forest-glow hover:text-forest-light transition-colors"
+              className="inline-flex text-sm font-semibold text-forest-glow hover:text-forest-light transition-colors"
             >
-              {SITE.cta} →
+              {CTAS.primary} →
             </a>
           </div>
 
