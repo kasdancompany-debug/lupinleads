@@ -5,6 +5,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WolfCrest } from "@/components/ui/WolfCrest";
 import { WolfDivider } from "@/components/ui/WolfDivider";
 import { Button } from "@/components/ui/Button";
+import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
+import { getCalendlyUrl } from "@/lib/calendly";
 
 type FormState = {
   name: string;
@@ -23,7 +25,11 @@ const initialForm: FormState = {
 };
 
 export function BookACall() {
+  const calendlyUrl = getCalendlyUrl();
   const [form, setForm] = useState<FormState>(initialForm);
+  const [bookingPrefill, setBookingPrefill] = useState<{ name: string; email: string } | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -54,6 +60,10 @@ export function BookACall() {
       }
 
       setStatus("success");
+      setBookingPrefill({
+        name: form.name.trim(),
+        email: form.email.trim(),
+      });
       setForm(initialForm);
     } catch (error) {
       setStatus("error");
@@ -123,129 +133,200 @@ export function BookACall() {
 
           <div className="glass-card rounded-sm p-8 glow-green">
             {status === "success" ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 rounded-full border border-forest-glow/30 flex items-center justify-center mx-auto mb-6">
-                  <svg
-                    className="w-8 h-8 text-forest-glow"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M5 12L10 17L20 7" />
-                  </svg>
+              <div className="py-4">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 rounded-full border border-forest-glow/30 flex items-center justify-center mx-auto mb-6">
+                    <svg
+                      className="w-8 h-8 text-forest-glow"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <path d="M5 12L10 17L20 7" />
+                    </svg>
+                  </div>
+                  <h3 className="font-display text-2xl text-foreground mb-3">
+                    {calendlyUrl ? "One more step — pick your time" : "You're on the list"}
+                  </h3>
+                  <p className="text-silver-muted text-sm">
+                    {calendlyUrl
+                      ? "Your details are saved. Choose a slot below for your free strategy call."
+                      : "We'll reach out within 24 hours to schedule your strategy call."}
+                  </p>
                 </div>
-                <h3 className="font-display text-2xl text-foreground mb-3">
-                  You&apos;re on the list
-                </h3>
-                <p className="text-silver-muted">
-                  We&apos;ll reach out within 24 hours to schedule your strategy call.
+
+                {calendlyUrl ? (
+                  <CalendlyBooking
+                    calendlyUrl={calendlyUrl}
+                    prefill={bookingPrefill ?? undefined}
+                    compact
+                  />
+                ) : null}
+
+                <div className="text-center mt-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setStatus("idle");
+                      setBookingPrefill(null);
+                    }}
+                  >
+                    Submit another request
+                  </Button>
+                </div>
+              </div>
+            ) : calendlyUrl ? (
+              <div className="space-y-6">
+                <div className="text-center pb-2 border-b border-silver/10">
+                  <p className="text-[11px] uppercase tracking-[0.15em] text-forest-glow mb-2">
+                    Fastest option
+                  </p>
+                  <Button
+                    type="button"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => window.location.assign("/book")}
+                  >
+                    Pick a time on the calendar
+                  </Button>
+                </div>
+                <p className="text-center text-[11px] uppercase tracking-[0.15em] text-silver-dim">
+                  Or send a message
                 </p>
-                <Button
-                  variant="ghost"
-                  className="mt-6"
-                  onClick={() => setStatus("idle")}
-                >
-                  Submit another request
-                </Button>
+                <BookCallForm
+                  form={form}
+                  loading={loading}
+                  status={status}
+                  errorMessage={errorMessage}
+                  onChange={handleChange}
+                  onSubmit={handleSubmit}
+                  inputClass={inputClass}
+                />
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="name" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="Alex Morgan"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
-                      Email *
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="alex@company.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="company" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
-                      Company
-                    </label>
-                    <input
-                      id="company"
-                      name="company"
-                      type="text"
-                      value={form.company}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="Your company"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
-                      Phone
-                    </label>
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="+1 (555) 000-0000"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
-                    Tell us about your goals
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    value={form.message}
-                    onChange={handleChange}
-                    className={`${inputClass} resize-none`}
-                    placeholder="What are you looking to achieve with lead generation?"
-                  />
-                </div>
-
-                {status === "error" && (
-                  <p className="text-red-400 text-sm">{errorMessage}</p>
-                )}
-
-                <Button type="submit" size="lg" className="w-full" loading={loading}>
-                  Book A Strategy Call
-                </Button>
-
-                <p className="text-silver-dim text-xs text-center">
-                  No spam. No sharing your data. Ever.
-                </p>
-              </form>
+              <BookCallForm
+                form={form}
+                loading={loading}
+                status={status}
+                errorMessage={errorMessage}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+                inputClass={inputClass}
+              />
             )}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function BookCallForm({
+  form,
+  loading,
+  status,
+  errorMessage,
+  onChange,
+  onSubmit,
+  inputClass,
+}: {
+  form: FormState;
+  loading: boolean;
+  status: "idle" | "success" | "error";
+  errorMessage: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onSubmit: (e: FormEvent) => void;
+  inputClass: string;
+}) {
+  return (
+    <form onSubmit={onSubmit} className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="name" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
+            Full Name *
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value={form.name}
+            onChange={onChange}
+            className={inputClass}
+            placeholder="Alex Morgan"
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
+            Email *
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            value={form.email}
+            onChange={onChange}
+            className={inputClass}
+            placeholder="alex@company.com"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="company" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
+            Company
+          </label>
+          <input
+            id="company"
+            name="company"
+            type="text"
+            value={form.company}
+            onChange={onChange}
+            className={inputClass}
+            placeholder="Your company"
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
+            Phone
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={form.phone}
+            onChange={onChange}
+            className={inputClass}
+            placeholder="+1 (555) 000-0000"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="message" className="block text-xs tracking-wider uppercase text-silver-dim mb-2">
+          Tell us about your goals
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          rows={4}
+          value={form.message}
+          onChange={onChange}
+          className={`${inputClass} resize-none`}
+          placeholder="What are you looking to achieve with lead generation?"
+        />
+      </div>
+
+      {status === "error" && <p className="text-red-400 text-sm">{errorMessage}</p>}
+
+      <Button type="submit" size="lg" className="w-full" loading={loading}>
+        Book A Strategy Call
+      </Button>
+
+      <p className="text-silver-dim text-xs text-center">No spam. No sharing your data. Ever.</p>
+    </form>
   );
 }

@@ -30,7 +30,9 @@ export const metadata: Metadata = {
     title: `${SITE.headline} | ${SITE.name}`,
     description: SITE.subheadline,
     type: "website",
+    url: "https://lupinleads.com",
   },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://lupinleads.com"),
 };
 
 export default function RootLayout({

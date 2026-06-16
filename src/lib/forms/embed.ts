@@ -1,5 +1,5 @@
 export function getEmbedUrl(slug: string, campaign?: string): string {
-  const base = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_APP_URL || "https://lupinleads.com";
   const url = new URL(`${base}/embed/${slug}`);
   if (campaign) url.searchParams.set("campaign", campaign);
   return url.toString();
@@ -41,7 +41,7 @@ export function generateDirectLink(slug: string, campaign?: string): string {
 }
 
 export function generateCampaignLink(slug: string, campaign: string, utmSource?: string): string {
-  const base = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_APP_URL || "https://lupinleads.com";
   const url = new URL(`${base}/embed/${slug}`);
   url.searchParams.set("campaign", campaign);
   url.searchParams.set("utm_campaign", campaign);
