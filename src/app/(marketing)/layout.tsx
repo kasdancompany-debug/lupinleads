@@ -10,7 +10,7 @@ export default function MarketingLayout({
   return (
     <>
       <Navbar />
-      <main className="pb-24 md:pb-0">{children}</main>
+      <main className="pb-[7.5rem] sm:pb-32 md:pb-0">{children}</main>
       <Footer />
       <StickyCta />
     </>

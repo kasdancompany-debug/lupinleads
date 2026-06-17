@@ -18,7 +18,7 @@ export function Footer() {
               <span className="font-display text-2xl text-foreground">{SITE.name}</span>
             </Link>
             <p className="text-silver-muted max-w-sm leading-relaxed mb-4 text-sm">
-              {SITE.heroOneLiner} {SITE.subheadline}
+              {SITE.footerTagline}
             </p>
             <a
               href="#book-call"

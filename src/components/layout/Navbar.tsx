@@ -52,13 +52,18 @@ export function Navbar() {
                 </a>
               ))}
               <Button size="sm" emphasis onClick={scrollToBook}>
-                {CTAS.short}
+                {CTAS.primary}
               </Button>
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <Button size="sm" emphasis onClick={scrollToBook} className="text-xs px-3">
-                {CTAS.short}
+              <Button
+                size="sm"
+                emphasis
+                onClick={scrollToBook}
+                className="text-[10px] sm:text-xs px-2.5 sm:px-3 leading-tight"
+              >
+                {CTAS.primary}
               </Button>
               <button
                 type="button"

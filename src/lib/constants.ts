@@ -12,13 +12,22 @@ export const CTAS = {
 export const SITE = {
   name: "LUPIN LEADS",
   tagline: "The contractor growth system",
-  headline: "More Estimates. More Jobs. Less Guesswork.",
+  headline: "Turn ad clicks into booked jobs.",
+  coreLine: {
+    lead: "More leads are nice.",
+    highlight: "Booked jobs are better.",
+  },
+  supportingHeadline: "More leads are nice. Booked jobs are better.",
+  heroSubheadline:
+    "Meta Ads, lead capture, CRM, AI follow-up, and reporting — one system from ad click to booked job.",
   heroOneLiner:
-    "Meta Ads, lead capture, CRM, AI follow-up, and reporting — one system from click to closed job.",
+    "Turn ad clicks into booked jobs — Meta Ads, capture, CRM, follow-up, and reporting in one system.",
+  footerTagline:
+    "The contractor growth system for Canadian trades. You own your Meta account and ad spend.",
   subheadline:
     "The complete growth system for Canadian contractors. You own your Meta ad account and ad spend.",
   description:
-    "Lupin Leads is an end-to-end contractor growth system. We manage Meta Ads and creative, capture exclusive leads, track them in CRM, power AI follow-up, and report results monthly. You own your ad account and ad spend.",
+    "Turn ad clicks into booked jobs. Lupin Leads is the contractor growth system — Meta Ads, capture, CRM, AI follow-up, and reporting. You own your ad account and ad spend.",
   cta: CTAS.primary,
   ctaShort: CTAS.short,
   email: "hello@lupinleads.com",
@@ -34,12 +43,73 @@ export const NAV_LINKS = [
   { label: "FAQ", href: "#faq" },
 ] as const;
 
-export const TRUST_POINTS = [
-  { value: "End-to-end", label: "Ads to Closed Jobs" },
-  { value: "Your account", label: "You Own Ad Spend" },
-  { value: "Creative", label: "Included in Every Plan" },
-  { value: "30-day", label: "Mgmt Fee Guarantee" },
+export const HERO_BENEFITS = [
+  {
+    id: "see-leads",
+    title: "See every lead",
+    description:
+      "Track every form, call, estimate, and job in one clean pipeline.",
+  },
+  {
+    id: "follow-up",
+    title: "Follow up faster",
+    description:
+      "AI-assisted follow-up helps stop good leads from slipping through the cracks.",
+  },
+  {
+    id: "revenue",
+    title: "Know what made money",
+    description:
+      "Reports connect ad spend to estimates, booked jobs, and closed revenue.",
+  },
+  {
+    id: "contractors",
+    title: "Built for contractors",
+    description:
+      "Simple enough for busy owners. Powerful enough to run real growth.",
+  },
 ] as const;
+
+export const TRADES_SECTION = {
+  title: "Built for trades that live and die by",
+  highlight: "estimates.",
+  description:
+    "Whether you need emergency calls, seasonal installs, renovation estimates, or quote requests, Lupin is built to track the path from ad click to booked job.",
+  trades: [
+    "Plumbers",
+    "Roofers",
+    "HVAC",
+    "Electricians",
+    "Landscapers",
+    "Renovators",
+    "Deck builders",
+    "Bathroom remodelers",
+  ],
+} as const;
+
+export const SAMPLE_MONTH = {
+  statusLabel: "Illustrative example",
+  period: "Sample month · home remodeling contractor",
+  disclaimer:
+    "Sample contractor data shown for illustration. Your results depend on market, offer, budget, follow-up speed, and close rate.",
+  funnel: [
+    { id: "spend", value: "$3,240", label: "Ad spend" },
+    { id: "leads", value: "31", label: "Leads" },
+    { id: "estimates", value: "14", label: "Estimates booked" },
+    { id: "jobs", value: "4", label: "Jobs won" },
+    {
+      id: "revenue",
+      value: "$84,000",
+      label: "Closed revenue",
+      sample: true,
+      highlight: true,
+    },
+  ],
+  efficiency: [
+    { id: "cpl", value: "$38", label: "CPL", sample: true },
+    { id: "roas", value: "4.6x", label: "ROAS", sample: true },
+  ],
+} as const;
 
 export const TRUST_GUARANTEES = [
   {
@@ -146,7 +216,7 @@ export const ONBOARDING_STEPS = [
 ] as const;
 
 export const FOUNDING_PARTNER = {
-  name: "Founding Partner",
+  name: "Founding Partner Plan",
   introPrice: 299,
   regularPrice: 499,
   slotsTotal: 5,
@@ -154,21 +224,20 @@ export const FOUNDING_PARTNER = {
   slotsLabel: "Limited to 5 founding partners across Canada",
   currency: "CAD" as const,
   description:
-    "Try the full growth system at a lower entry point. Five contractor partners across Canada lock in founding rates and help shape what we build next.",
+    "The full contractor growth system at a lower entry point — ads, creative, capture, CRM, follow-up, and reporting. One management fee. No surprise add-ons.",
   includes: [
-    "Meta Ads setup and management",
-    "Custom ad creative",
-    "Lead capture forms",
-    "CRM pipeline",
-    "AI follow-up assistant",
-    "Monthly performance report",
-    "30-day satisfaction guarantee",
+    "Meta Ads management",
+    "Custom creative included",
+    "Lead capture system",
+    "Contractor CRM pipeline",
+    "AI follow-up support",
+    "Monthly reporting dashboard",
+    "Launch in ~48 hours",
+    "30-day management fee guarantee",
+    "You own your Meta account and ad spend",
   ],
-  terms: [
-    "Leads captured on your branded forms — never resold",
-    "Ad spend paid directly to Meta on your account ($2K–5K/mo typical)",
-    "Limited to 5 founding partners total",
-  ],
+  footnote:
+    "Management fee in CAD. Ad spend is separate and paid directly to Meta on your account — typically $2,000–$5,000/month depending on market and goals.",
 } as const;
 
 export const FOUNDING_PARTNER_SPOTS = [
@@ -435,14 +504,24 @@ export const FAQ_ITEMS = [
       "No. Lupin is a complete contractor growth system. We manage Meta Ads and custom creative, capture leads on branded forms, track them in CRM, power AI follow-up, and deliver monthly reporting. Ads are one piece — the system covers click to closed job.",
   },
   {
-    question: "Do I own my Meta ad account and ad spend?",
-    answer:
-      "Yes. Campaigns run on your Meta ad account. You pay Meta directly for ad spend and keep full ownership. Lupin manages the campaigns, creative, and lead system — you stay in control of budget and billing.",
-  },
-  {
     question: "What's included in the Founding Partner program?",
     answer:
-      "The full growth system at $299 CAD for month one, then $499/mo locked in. Meta Ads management, custom creative, lead forms, CRM, AI follow-up, and monthly reporting. Five founding partner slots total — book a strategy call to apply.",
+      "The Founding Partner Plan at $299 CAD for month one, then $499/mo locked in. Includes Meta Ads management, custom creative, lead capture, CRM pipeline, AI follow-up, monthly reporting, launch in ~48 hours, and a 30-day management fee guarantee. Limited to 5 founding partners across Canada — book a strategy call to apply.",
+  },
+  {
+    question: "Does the $499 cover one campaign or multiple?",
+    answer:
+      "The $499/month is for managing your contractor growth system, not just one campaign. We may run one or multiple Meta campaigns depending on your trade, market, budget, and offer. The goal is not to sell \"campaigns\" — the goal is to generate and track booked jobs.",
+  },
+  {
+    question: "Do I pay ad spend separately?",
+    answer:
+      "Yes. Your ad spend is paid directly from your own Meta ad account. You own the account, the data, and the spend. Lupin manages the strategy, creative, tracking, reporting, and optimization.",
+  },
+  {
+    question: "Do you change the ads every month?",
+    answer:
+      "We do not rebuild everything for the sake of looking busy. We keep what works, kill what doesn't, and introduce new creative, offers, and campaigns when it makes sense.",
   },
   {
     question: "What types of contractors do you work with?",

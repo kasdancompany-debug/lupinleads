@@ -19,14 +19,9 @@ export function PlatformShowcase() {
           <SectionIntro
             align="center"
             eyebrow="The platform"
-            title={
-              <>
-                See Every Lead.
-                <br />
-                Track Every Estimate.
-              </>
-            }
-            description="A real contractor growth system — dashboard, CRM, and reporting in one place. Product previews below use sample data to show what you'll run day to day."
+            title="Track every step from"
+            highlight="ad click to booked job."
+            description="Dashboard, CRM, and reporting for the full path — not just lead volume. Previews below use sample data."
             className="max-w-3xl"
           />
         </FadeIn>

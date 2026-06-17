@@ -1,31 +1,54 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { WolfCrest } from "@/components/ui/WolfCrest";
 import { FloatingMockup } from "@/components/motion/FloatingMockup";
 import { HeroProductStack } from "@/components/marketing/mockups/HeroProductStack";
 import { LeadDashboardMockup } from "@/components/marketing/mockups/LeadDashboardMockup";
-import { FOUNDING_PARTNER, SITE, CTAS, TRUST_POINTS } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
+import { SITE, CTAS, HERO_BENEFITS } from "@/lib/constants";
+import { formatFoundingPriceLine, scrollToBook } from "@/lib/marketing";
 import {
   defaultTransition,
   fadeIn,
   slideLeft,
   slideRight,
+  staggerContainer,
+  defaultViewport,
 } from "@/lib/motion-config";
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: FOUNDING_PARTNER.currency,
-    minimumFractionDigits: 0,
-  }).format(price);
-}
+const BENEFIT_ICONS: Record<(typeof HERO_BENEFITS)[number]["id"], ReactNode> = {
+  "see-leads": (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="4" width="5" height="16" rx="1" />
+      <rect x="10" y="4" width="5" height="16" rx="1" />
+      <rect x="17" y="4" width="4" height="16" rx="1" />
+    </svg>
+  ),
+  "follow-up": (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M13 2L4 14h7l-1 8 10-14H13L13 2z" strokeLinejoin="round" />
+    </svg>
+  ),
+  revenue: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M4 18V6M8 18v-5M12 18v-8M16 18v-3M20 18V9" strokeLinecap="round" />
+      <path d="M3 20h18" strokeLinecap="round" />
+    </svg>
+  ),
+  contractors: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M4 11.5L12 5l8 6.5V19a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-7.5z" strokeLinejoin="round" />
+    </svg>
+  ),
+};
 
 export function Hero() {
   const reduce = useReducedMotion();
   const mount = reduce ? false : "visible";
+
+  const ctaMicrocopy = `${formatFoundingPriceLine("•")} • launch in ~48 hours`;
 
   return (
     <section className="relative min-h-[auto] lg:min-h-[100svh] flex items-center hero-mesh overflow-hidden">
@@ -58,70 +81,34 @@ export function Hero() {
             </motion.div>
 
             <motion.h1
-              className="font-bold tracking-[-0.03em] leading-[1.05] sm:leading-[1.08] mb-6 sm:mb-8 text-[clamp(2.875rem,6.5vw,4.5rem)] sm:text-[clamp(3.25rem,7vw,5rem)] lg:text-[clamp(4.5rem,4.8vw,5.75rem)] xl:text-[6rem] overflow-visible"
+              className="font-bold tracking-[-0.03em] leading-[1.05] sm:leading-[1.08] mb-6 sm:mb-8 text-[clamp(2.5rem,5.5vw,4.25rem)] sm:text-[clamp(2.875rem,6vw,4.75rem)] lg:text-[clamp(3.5rem,4.2vw,5rem)] xl:text-[5.25rem] overflow-visible"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
               transition={{ ...defaultTransition, delay: 0.08 }}
             >
-              <span className="block text-foreground">More estimates.</span>
-              <span className="block text-foreground">More jobs.</span>
+              <span className="block text-foreground">Turn ad clicks into</span>
               <span className="block mt-1 sm:mt-2 overflow-visible pb-1">
-                <span className="text-gradient-hero">Less guesswork.</span>
+                <span className="text-gradient-hero">booked jobs.</span>
               </span>
             </motion.h1>
 
             <motion.p
-              className="text-foreground text-lg sm:text-xl font-medium leading-snug max-w-xl mb-5 sm:mb-6"
+              className="text-silver-muted text-lg sm:text-xl leading-relaxed max-w-xl mb-8 sm:mb-10"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
               transition={{ ...defaultTransition, delay: 0.14 }}
             >
-              {SITE.heroOneLiner}
+              {SITE.heroSubheadline}
             </motion.p>
 
             <motion.div
-              className="inline-flex flex-wrap items-center gap-x-3 gap-y-2 mb-5 sm:mb-6"
-              initial={reduce ? false : "hidden"}
-              animate={mount}
-              variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.18 }}
-            >
-              <span className="hero-price-pill text-sm sm:text-[15px] font-semibold text-forest-glow px-4 py-2 rounded-full">
-                {formatPrice(FOUNDING_PARTNER.introPrice)} first month
-              </span>
-              <span className="text-sm text-silver-muted">
-                then {formatPrice(FOUNDING_PARTNER.regularPrice)}/mo + ad spend
-              </span>
-            </motion.div>
-
-            <motion.p
-              className="text-silver-dim text-xs sm:text-sm leading-relaxed max-w-lg mb-5 sm:mb-6"
-              initial={reduce ? false : "hidden"}
-              animate={mount}
-              variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.19 }}
-            >
-              {SITE.typicalAllIn}
-            </motion.p>
-
-            <motion.p
-              className="text-silver-muted text-sm sm:text-[15px] leading-relaxed max-w-lg mb-8 sm:mb-10"
+              className="hero-cta-rail rounded-xl p-2 sm:p-2.5 mb-3 max-w-md"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
               transition={{ ...defaultTransition, delay: 0.2 }}
-            >
-              {SITE.subheadline}
-            </motion.p>
-
-            <motion.div
-              className="hero-cta-rail rounded-xl p-2 sm:p-2.5 mb-7 sm:mb-8 max-w-md"
-              initial={reduce ? false : "hidden"}
-              animate={mount}
-              variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.24 }}
             >
               <Button
                 size="lg"
@@ -133,28 +120,15 @@ export function Hero() {
               </Button>
             </motion.div>
 
-            <motion.div
-              className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-x-6 sm:gap-y-2.5 text-[12px] sm:text-[13px] text-silver-muted"
+            <motion.p
+              className="text-[12px] sm:text-[13px] text-silver-dim leading-relaxed max-w-md mb-8"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.28 }}
+              transition={{ ...defaultTransition, delay: 0.24 }}
             >
-              <span className="flex items-center gap-2">
-                <CheckIcon />
-                30-day mgmt fee guarantee
-              </span>
-              <span className="hidden sm:block w-px h-3.5 bg-silver/15 self-center" aria-hidden="true" />
-              <span className="flex items-center gap-2">
-                <CheckIcon />
-                Launch in ~48 hours
-              </span>
-              <span className="hidden sm:block w-px h-3.5 bg-silver/15 self-center" aria-hidden="true" />
-              <span className="flex items-center gap-2">
-                <CheckIcon />
-                Your Meta account · your spend
-              </span>
-            </motion.div>
+              {ctaMicrocopy}
+            </motion.p>
           </motion.div>
 
           <motion.div
@@ -204,40 +178,38 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="hero-trust-strip mt-14 lg:mt-20 pt-10 sm:pt-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {TRUST_POINTS.map((stat, i) => (
-              <div
-                key={stat.label}
-                className={`text-center lg:text-left ${
-                  i > 0 ? "lg:border-l lg:border-silver/10 lg:pl-8" : ""
-                }`}
+        <div className="hero-benefits-strip mt-14 lg:mt-20 pt-10 sm:pt-12">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5"
+            initial={reduce ? false : "hidden"}
+            whileInView={reduce ? undefined : "visible"}
+            viewport={defaultViewport}
+            variants={staggerContainer}
+          >
+            {HERO_BENEFITS.map((benefit, index) => (
+              <motion.article
+                key={benefit.id}
+                className="hero-benefit-card rounded-xl p-5 lg:p-6 h-full"
+                variants={{
+                  hidden: { opacity: 0, y: 16 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ ...defaultTransition, delay: index * 0.05 }}
               >
-                <p className="text-xl sm:text-2xl lg:text-[1.75rem] font-bold text-foreground tracking-tight mb-1">
-                  {stat.value}
+                <div className="w-9 h-9 rounded-lg bg-forest-mid/15 border border-forest-mid/30 flex items-center justify-center text-forest-glow mb-4">
+                  {BENEFIT_ICONS[benefit.id]}
+                </div>
+                <h3 className="text-[15px] sm:text-base font-semibold text-foreground tracking-tight mb-2">
+                  {benefit.title}
+                </h3>
+                <p className="text-[13px] sm:text-sm text-silver-muted leading-relaxed">
+                  {benefit.description}
                 </p>
-                <p className="text-[10px] sm:text-[11px] text-silver-dim uppercase tracking-[0.12em] leading-tight">
-                  {stat.label}
-                </p>
-              </div>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      className="w-3.5 h-3.5 text-forest-glow shrink-0"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M3 8L6 11L13 4" />
-    </svg>
   );
 }

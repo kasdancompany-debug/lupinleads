@@ -25,9 +25,9 @@ export function ResultsSection() {
         <FadeIn>
           <SectionIntro
             eyebrow="Results"
-            title="Business impact,"
-            highlight="measured."
-            description="Leads, appointments, jobs won, and revenue — tracked in Lupin from ad click to close. Published case studies use real dashboard data with client approval."
+            title="Ad click to"
+            highlight="booked job — measured."
+            description="Leads, appointments, jobs won, and revenue tracked in Lupin from first click to close. Published case studies use real dashboard data with client approval."
           />
         </FadeIn>
 
@@ -65,7 +65,7 @@ export function ResultsSection() {
             your approval.
           </p>
           <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 w-full sm:w-auto">
-            {CTAS.founding}
+            {CTAS.primary}
           </Button>
         </div>
       </FadeIn>
@@ -154,7 +154,7 @@ function CaseStudyCard({
           onClick={scrollToBook}
           className="mt-6 text-sm font-medium text-forest-glow hover:text-forest-light transition-colors"
         >
-          {CTAS.founding} →
+          {CTAS.primary} →
         </button>
       )}
     </article>

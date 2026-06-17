@@ -37,7 +37,7 @@ export function LaunchIn48Hours() {
             eyebrow="Onboarding"
             title="Launch in"
             highlight="48 hours."
-            description="No six-week onboarding deck. We connect your Meta account, build the full stack, and go live — ads, forms, CRM, and reporting ready before the week is out."
+            description="Connect your Meta account, build the stack, and go live — ads, forms, CRM, and reporting ready to turn clicks into booked jobs."
             className="max-w-3xl mx-auto"
           />
         </FadeIn>

@@ -126,9 +126,9 @@ export function ClickToClosedJob() {
             <SectionIntro
               align="center"
               eyebrow="The full journey"
-              title="One system tracks"
-              highlight="every step."
-              description="From the first ad click to the signed contract — Meta Ads, capture, CRM, follow-up, and reporting connected. No guessing where leads went or what your spend produced."
+              title="Ad click to"
+              highlight="booked job."
+              description="Seven connected steps — Meta Ads, capture, CRM, follow-up, estimate, and close. One system tracks every handoff."
               className="max-w-3xl mx-auto"
             />
           </FadeIn>
@@ -201,8 +201,7 @@ export function ClickToClosedJob() {
       <div className="relative section-forest border-t border-silver/10 py-12 lg:py-14">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-silver-muted max-w-xl leading-relaxed text-center sm:text-left">
-            Ready to see how this maps to your trade and market? Walk through the full system on a
-            free strategy call.
+            See how ad click to booked job maps to your trade and market on a free strategy call.
           </p>
           <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 w-full sm:w-auto">
             {CTAS.primary}

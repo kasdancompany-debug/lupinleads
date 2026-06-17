@@ -63,6 +63,21 @@ body {
   margin-bottom: 1rem;
 }
 
+.problem-core-line {
+  font-size: clamp(2.125rem, 5.5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 1280px) {
+  .problem-core-line {
+    font-size: 3.75rem;
+  }
+}
+
 .section-headline {
   font-size: clamp(1.875rem, 4vw, 3rem);
   font-weight: 700;
@@ -124,7 +139,13 @@ body {
 .section-body {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .section-body {
+    gap: 3rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -227,6 +248,67 @@ body {
 
 .case-study-card--featured:hover {
   transform: translateY(-4px);
+}
+
+.trades-pill {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--charcoal-elevated) 85%, transparent),
+    color-mix(in srgb, var(--forest-deep) 6%, var(--black-surface))
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 11%, transparent);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.trades-pill:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 32%, transparent);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--forest-mid) 8%, transparent);
+}
+
+.sample-month-panel {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--charcoal-elevated) 92%, transparent),
+    color-mix(in srgb, var(--forest-deep) 10%, var(--black-surface))
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
+  box-shadow: 0 24px 64px color-mix(in srgb, var(--forest-black) 50%, transparent);
+}
+
+.sample-month-panel-header {
+  background: color-mix(in srgb, var(--black-surface) 70%, transparent);
+}
+
+.sample-month-metric-value {
+  font-size: clamp(1.625rem, 3.5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.sample-month-metric-value--highlight {
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  color: var(--forest-glow);
+}
+
+.sample-month-metric-value--compact {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.sample-month-metric-label {
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .sample-month-metric-label {
+    font-size: 0.75rem;
+  }
 }
 
 .case-study-metric-value {
@@ -701,13 +783,28 @@ body {
   box-shadow: 0 0 24px color-mix(in srgb, var(--forest-mid) 12%, transparent);
 }
 
-.hero-trust-strip {
+.hero-benefits-strip {
   background: linear-gradient(
     180deg,
     transparent 0%,
     color-mix(in srgb, var(--charcoal) 40%, transparent) 100%
   );
   border-top: 1px solid color-mix(in srgb, var(--silver) 8%, transparent);
+}
+
+.hero-benefit-card {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--charcoal-elevated) 88%, transparent),
+    color-mix(in srgb, var(--forest-deep) 8%, var(--black-surface))
+  );
+  border: 1px solid color-mix(in srgb, var(--silver) 12%, transparent);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.hero-benefit-card:hover {
+  border-color: color-mix(in srgb, var(--forest-mid) 35%, transparent);
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--forest-mid) 10%, transparent);
 }
 
 .hero-eyebrow-rule {
@@ -805,10 +902,11 @@ body {
 }
 
 .sticky-cta-bar {
-  background: color-mix(in srgb, var(--forest-black) 92%, transparent);
-  border-top: 1px solid color-mix(in srgb, var(--forest-mid) 40%, transparent);
-  box-shadow: 0 -8px 40px color-mix(in srgb, var(--forest-black) 80%, transparent);
-  backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--forest-black) 96%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--forest-mid) 45%, transparent);
+  box-shadow: 0 -12px 48px color-mix(in srgb, var(--forest-black) 85%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .browser-mockup {

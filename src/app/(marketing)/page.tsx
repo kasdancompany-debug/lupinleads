@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { HowItWorks } from "@/components/sections/HowItWorks";
+import { TradesSection } from "@/components/sections/TradesSection";
 import { PlatformShowcase } from "@/components/sections/PlatformShowcase";
 import { BuilderCredibility } from "@/components/sections/BuilderCredibility";
 import { CtaBanner } from "@/components/sections/CtaBanner";
@@ -13,6 +14,11 @@ const ClickToClosedJob = dynamic(
 
 const LaunchIn48Hours = dynamic(
   () => import("@/components/sections/LaunchIn48Hours").then((m) => m.LaunchIn48Hours),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const GoodMonthSection = dynamic(
+  () => import("@/components/sections/GoodMonthSection").then((m) => m.GoodMonthSection),
   { loading: () => <SectionPlaceholder /> }
 );
 
@@ -54,12 +60,14 @@ export default function Home() {
     <>
       <Hero />
       <ProblemSection />
+      <TradesSection />
       <HowItWorks />
       <PlatformShowcase />
       <BuilderCredibility />
       <ClickToClosedJob />
       <CtaBanner />
       <LaunchIn48Hours />
+      <GoodMonthSection />
       <ResultsSection />
       <TrustSection />
       <Pricing />

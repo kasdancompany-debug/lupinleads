@@ -57,10 +57,9 @@ export function TrustSection() {
           <SectionIntro
             align="center"
             eyebrow="Before you decide"
-            title="Built for contractors who want clarity,"
-            highlight="not a sales pitch."
-            variant="display"
-            description="Six commitments we make before you review pricing — ownership, focus, and terms spelled out upfront."
+            title="Clear terms."
+            highlight="No surprises."
+            description="What you own, what you pay, and how we launch — spelled out before the strategy call."
             className="max-w-2xl mx-auto"
           />
         </FadeIn>

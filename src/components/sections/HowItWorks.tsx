@@ -16,9 +16,9 @@ export function HowItWorks() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           <StickySectionHeader
             eyebrow="The growth system"
-            title="More than ads."
-            highlight="A complete engine."
-            description="Meta Ads and custom creative bring homeowners in. Branded forms capture them. CRM and AI follow-up move them forward. Monthly reporting shows what closed — one system, not five disconnected tools."
+            title="From ad click to"
+            highlight="booked job."
+            description="Meta Ads and creative bring homeowners in. Branded forms capture them. CRM and AI follow-up move them to a booked estimate. Reporting shows what closed — one path, not five tools."
           />
           <SlideIn direction="right" delay={0.1}>
             <RiseOnScroll offset={20}>
@@ -33,8 +33,8 @@ export function HowItWorks() {
           <SectionIntro
             align="center"
             eyebrow="The journey"
-            title="Click to closed job"
-            description="Six connected steps — from the ad click to the signed contract."
+            title="Click to booked job"
+            description="Six connected steps — ad click through signed contract."
             className="!mb-8 lg:!mb-10 max-w-2xl mx-auto"
           />
           <GrowthJourneyFlow />

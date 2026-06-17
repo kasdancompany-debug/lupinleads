@@ -92,7 +92,7 @@ export function BuilderCredibility() {
                 ))}
               </ul>
               <div className="mt-6 pt-6 border-t border-silver/10">
-                <Button variant="outline" size="md" onClick={scrollToBook} className="w-full sm:w-auto">
+                <Button size="md" emphasis onClick={scrollToBook} className="w-full sm:w-auto">
                   {CTAS.primary}
                 </Button>
               </div>

@@ -8,7 +8,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { SlideIn } from "@/components/motion/SlideIn";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { Button } from "@/components/ui/Button";
-import { PROBLEM_CARDS, CTAS } from "@/lib/constants";
+import { PROBLEM_CARDS, CTAS, SITE } from "@/lib/constants";
 import { scrollToBook } from "@/lib/marketing";
 import { defaultTransition, defaultViewport, staggerContainer } from "@/lib/motion-config";
 
@@ -47,12 +47,21 @@ export function ProblemSection() {
     <SectionShell id="the-problem" variant="charcoal">
       <div className="section-body">
         <FadeIn>
+          <header className="section-header section-header--center mx-auto max-w-4xl text-center">
+            <h2 className="problem-core-line">
+              {SITE.coreLine.lead}{" "}
+              <span className="text-gradient-forest">{SITE.coreLine.highlight}</span>
+            </h2>
+          </header>
+        </FadeIn>
+
+        <FadeIn delay={0.04}>
           <SectionIntro
             align="center"
             eyebrow="The real bottleneck"
             title="You don't have a lead problem."
             highlight="You have a follow-up problem."
-            description="Most contractors can get interest. The breakdown happens after the click — slow responses, scattered notes, and no clear path from lead to booked job."
+            description="Interest isn't the problem. After the click, slow follow-up and scattered notes kill booked jobs."
             className="max-w-4xl mx-auto"
           />
         </FadeIn>
@@ -111,22 +120,23 @@ export function ProblemSection() {
                   <span className="text-gradient-hero">click to closed job.</span>
                 </h3>
                 <p className="text-silver-muted text-base lg:text-lg leading-relaxed max-w-2xl">
-                  One growth system: Meta Ads and creative bring leads in, branded forms capture
-                  them, CRM tracks every stage, AI follow-up keeps your team moving, and monthly
-                  reporting shows which spend became revenue. You own your ad account. We run the
-                  system.
+                  One system from ad click to booked job: Meta Ads and creative bring leads in,
+                  branded forms capture them, CRM tracks every stage, AI follow-up keeps your team
+                  moving, and reporting shows which spend became revenue. You own your ad account.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
-                <Button size="lg" emphasis onClick={scrollToBook} className="whitespace-nowrap">
-                  {CTAS.estimates}
+              <div className="shrink-0">
+                <Button size="lg" emphasis onClick={scrollToBook} className="w-full sm:w-auto whitespace-nowrap">
+                  {CTAS.primary}
                 </Button>
-                <Link
-                  href="#how-it-works"
-                  className="inline-flex items-center justify-center text-sm font-medium text-silver-muted hover:text-foreground transition-colors px-4 py-3 rounded-lg border border-silver/15 hover:border-silver/25"
-                >
-                  {CTAS.howItWorks} →
-                </Link>
+                <p className="mt-3 text-center sm:text-left">
+                  <Link
+                    href="#how-it-works"
+                    className="text-sm text-silver-dim hover:text-silver-muted transition-colors"
+                  >
+                    See how it works →
+                  </Link>
+                </p>
               </div>
             </div>
 

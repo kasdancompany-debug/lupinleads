@@ -110,9 +110,9 @@ export function BookACall() {
           <SlideIn direction="left">
             <SectionIntro
               eyebrow="Free strategy call"
-              title="Let's map your"
-              highlight="growth system"
-              description="Tell us about your trade and market. We'll show you how the full system fits — ads, creative, capture, CRM, follow-up, and reporting. No pressure, no jargon."
+              title="Map your path from"
+              highlight="ad click to booked job."
+              description="Tell us your trade and market. We'll walk through ads, capture, CRM, follow-up, and reporting — and what a realistic ad budget looks like on your account."
               className="!mb-8"
             />
 
@@ -179,7 +179,7 @@ export function BookACall() {
                     className="w-full"
                     onClick={() => window.location.assign("/book")}
                   >
-                    {CTAS.calendar}
+                    {CTAS.primary}
                   </Button>
                 </div>
                 <p className="text-center text-[11px] uppercase tracking-[0.15em] text-silver-dim">
