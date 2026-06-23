@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { MockupNode } from "./MockupBrand";
 
 interface MockupShellProps {
   title: string;
@@ -22,35 +23,29 @@ export function MockupShell({
   }
 
   return (
-    <div
-      className={`mockup-glass rounded-xl overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.55)] ${className}`}
-    >
+    <div className={`mockup-glass mockup-shell ${className}`}>
       <div
-        className={`flex items-center justify-between gap-3 border-b border-silver/10 bg-black-surface/80 ${
-          compact ? "px-3 py-2" : "px-4 py-3"
+        className={`mockup-shell__chrome flex items-center justify-between gap-3 ${
+          compact ? "px-3 py-2" : "px-4 py-2.5"
         }`}
       >
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="flex gap-1.5 shrink-0">
-            <span className="w-2 h-2 rounded-full bg-red-500/60" />
-            <span className="w-2 h-2 rounded-full bg-amber-500/60" />
-            <span className="w-2 h-2 rounded-full bg-forest-glow/70" />
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex gap-1.5 shrink-0" aria-hidden>
+            <span className="mockup-chrome-dot mockup-chrome-dot--purple" />
+            <span className="mockup-chrome-dot mockup-chrome-dot--green" />
+            <span className="mockup-chrome-dot mockup-chrome-dot--sage" />
           </div>
           <span
-            className={`text-silver-dim tracking-wide truncate ${
+            className={`text-silver-muted tracking-wide truncate font-medium ${
               compact ? "text-[10px]" : "text-[11px]"
             }`}
           >
             {title}
           </span>
         </div>
-        {badge && (
-          <span className="text-[9px] uppercase tracking-wider text-forest-glow px-2 py-0.5 rounded border border-forest-mid/30 bg-forest-mid/10 shrink-0">
-            {badge}
-          </span>
-        )}
+        {badge && <span className="mockup-shell__badge shrink-0">{badge}</span>}
       </div>
-      <div className={compact ? "p-3" : "p-4"}>{children}</div>
+      <div className={compact ? "p-3" : "p-4 sm:p-5"}>{children}</div>
     </div>
   );
 }
@@ -60,21 +55,27 @@ export function MockupStat({
   value,
   sub,
   highlight,
+  trend,
 }: {
   label: string;
   value: string;
   sub?: string;
   highlight?: boolean;
+  trend?: "up" | "neutral";
 }) {
   return (
-    <div className="rounded-lg bg-black-surface/70 border border-silver/10 px-3 py-2.5">
-      <p className="text-[9px] text-silver-dim uppercase tracking-wider">{label}</p>
-      <p className="text-lg font-semibold text-foreground tabular-nums leading-tight">{value}</p>
-      {sub && (
-        <p className={`text-[10px] ${highlight ? "text-forest-glow" : "text-silver-dim"}`}>
-          {sub}
-        </p>
-      )}
+    <div className={`mockup-stat ${highlight ? "mockup-stat--highlight" : ""}`}>
+      <span className="mockup-stat__stem" aria-hidden />
+      <div className="min-w-0">
+        <p className="mockup-stat__label">{label}</p>
+        <p className="mockup-stat__value">{value}</p>
+        {sub && (
+          <p className={`mockup-stat__sub ${trend === "up" ? "mockup-stat__sub--up" : ""}`}>
+            {sub}
+          </p>
+        )}
+      </div>
+      {highlight && <MockupNode variant="won" className="mockup-stat__node" />}
     </div>
   );
 }
@@ -86,11 +87,10 @@ export function MockupAvatar({ name, size = "md" }: { name: string; size?: "sm" 
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
   return (
     <div
-      className={`rounded-lg bg-forest-mid/20 border border-forest-mid/35 flex items-center justify-center text-forest-glow font-semibold shrink-0 ${
-        size === "sm" ? "w-8 h-8 text-[10px]" : "w-10 h-10 text-xs"
-      }`}
+      className={`mockup-avatar ${size === "sm" ? "mockup-avatar--sm" : "mockup-avatar--md"}`}
     >
       {initials}
     </div>

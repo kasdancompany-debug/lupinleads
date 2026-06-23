@@ -13,36 +13,23 @@ const STEP_ICONS: Record<(typeof HOW_IT_WORKS_JOURNEY)[number]["id"], ReactNode>
       <path d="M12 3v2M12 19v2M3 12h2M19 12h2" strokeLinecap="round" />
     </svg>
   ),
-  "lead-captured": (
+  "quote-request": (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
       <path d="M4 6h16v12H4z" strokeLinejoin="round" />
       <path d="M8 10h8M8 14h5" strokeLinecap="round" />
     </svg>
   ),
-  "ai-follow-up": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" strokeLinejoin="round" />
-      <path d="M5 19h14" strokeLinecap="round" />
-    </svg>
-  ),
-  "appointment-booked": (
+  "book-estimate": (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
       <rect x="4" y="5" width="16" height="15" rx="2" />
       <path d="M8 3v4M16 3v4M4 10h16" strokeLinecap="round" />
       <path d="M9 14h2v2H9z" fill="currentColor" stroke="none" />
     </svg>
   ),
-  "estimate-sent": (
+  "track-results": (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-      <path d="M8 4h11v16H8z" />
-      <path d="M5 8H4v12h11" strokeLinejoin="round" />
-      <path d="M11 9h5M11 13h5M11 17h3" strokeLinecap="round" />
-    </svg>
-  ),
-  "job-won": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-      <path d="M6 12l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="9" />
+      <path d="M4 18V6M8 18v-5M12 18v-8M16 18v-3M20 18V9" strokeLinecap="round" />
+      <path d="M3 20h18" strokeLinecap="round" />
     </svg>
   ),
 };

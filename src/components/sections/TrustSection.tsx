@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionShell } from "@/components/motion/SectionShell";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { TRUST_GUARANTEES } from "@/lib/constants";
+import { TRUST_GUARANTEES, WHY_LUPIN_SECTION } from "@/lib/constants";
 import { defaultTransition, defaultViewport, staggerContainer } from "@/lib/motion-config";
 
 const BADGE_ICONS: Record<(typeof TRUST_GUARANTEES)[number]["id"], ReactNode> = {
@@ -51,15 +51,15 @@ export function TrustSection() {
   const reduce = useReducedMotion();
 
   return (
-    <SectionShell id="trust" variant="charcoal">
+    <SectionShell id="why-lupin" variant="charcoal">
       <div className="section-body">
         <FadeIn>
           <SectionIntro
             align="center"
-            eyebrow="Before you decide"
-            title="Clear terms."
-            highlight="No surprises."
-            description="What you own, what you pay, and how we launch — spelled out before the strategy call."
+            eyebrow={WHY_LUPIN_SECTION.eyebrow}
+            title={WHY_LUPIN_SECTION.title}
+            highlight={WHY_LUPIN_SECTION.highlight}
+            description={WHY_LUPIN_SECTION.description}
             className="max-w-2xl mx-auto"
           />
         </FadeIn>
@@ -80,14 +80,12 @@ export function TrustSection() {
               }}
               transition={{ ...defaultTransition, delay: index * 0.05 }}
             >
-              <article className="trust-badge rounded-xl p-5 lg:p-6 h-full">
-                <div className="trust-badge-icon w-10 h-10 rounded-lg flex items-center justify-center text-forest-glow mb-4">
+              <article className="trust-badge brand-card-lift rounded-xl p-5 lg:p-6 h-full">
+                <div className="trust-badge-icon brand-icon-chip w-10 h-10 mb-4">
                   {BADGE_ICONS[badge.id]}
                 </div>
-                <h3 className="text-sm font-semibold text-foreground tracking-tight mb-2">
-                  {badge.title}
-                </h3>
-                <p className="text-[13px] text-silver-muted leading-relaxed">{badge.description}</p>
+                <h3 className="type-card-title mb-2">{badge.title}</h3>
+                <p className="type-card-body">{badge.description}</p>
               </article>
             </motion.div>
           ))}

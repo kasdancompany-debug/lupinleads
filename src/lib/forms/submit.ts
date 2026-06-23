@@ -37,6 +37,13 @@ export async function processFormSubmission(
     form.defaultCampaign
   );
 
+  if (form.defaultCampaign && !campaign) {
+    return {
+      success: false,
+      error: "Form campaign is misconfigured",
+    };
+  }
+
   const supabase = createAdminClient();
   if (!supabase) {
     return { success: false, error: "Database not configured" };
@@ -78,12 +85,15 @@ export async function processFormSubmission(
     campaign,
   });
 
-  if (crmLead) {
-    await supabase
-      .from("form_submissions")
-      .update({ crm_lead_id: crmLead.id })
-      .eq("id", submission.id);
+  if (!crmLead) {
+    console.error("createCrmLead failed for submission:", submission.id);
+    return { success: false, error: "Failed to create lead" };
   }
+
+  await supabase
+    .from("form_submissions")
+    .update({ crm_lead_id: crmLead.id })
+    .eq("id", submission.id);
 
   const campaignLabel = campaign ? ` [${campaign}]` : "";
   await sendInstantNotification({
@@ -111,7 +121,7 @@ export async function processFormSubmission(
   return {
     success: true,
     submissionId: submission.id,
-    crmLeadId: crmLead?.id,
+    crmLeadId: crmLead.id,
     campaign,
   };
 }

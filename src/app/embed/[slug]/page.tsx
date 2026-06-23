@@ -16,7 +16,10 @@ export default async function EmbedPage({
   if (!form) notFound();
 
   const tracking = {
-    campaign: typeof query.campaign === "string" ? query.campaign : undefined,
+    campaign:
+      typeof query.campaign === "string"
+        ? query.campaign
+        : form.defaultCampaign ?? undefined,
     utmSource: typeof query.utm_source === "string" ? query.utm_source : undefined,
     utmMedium: typeof query.utm_medium === "string" ? query.utm_medium : undefined,
     utmCampaign: typeof query.utm_campaign === "string" ? query.utm_campaign : undefined,

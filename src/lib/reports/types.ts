@@ -20,6 +20,8 @@ export interface ExecutiveMonthMetrics {
   totalSpend: number;
   roas: number;
   dealsClosed: number;
+  /** True when a client_monthly_spend row exists with ad_spend_cad > 0 */
+  adSpendEntered: boolean;
 }
 
 export interface ExecutiveReport {

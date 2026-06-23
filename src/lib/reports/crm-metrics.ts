@@ -1,16 +1,14 @@
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { getCrmLeads } from "@/lib/data/crm-leads";
+import {
+  getClientMonthlySpendMap,
+  isAdSpendEntered,
+  type ClientSpendRow,
+} from "@/lib/data/client-spend";
 import type { ExecutiveMonthMetrics, ExecutiveReport } from "./types";
 import { calculateCloseRate, calculateRoas, pctChange } from "./calculations";
 import { fetchServerBranding, fetchReportClients } from "./branding-server";
-
-interface CrmLeadRow {
-  id: string;
-  campaign: string | null;
-  stage: string;
-  estimated_value: number;
-  created_at: string;
-  updated_at: string;
-}
+import type { ContractorLead } from "@/lib/crm/types";
+import { filterPortalLeads } from "@/lib/portal/filters";
 
 const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -43,44 +41,30 @@ function getLast6MonthKeys(): string[] {
   return keys;
 }
 
-async function fetchLeadsForClient(clientId: string): Promise<CrmLeadRow[]> {
-  if (!isSupabaseConfigured()) return [];
-
-  const supabase = createAdminClient();
-  if (!supabase) return [];
-
-  let query = supabase
-    .from("crm_leads")
-    .select("id, campaign, stage, estimated_value, created_at, updated_at")
-    .order("created_at", { ascending: true });
-
-  if (clientId !== "all") {
-    query = query.eq("campaign", clientId);
-  }
-
-  const { data, error } = await query;
-
-  if (error) {
-    if (error.code !== "42P01" && error.code !== "PGRST205") {
-      console.error("fetchLeadsForClient:", error);
-    }
-    return [];
-  }
-
-  return (data ?? []) as CrmLeadRow[];
+async function fetchLeadsForClient(
+  clientId: string,
+  forPortal = false
+): Promise<ContractorLead[]> {
+  const leads = await getCrmLeads({ clientSlug: clientId });
+  return forPortal ? filterPortalLeads(leads) : leads;
 }
 
-function buildMonthMetrics(leads: CrmLeadRow[], key: string): ExecutiveMonthMetrics {
-  const monthLeads = leads.filter((r) => isInMonth(r.created_at, key));
+function buildMonthMetrics(
+  leads: ContractorLead[],
+  key: string,
+  spendRow: ClientSpendRow | undefined
+): ExecutiveMonthMetrics {
+  const monthLeads = leads.filter((r) => isInMonth(r.createdAt, key));
   const appointments = leads.filter(
     (r) =>
       (r.stage === "appointment_booked" || r.stage === "estimate_sent") &&
-      isInMonth(r.updated_at, key)
+      isInMonth(r.updatedAt, key)
   ).length;
-  const wonLeads = leads.filter((r) => r.stage === "won" && isInMonth(r.updated_at, key));
+  const wonLeads = leads.filter((r) => r.stage === "won" && isInMonth(r.updatedAt, key));
   const dealsClosed = wonLeads.length;
-  const revenue = wonLeads.reduce((sum, r) => sum + (Number(r.estimated_value) || 0), 0);
-  const totalSpend = 0;
+  const revenue = wonLeads.reduce((sum, r) => sum + (r.estimatedValue || 0), 0);
+  const adSpendEntered = isAdSpendEntered(spendRow);
+  const totalSpend = spendRow?.adSpendCad ?? 0;
   const leadCount = monthLeads.length;
 
   return {
@@ -88,13 +72,16 @@ function buildMonthMetrics(leads: CrmLeadRow[], key: string): ExecutiveMonthMetr
     label: shortLabel(key),
     monthLabel: monthLabel(key),
     leads: leadCount,
-    costPerLead: leadCount > 0 && totalSpend > 0 ? Math.round(totalSpend / leadCount) : 0,
+    costPerLead:
+      adSpendEntered && leadCount > 0 ? Math.round(totalSpend / leadCount) : 0,
     appointments,
     closeRate: calculateCloseRate(dealsClosed, leadCount),
     revenue,
     totalSpend,
-    roas: calculateRoas(revenue, totalSpend),
+    roas:
+      adSpendEntered && revenue > 0 ? calculateRoas(revenue, totalSpend) : 0,
     dealsClosed,
+    adSpendEntered,
   };
 }
 
@@ -135,22 +122,30 @@ function buildHighlights(
     }
   }
 
-  if (current.totalSpend === 0) {
-    highlights.push("Ad spend is tracked separately — connect Meta billing to show CPL and ROAS.");
+  if (!current.adSpendEntered) {
+    highlights.push("Ad spend has not been entered for this month — CPL and ROAS appear once spend is logged.");
+  } else if (current.totalSpend > 0) {
+    highlights.push(`$${current.totalSpend.toLocaleString()} in Meta ad spend recorded for this month.`);
   }
 
   return highlights.slice(0, 4);
 }
 
 export async function getAvailableMonthsFromCrm(
-  clientId: string
+  clientId: string,
+  forPortal = false
 ): Promise<{ month: string; label: string }[]> {
-  const leads = await fetchLeadsForClient(clientId);
+  const leads = await fetchLeadsForClient(clientId, forPortal);
+  const spendMap = await getClientMonthlySpendMap(clientId);
   const keys = new Set<string>();
 
   for (const lead of leads) {
-    keys.add(monthKey(new Date(lead.created_at)));
-    keys.add(monthKey(new Date(lead.updated_at)));
+    keys.add(monthKey(new Date(lead.createdAt)));
+    keys.add(monthKey(new Date(lead.updatedAt)));
+  }
+
+  for (const key of spendMap.keys()) {
+    keys.add(key);
   }
 
   const sorted = [...keys].sort();
@@ -164,11 +159,21 @@ export async function getAvailableMonthsFromCrm(
 export async function buildExecutiveReportFromCrm(
   clientId: string,
   reportMonth?: string,
-  brandingOverride?: Partial<import("./types").ClientBranding>
+  brandingOverride?: Partial<import("./types").ClientBranding>,
+  forPortal = false
 ): Promise<ExecutiveReport> {
-  const leads = await fetchLeadsForClient(clientId);
-  const monthKeys = getLast6MonthKeys();
-  const trends = monthKeys.map((key) => buildMonthMetrics(leads, key));
+  const leads = await fetchLeadsForClient(clientId, forPortal);
+  const spendMap = await getClientMonthlySpendMap(clientId);
+
+  const monthKeySet = new Set(getLast6MonthKeys());
+  if (reportMonth) {
+    monthKeySet.add(reportMonth);
+  }
+  const monthKeys = [...monthKeySet].sort();
+
+  const trends = monthKeys.map((key) =>
+    buildMonthMetrics(leads, key, spendMap.get(key))
+  );
 
   const monthIndex = reportMonth
     ? trends.findIndex((t) => t.month === reportMonth)

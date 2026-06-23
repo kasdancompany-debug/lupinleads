@@ -31,19 +31,34 @@ import {
   isRemoteLead,
   updateCrmLeadApi,
 } from "@/lib/crm/api";
+import {
+  fetchPortalCrmLeads,
+  portalLeadUpdateFromLead,
+  updatePortalCrmLeadApi,
+} from "@/lib/crm/portal-api";
 import { CrmHeader } from "./CrmHeader";
 import { PipelineColumn } from "./PipelineColumn";
 import { LeadCardOverlay } from "./LeadCard";
 import { LeadModal } from "./LeadModal";
 import { NewLeadModal } from "./NewLeadModal";
+import { PortalEmptyState } from "@/components/portal/PortalEmptyState";
 
-export function PipelineBoard() {
+export function PipelineBoard({
+  variant = "agency",
+  clientSlug,
+}: {
+  variant?: "agency" | "portal";
+  clientSlug?: string;
+  clientName?: string;
+}) {
+  const isPortal = variant === "portal";
   const [leads, setLeads] = useState<ContractorLead[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<ContractorLead | null>(null);
   const [showNewLead, setShowNewLead] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [useRemote, setUseRemote] = useState(false);
+  const [syncError, setSyncError] = useState("");
   const [leadScores, setLeadScores] = useState<Record<string, LeadTemperature>>({});
 
   function refreshScores(leadList: ContractorLead[]) {
@@ -57,7 +72,17 @@ export function PipelineBoard() {
 
   useEffect(() => {
     async function init() {
-      const { leads: remoteLeads, source } = await fetchCrmLeads();
+      if (isPortal) {
+        const { leads: remoteLeads, source } = await fetchPortalCrmLeads();
+        setLeads(remoteLeads);
+        setUseRemote(source === "supabase");
+        setHydrated(true);
+        return;
+      }
+
+      const { leads: remoteLeads, source } = await fetchCrmLeads(
+        isPortal ? undefined : clientSlug
+      );
       if (source === "supabase" && remoteLeads.length > 0) {
         setLeads(remoteLeads);
         setUseRemote(true);
@@ -71,7 +96,7 @@ export function PipelineBoard() {
       setHydrated(true);
     }
     init();
-  }, []);
+  }, [isPortal, clientSlug]);
 
   useEffect(() => {
     if (hydrated) refreshScores(leads);
@@ -96,6 +121,19 @@ export function PipelineBoard() {
 
   async function syncLead(lead: ContractorLead) {
     if (!useRemote || !isRemoteLead(lead.id)) return;
+    if (isPortal) {
+      const { lead: saved, error } = await updatePortalCrmLeadApi(
+        lead.id,
+        portalLeadUpdateFromLead(lead)
+      );
+      if (saved) {
+        updateLeads((prev) => prev.map((l) => (l.id === saved.id ? saved : l)));
+        setSyncError("");
+      } else if (error) {
+        setSyncError(error);
+      }
+      return;
+    }
     await updateCrmLeadApi(lead);
   }
 
@@ -133,6 +171,7 @@ export function PipelineBoard() {
   }
 
   async function handleDeleteLead(id: string) {
+    if (isPortal) return;
     updateLeads((prev) => prev.filter((l) => l.id !== id));
     if (useRemote && isRemoteLead(id)) {
       await deleteCrmLeadApi(id);
@@ -140,8 +179,13 @@ export function PipelineBoard() {
   }
 
   async function handleCreateLead(input: NewLeadInput) {
+    const payload: NewLeadInput = {
+      ...input,
+      campaign: input.campaign ?? clientSlug ?? null,
+    };
+
     if (useRemote) {
-      const created = await createCrmLeadApi(input);
+      const created = await createCrmLeadApi(payload);
       if (created) {
         updateLeads((prev) => [created, ...prev]);
         return;
@@ -151,7 +195,7 @@ export function PipelineBoard() {
     const now = new Date().toISOString();
     const stage: PipelineStage = "new_lead";
     const newLead: ContractorLead = {
-      ...input,
+      ...payload,
       id: createLeadId(),
       status: stage,
       stage,
@@ -163,7 +207,7 @@ export function PipelineBoard() {
 
   if (!hydrated) {
     return (
-      <div className="px-6 py-8 lg:px-10">
+      <div className="px-4 sm:px-6 py-6 sm:py-8 lg:px-10">
         <div className="h-8 w-48 bg-black-surface rounded animate-pulse mb-6" />
         <div className="flex gap-4 overflow-hidden">
           {PIPELINE_STAGES.map((stage) => (
@@ -180,27 +224,65 @@ export function PipelineBoard() {
   const activeLeads = leads.filter((l) => l.stage !== "won" && l.stage !== "lost");
 
   return (
-    <div className="px-6 py-8 lg:px-10 h-full flex flex-col">
+    <div className="px-4 sm:px-6 py-6 sm:py-8 lg:px-10 h-full flex flex-col min-h-0">
       <CrmHeader
         totalLeads={activeLeads.length}
         pipelineValue={getPipelineValue(leads)}
         wonValue={getWonValue(leads)}
-        onAddLead={() => setShowNewLead(true)}
+        onAddLead={isPortal ? undefined : () => setShowNewLead(true)}
+        variant={variant}
       />
 
-      {useRemote && (
+      {!isPortal && clientSlug ? (
+        <p className="text-[12px] text-silver-muted mb-4 -mt-2">
+          Showing leads for client{" "}
+          <code className="text-forest-glow text-[11px]">{clientSlug}</code>
+        </p>
+      ) : null}
+
+      {syncError ? (
+        <div
+          className="mb-4 rounded-lg border border-red-400/30 bg-red-400/10 px-4 py-3 text-[13px] text-red-300 flex items-start justify-between gap-3"
+          role="alert"
+        >
+          <span>{syncError}</span>
+          <button
+            type="button"
+            className="shrink-0 text-red-200/80 hover:text-red-100 text-xs uppercase tracking-wide"
+            onClick={() => setSyncError("")}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : null}
+
+      {useRemote && !isPortal && !clientSlug && (
         <p className="text-[11px] text-forest-glow/70 mb-4 -mt-2">
           Synced with Supabase — form submissions appear here automatically
         </p>
       )}
 
+      {isPortal && leads.length === 0 ? (
+        <PortalEmptyState
+          title="No leads yet"
+          description="When someone responds to your Lupin ads, their info lands here. Move them from new lead → estimate → job won as you work the job."
+          action={{ label: "Back to overview", href: "/portal" }}
+        />
+      ) : !isPortal && leads.length === 0 && clientSlug ? (
+        <PortalEmptyState
+          title="No leads for this client yet"
+          description="Add a test lead from the Clients page, connect a Meta form, or wait for the first live submission."
+          action={{ label: "Manage clients", href: "/dashboard/clients" }}
+          icon="connect"
+        />
+      ) : (
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-4 overflow-x-auto pb-6 crm-board-scroll flex-1">
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 sm:pb-6 crm-board-scroll flex-1 -mx-1 px-1">
           {PIPELINE_STAGES.map((stage) => (
             <PipelineColumn
               key={stage}
@@ -208,6 +290,7 @@ export function PipelineBoard() {
               leads={getLeadsByStage(leads, stage)}
               onLeadClick={setSelectedLead}
               leadScores={leadScores}
+              variant={variant}
             />
           ))}
         </div>
@@ -216,19 +299,26 @@ export function PipelineBoard() {
           {activeLead ? <LeadCardOverlay lead={activeLead} /> : null}
         </DragOverlay>
       </DndContext>
+      )}
 
       <LeadModal
         lead={selectedLead}
         onClose={() => setSelectedLead(null)}
         onSave={handleSaveLead}
         onDelete={handleDeleteLead}
+        allowDelete={!isPortal}
+        showAiTab={!isPortal}
+        variant={variant}
       />
 
-      <NewLeadModal
-        open={showNewLead}
-        onClose={() => setShowNewLead(false)}
-        onCreate={handleCreateLead}
-      />
+      {!isPortal ? (
+        <NewLeadModal
+          open={showNewLead}
+          onClose={() => setShowNewLead(false)}
+          onCreate={handleCreateLead}
+          defaultCampaign={clientSlug}
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,23 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildExecutiveReport, getAvailableMonths, getClientIds } from "@/lib/reports/data";
+import { apiAuthError, requireAgencyApiAccess, resolveApiDataScope } from "@/lib/auth";
+import { getReportData } from "@/lib/reports/data";
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const clients = await getClientIds();
-  const clientId = searchParams.get("clientId") ?? clients[0]?.id;
-  const month = searchParams.get("month") ?? undefined;
+  try {
+    await requireAgencyApiAccess(request);
 
-  if (!clientId) {
+    const { searchParams } = new URL(request.url);
+    const scope = await resolveApiDataScope(searchParams.get("clientId"));
+    const month = searchParams.get("month") ?? undefined;
+
+    let clientSlug = scope.clientSlug;
+    if (scope.isAgency && !clientSlug) {
+      const bootstrap = await getReportData();
+      clientSlug = searchParams.get("clientId") ?? bootstrap.clients[0]?.id;
+    }
+
+    if (!clientSlug) {
+      const bootstrap = await getReportData();
+      return NextResponse.json({
+        report: null,
+        clients: bootstrap.clients,
+        months: [],
+        empty: true,
+      });
+    }
+
+    const result = await getReportData({ clientSlug, month });
+
     return NextResponse.json({
-      report: null,
-      clients: [],
-      months: [],
-      empty: true,
+      report: result.report,
+      clients: result.clients,
+      months: result.months,
+      clientId: result.clientId,
+      empty: result.empty,
+      adSpendEntered: result.report?.current.adSpendEntered ?? false,
     });
+  } catch (error) {
+    return apiAuthError(error);
   }
-
-  const report = await buildExecutiveReport(clientId, month);
-  const months = await getAvailableMonths(clientId);
-
-  return NextResponse.json({ report, clients, months, empty: false });
 }

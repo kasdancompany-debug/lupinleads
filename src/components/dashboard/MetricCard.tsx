@@ -3,13 +3,36 @@ import { formatCurrency, formatNumber, formatPercent } from "@/lib/dashboard/for
 interface MetricCardProps {
   label: string;
   value: number;
-  change: number;
-  format: "number" | "currency";
+  change?: number;
+  format?: "number" | "currency" | "roas" | "percent";
   invertChange?: boolean;
+  /** Replaces the numeric value (e.g. when data is unavailable). */
+  placeholder?: string;
+  footnote?: string;
+  hideChange?: boolean;
 }
 
-export function MetricCard({ label, value, change, format, invertChange = false }: MetricCardProps) {
-  const displayValue = format === "currency" ? formatCurrency(value) : formatNumber(value);
+export function MetricCard({
+  label,
+  value,
+  change = 0,
+  format = "number",
+  invertChange = false,
+  placeholder,
+  footnote,
+  hideChange = false,
+}: MetricCardProps) {
+  let displayValue: string;
+  if (format === "currency") {
+    displayValue = formatCurrency(value);
+  } else if (format === "roas") {
+    displayValue = `${value}×`;
+  } else if (format === "percent") {
+    displayValue = `${value}%`;
+  } else {
+    displayValue = formatNumber(value);
+  }
+
   const isPositive = invertChange ? change < 0 : change > 0;
   const isNegative = invertChange ? change > 0 : change < 0;
 
@@ -18,39 +41,49 @@ export function MetricCard({ label, value, change, format, invertChange = false 
       <p className="text-[11px] uppercase tracking-[0.12em] text-silver-dim mb-3">
         {label}
       </p>
-      <p className="text-2xl font-medium text-foreground tabular-nums tracking-tight mb-2">
-        {displayValue}
-      </p>
-      <div className="flex items-center gap-1.5">
-        {change !== 0 && (
-          <span
-            className={`inline-flex items-center text-[12px] font-medium tabular-nums ${
-              isPositive
-                ? "text-forest-glow"
-                : isNegative
-                  ? "text-red-400/80"
-                  : "text-silver-dim"
-            }`}
-          >
-            {isPositive && (
-              <svg className="w-3 h-3 mr-0.5" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 2L10 8H2L6 2Z" />
-              </svg>
-            )}
-            {isNegative && (
-              <svg className="w-3 h-3 mr-0.5" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 10L2 4H10L6 10Z" />
-              </svg>
-            )}
-            {formatPercent(Math.abs(change))}
-          </span>
-        )}
-        {change === 0 && value === 0 ? (
-          <span className="text-[11px] text-silver-dim">No data this month</span>
-        ) : (
-          <span className="text-[11px] text-silver-dim">vs last month</span>
-        )}
-      </div>
+      {placeholder ? (
+        <p className="text-sm text-silver-muted leading-snug mb-2 min-h-[2rem] flex items-center">
+          {placeholder}
+        </p>
+      ) : (
+        <p className="text-2xl font-medium text-foreground tabular-nums tracking-tight mb-2">
+          {displayValue}
+        </p>
+      )}
+      {footnote ? (
+        <p className="text-[11px] text-silver-dim">{footnote}</p>
+      ) : hideChange ? null : (
+        <div className="flex items-center gap-1.5">
+          {change !== 0 && (
+            <span
+              className={`inline-flex items-center text-[12px] font-medium tabular-nums ${
+                isPositive
+                  ? "text-forest-glow"
+                  : isNegative
+                    ? "text-red-400/80"
+                    : "text-silver-dim"
+              }`}
+            >
+              {isPositive && (
+                <svg className="w-3 h-3 mr-0.5" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 2L10 8H2L6 2Z" />
+                </svg>
+              )}
+              {isNegative && (
+                <svg className="w-3 h-3 mr-0.5" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 10L2 4H10L6 10Z" />
+                </svg>
+              )}
+              {formatPercent(Math.abs(change))}
+            </span>
+          )}
+          {change === 0 && value === 0 ? (
+            <span className="text-[11px] text-silver-dim">No data this month</span>
+          ) : (
+            <span className="text-[11px] text-silver-dim">vs last month</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

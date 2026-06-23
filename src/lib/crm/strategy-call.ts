@@ -1,29 +1,36 @@
 import { createCrmLead } from "./db";
 import type { ContractorLead } from "./types";
+import type { StrategyCallPayload } from "@/lib/strategy-call/types";
 
-export interface StrategyCallInput {
-  name: string;
-  email: string;
-  company?: string | null;
-  phone?: string | null;
-  message?: string | null;
+export type StrategyCallCrmInput = StrategyCallPayload & {
   consultationRequestId: string;
+};
+
+function buildStrategyCallNotes(payload: StrategyCallPayload): string {
+  return [
+    payload.trade ? `Trade: ${payload.trade}` : null,
+    payload.city ? `City: ${payload.city}` : null,
+    payload.website ? `Website: ${payload.website}` : null,
+    payload.monthlyAdBudget ? `Ad budget: ${payload.monthlyAdBudget}` : null,
+    payload.message,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 export async function createCrmLeadFromStrategyCall(
-  input: StrategyCallInput
+  input: StrategyCallCrmInput
 ): Promise<ContractorLead | null> {
-  const notes = [input.message?.trim(), input.company?.trim() ? `Company: ${input.company.trim()}` : null]
-    .filter(Boolean)
-    .join("\n");
+  const serviceRequested =
+    [input.businessName, input.trade].filter(Boolean).join(" · ") || "Strategy call inquiry";
 
   return createCrmLead({
     name: input.name.trim(),
-    phone: input.phone?.trim() || "",
+    phone: input.phone.trim(),
     email: input.email.trim().toLowerCase(),
-    serviceRequested: input.company?.trim() || "Strategy call inquiry",
+    serviceRequested,
     estimatedValue: 0,
-    notes,
+    notes: buildStrategyCallNotes(input),
     source: "Strategy Call",
     status: "new_lead",
     stage: "new_lead",

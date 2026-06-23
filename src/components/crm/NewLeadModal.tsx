@@ -9,6 +9,7 @@ interface NewLeadModalProps {
   open: boolean;
   onClose: () => void;
   onCreate: (input: NewLeadInput) => void;
+  defaultCampaign?: string;
 }
 
 const EMPTY: NewLeadInput = {
@@ -18,15 +19,21 @@ const EMPTY: NewLeadInput = {
   serviceRequested: "",
   estimatedValue: 0,
   notes: "",
-  source: "Website",
+  source: "Manual",
+  campaign: null,
 };
 
-export function NewLeadModal({ open, onClose, onCreate }: NewLeadModalProps) {
+export function NewLeadModal({ open, onClose, onCreate, defaultCampaign }: NewLeadModalProps) {
   const [form, setForm] = useState<NewLeadInput>(EMPTY);
 
   useEffect(() => {
-    if (open) setForm(EMPTY);
-  }, [open]);
+    if (open) {
+      setForm({
+        ...EMPTY,
+        campaign: defaultCampaign ?? null,
+      });
+    }
+  }, [open, defaultCampaign]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -160,6 +167,13 @@ export function NewLeadModal({ open, onClose, onCreate }: NewLeadModalProps) {
               ))}
             </select>
           </div>
+
+          {defaultCampaign ? (
+            <p className="text-[12px] text-silver-dim">
+              Client campaign:{" "}
+              <code className="text-forest-glow text-[11px]">{defaultCampaign}</code>
+            </p>
+          ) : null}
 
           <div>
             <label className="block text-[11px] uppercase tracking-wider text-silver-dim mb-1.5">

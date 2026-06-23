@@ -2,34 +2,12 @@ import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { HowItWorks } from "@/components/sections/HowItWorks";
-import { TradesSection } from "@/components/sections/TradesSection";
-import { PlatformShowcase } from "@/components/sections/PlatformShowcase";
-import { BuilderCredibility } from "@/components/sections/BuilderCredibility";
-import { CtaBanner } from "@/components/sections/CtaBanner";
+import { Features } from "@/components/sections/Features";
+import { GrowthDivider } from "@/components/ui/GrowthDivider";
 
 const ClickToClosedJob = dynamic(
   () => import("@/components/sections/ClickToClosedJob").then((m) => m.ClickToClosedJob),
-  { loading: () => <SectionPlaceholder /> }
-);
-
-const LaunchIn48Hours = dynamic(
-  () => import("@/components/sections/LaunchIn48Hours").then((m) => m.LaunchIn48Hours),
-  { loading: () => <SectionPlaceholder /> }
-);
-
-const GoodMonthSection = dynamic(
-  () => import("@/components/sections/GoodMonthSection").then((m) => m.GoodMonthSection),
-  { loading: () => <SectionPlaceholder /> }
-);
-
-const ResultsSection = dynamic(
-  () => import("@/components/sections/ResultsSection").then((m) => m.ResultsSection),
-  { loading: () => <SectionPlaceholder /> }
-);
-
-const TrustSection = dynamic(
-  () => import("@/components/sections/TrustSection").then((m) => m.TrustSection),
-  { loading: () => <SectionPlaceholder /> }
+  { loading: () => <SectionPlaceholder tall /> }
 );
 
 const Pricing = dynamic(
@@ -37,14 +15,19 @@ const Pricing = dynamic(
   { loading: () => <SectionPlaceholder tall /> }
 );
 
-const BookACall = dynamic(
-  () => import("@/components/sections/BookACall").then((m) => m.BookACall),
-  { loading: () => <SectionPlaceholder tall /> }
+const TrustSection = dynamic(
+  () => import("@/components/sections/TrustSection").then((m) => m.TrustSection),
+  { loading: () => <SectionPlaceholder /> }
 );
 
 const FAQ = dynamic(() => import("@/components/sections/FAQ").then((m) => m.FAQ), {
   loading: () => <SectionPlaceholder />,
 });
+
+const BookACall = dynamic(
+  () => import("@/components/sections/BookACall").then((m) => m.BookACall),
+  { loading: () => <SectionPlaceholder tall /> }
+);
 
 function SectionPlaceholder({ tall = false }: { tall?: boolean }) {
   return (
@@ -59,20 +42,18 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <GrowthDivider variant="stem" />
       <ProblemSection />
-      <TradesSection />
       <HowItWorks />
-      <PlatformShowcase />
-      <BuilderCredibility />
       <ClickToClosedJob />
-      <CtaBanner />
-      <LaunchIn48Hours />
-      <GoodMonthSection />
-      <ResultsSection />
-      <TrustSection />
+      <GrowthDivider variant="branch" align="left" />
+      <Features />
       <Pricing />
-      <BookACall />
+      <GrowthDivider variant="whisper" />
+      <TrustSection />
       <FAQ />
+      <GrowthDivider variant="stem" align="right" />
+      <BookACall />
     </>
   );
 }

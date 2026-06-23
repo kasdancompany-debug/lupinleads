@@ -1,6 +1,12 @@
 "use client";
 
 import { MockupShell, MockupStat } from "./MockupShell";
+import {
+  MockupCard,
+  StemCompareBar,
+  StemProgressRow,
+  StemBarChart,
+} from "./MockupBrand";
 
 const ROWS = [
   { month: "Jan 2026", leads: 18, spend: "$2,880", cpl: 44, roas: "3.8×", won: "$62K" },
@@ -22,19 +28,13 @@ export function ReportingDashboardMockup({
   return (
     <MockupShell
       title="LUPIN LEADS · Reports"
-      badge="Example"
+      badge="Sample"
       compact={compact && !showcase}
       bare={bare}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <div
-          className={`rounded-lg bg-forest-mid/20 border border-forest-mid/30 flex items-center justify-center text-forest-glow font-bold shrink-0 ${
-            large ? "w-10 h-10 text-xs" : "w-8 h-8 text-[10px]"
-          }`}
-        >
-          SC
-        </div>
-        <div>
+      <div className="flex items-center gap-2.5 mb-4">
+        <div className="mockup-avatar mockup-avatar--md">SC</div>
+        <div className="min-w-0 flex-1">
           <p className={`font-medium text-foreground ${large ? "text-base" : "text-sm"}`}>
             Sample Contractor
           </p>
@@ -43,13 +43,13 @@ export function ReportingDashboardMockup({
           </p>
         </div>
         {large && (
-          <div className="ml-auto flex gap-1">
+          <div className="hidden sm:flex gap-1 shrink-0">
             {["Overview", "Pipeline", "Reports"].map((tab, i) => (
               <span
                 key={tab}
-                className={`text-[10px] px-2.5 py-1 rounded-md ${
+                className={`text-[10px] px-2 py-1 rounded-md ${
                   i === 2
-                    ? "bg-forest-mid/20 text-forest-glow border border-forest-mid/30"
+                    ? "bg-forest-green-deep/40 text-sage-green border border-forest-green-bright/25"
                     : "text-silver-dim"
                 }`}
               >
@@ -60,100 +60,68 @@ export function ReportingDashboardMockup({
         )}
       </div>
 
-      <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 ${large ? "mb-5" : "mb-3"}`}>
-        <MockupStat label="Leads" value="31" sub="This month" highlight />
+      <div className={`grid grid-cols-2 sm:grid-cols-4 gap-2.5 ${large ? "mb-5" : "mb-3"}`}>
+        <MockupStat label="Leads" value="31" sub="This month" highlight trend="up" />
         <MockupStat label="CPL" value="$38" sub="CAD avg" highlight />
-        <MockupStat label="ROAS" value="4.6×" sub="On ad spend" highlight />
+        <MockupStat label="ROAS" value="4.6×" sub="On spend" highlight trend="up" />
         <MockupStat label="Closed" value="$84K" sub="Won jobs" highlight />
       </div>
 
       {large && (
         <>
-          <div className="rounded-xl border border-silver/10 overflow-hidden mb-5">
-            <table className="w-full text-xs sm:text-sm">
+          <MockupCard className="!p-0 overflow-hidden mb-4">
+            <table className="mockup-table">
               <thead>
-                <tr className="border-b border-silver/10 bg-charcoal/80 text-silver-dim">
-                  <th className="text-left px-4 py-3 font-medium">Month</th>
-                  <th className="text-right px-4 py-3 font-medium">Leads</th>
-                  <th className="text-right px-4 py-3 font-medium hidden sm:table-cell">Spend</th>
-                  <th className="text-right px-4 py-3 font-medium">CPL</th>
-                  <th className="text-right px-4 py-3 font-medium">ROAS</th>
-                  <th className="text-right px-4 py-3 font-medium">Won</th>
+                <tr>
+                  <th>Month</th>
+                  <th>Leads</th>
+                  <th className="hidden sm:table-cell">Spend</th>
+                  <th>CPL</th>
+                  <th>ROAS</th>
+                  <th>Won</th>
                 </tr>
               </thead>
               <tbody>
                 {ROWS.map((r) => (
-                  <tr
-                    key={r.month}
-                    className="border-b border-silver/5 last:border-0 hover:bg-white/[0.02]"
-                  >
-                    <td className="px-4 py-3 text-foreground font-medium">{r.month}</td>
-                    <td className="px-4 py-3 text-right text-silver-muted tabular-nums">
-                      {r.leads}
-                    </td>
-                    <td className="px-4 py-3 text-right text-silver-muted tabular-nums hidden sm:table-cell">
-                      {r.spend}
-                    </td>
-                    <td className="px-4 py-3 text-right text-silver-muted tabular-nums">
-                      ${r.cpl}
-                    </td>
-                    <td className="px-4 py-3 text-right text-forest-glow font-semibold">
-                      {r.roas}
-                    </td>
-                    <td className="px-4 py-3 text-right text-foreground font-medium tabular-nums">
-                      {r.won}
-                    </td>
+                  <tr key={r.month}>
+                    <td>{r.month}</td>
+                    <td>{r.leads}</td>
+                    <td className="hidden sm:table-cell">{r.spend}</td>
+                    <td>${r.cpl}</td>
+                    <td className="!text-sage-green font-semibold">{r.roas}</td>
+                    <td className="!text-foreground font-medium">{r.won}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </MockupCard>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            <StemCompareBar
+              spendLabel="Spend"
+              spendValue="$3,240"
+              closedLabel="Closed"
+              closedValue="$84,000"
+              closedPct={76}
+            />
+            <MockupCard>
+              <p className="mockup-section-label mb-4">Pipeline on the stem</p>
+              <div className="space-y-3">
+                <StemProgressRow label="New leads" value="8" pct={32} />
+                <StemProgressRow label="In follow-up" value="14" pct={56} />
+                <StemProgressRow label="Won this month" value="4" pct={100} />
+              </div>
+            </MockupCard>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="rounded-xl border border-silver/10 bg-charcoal/40 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-[11px] uppercase tracking-wider text-silver-dim">
-                  Revenue vs ad spend
-                </p>
-                <span className="text-[11px] text-forest-glow font-medium">+26% MoM</span>
-              </div>
-              <div className="h-3 w-full rounded-full bg-silver/10 overflow-hidden mb-3">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-forest-mid to-forest-glow"
-                  style={{ width: "76%" }}
-                />
-              </div>
-              <div className="flex justify-between text-xs text-silver-dim">
-                <span>Spend $3,240</span>
-                <span className="text-foreground font-semibold">Closed $84,000</span>
-              </div>
-            </div>
-            <div className="rounded-xl border border-silver/10 bg-charcoal/40 p-4">
-              <p className="text-[11px] uppercase tracking-wider text-silver-dim mb-3">
-                Pipeline snapshot
-              </p>
-              <div className="space-y-2">
-                {[
-                  { label: "New leads", value: "8", pct: 32 },
-                  { label: "In follow-up", value: "14", pct: 56 },
-                  { label: "Won this month", value: "4", pct: 100 },
-                ].map((row) => (
-                  <div key={row.label}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-silver-muted">{row.label}</span>
-                      <span className="text-foreground font-medium tabular-nums">{row.value}</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-silver/10 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-forest-mid/80"
-                        style={{ width: `${row.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <MockupCard className="mt-4">
+            <p className="mockup-section-label mb-3">Monthly lead growth</p>
+            <StemBarChart
+              values={[18, 24, 31]}
+              labels={["Jan", "Feb", "Mar"]}
+              height={72}
+            />
+          </MockupCard>
         </>
       )}
     </MockupShell>

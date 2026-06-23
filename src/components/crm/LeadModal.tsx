@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { ContractorLead, PipelineStage } from "@/lib/crm/types";
 import { PIPELINE_STAGES } from "@/lib/crm/types";
 import { STAGE_CONFIG, LEAD_SOURCES } from "@/lib/crm/constants";
+import { PORTAL_STAGE_LABELS } from "@/lib/portal/constants";
 import { formatCurrency } from "@/lib/dashboard/format";
 import { Button } from "@/components/ui/Button";
 import { AiFollowUpPanel } from "@/components/ai/AiFollowUpPanel";
@@ -13,11 +14,23 @@ interface LeadModalProps {
   onClose: () => void;
   onSave: (lead: ContractorLead) => void;
   onDelete: (id: string) => void;
+  allowDelete?: boolean;
+  showAiTab?: boolean;
+  variant?: "agency" | "portal";
 }
 
 type Tab = "details" | "ai";
 
-export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
+export function LeadModal({
+  lead,
+  onClose,
+  onSave,
+  onDelete,
+  allowDelete = true,
+  showAiTab = true,
+  variant = "agency",
+}: LeadModalProps) {
+  const isPortal = variant === "portal";
   const [form, setForm] = useState<ContractorLead | null>(null);
   const [tab, setTab] = useState<Tab>("details");
 
@@ -52,6 +65,10 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
     );
   }
 
+  function applyQuickStage(stage: PipelineStage) {
+    handleStageChange(stage);
+  }
+
   function handleSave() {
     if (!form) return;
     onSave({ ...form, updatedAt: new Date().toISOString() });
@@ -60,6 +77,9 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
 
   const inputClass =
     "w-full bg-black border border-silver/15 rounded-md px-3 py-2 text-[13px] text-foreground placeholder:text-silver-dim focus:outline-none focus:border-forest-mid/50 transition-colors";
+
+  const readOnlyClass =
+    "w-full bg-black/40 border border-silver/10 rounded-md px-3 py-2 text-[13px] text-silver-muted";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -75,7 +95,7 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-[11px] uppercase tracking-wider text-silver-dim mb-0.5">
-                Lead Details
+                {isPortal ? "Your lead" : "Lead Details"}
               </p>
               <h2 className="text-lg font-medium text-foreground">{form.name}</h2>
             </div>
@@ -90,99 +110,171 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
             </button>
           </div>
 
-          <div className="flex gap-2">
-            {(["details", "ai"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTab(t)}
-                className={`px-3 py-1.5 rounded-md text-[12px] transition-colors ${
-                  tab === t
-                    ? "bg-white/[0.08] text-foreground"
-                    : "text-silver-muted hover:text-foreground"
-                }`}
-              >
-                {t === "details" ? "Details" : "AI Assistant"}
-              </button>
-            ))}
-          </div>
+          {showAiTab ? (
+            <div className="flex gap-2">
+              {(["details", "ai"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTab(t)}
+                  className={`px-3 py-1.5 rounded-md text-[12px] transition-colors ${
+                    tab === t
+                      ? "bg-white/[0.08] text-foreground"
+                      : "text-silver-muted hover:text-foreground"
+                  }`}
+                >
+                  {t === "details" ? "Details" : "AI Assistant"}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">
           {tab === "details" ? (
             <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Name">
-                  <input
-                    className={inputClass}
-                    value={form.name}
-                    onChange={(e) => update("name", e.target.value)}
-                  />
-                </Field>
-                <Field label="Estimated Value">
-                  <input
-                    type="number"
-                    className={`${inputClass} tabular-nums`}
-                    value={form.estimatedValue}
-                    onChange={(e) => update("estimatedValue", Number(e.target.value))}
-                  />
-                </Field>
-              </div>
+              {isPortal ? (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <ReadOnlyField label="Name" value={form.name} className={readOnlyClass} />
+                    <Field label="Job value">
+                      <input
+                        type="number"
+                        min={0}
+                        className={`${inputClass} tabular-nums`}
+                        value={form.estimatedValue}
+                        onChange={(e) => update("estimatedValue", Number(e.target.value))}
+                      />
+                    </Field>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Phone">
-                  <input
-                    className={inputClass}
-                    value={form.phone}
-                    onChange={(e) => update("phone", e.target.value)}
-                  />
-                </Field>
-                <Field label="Email">
-                  <input
-                    type="email"
-                    className={inputClass}
-                    value={form.email}
-                    onChange={(e) => update("email", e.target.value)}
-                  />
-                </Field>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <ReadOnlyField label="Phone" value={form.phone || "—"} className={readOnlyClass} />
+                    <ReadOnlyField label="Email" value={form.email || "—"} className={readOnlyClass} />
+                  </div>
 
-              <Field label="Service Requested">
-                <input
-                  className={inputClass}
-                  value={form.serviceRequested}
-                  onChange={(e) => update("serviceRequested", e.target.value)}
-                />
-              </Field>
+                  <ReadOnlyField
+                    label="Service requested"
+                    value={form.serviceRequested || "—"}
+                    className={readOnlyClass}
+                  />
 
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Source">
-                  <select
-                    className={inputClass}
-                    value={form.source}
-                    onChange={(e) => update("source", e.target.value)}
-                  >
-                    {LEAD_SOURCES.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Status">
-                  <select
-                    className={inputClass}
-                    value={form.status}
-                    onChange={(e) => handleStageChange(e.target.value as PipelineStage)}
-                  >
-                    {PIPELINE_STAGES.map((stage) => (
-                      <option key={stage} value={stage}>
-                        {STAGE_CONFIG[stage].label}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <ReadOnlyField label="Source" value={form.source} className={readOnlyClass} />
+                    <Field label="Status">
+                      <select
+                        className={inputClass}
+                        value={form.stage}
+                        onChange={(e) => handleStageChange(e.target.value as PipelineStage)}
+                      >
+                        {PIPELINE_STAGES.map((stage) => (
+                          <option key={stage} value={stage}>
+                            {isPortal ? PORTAL_STAGE_LABELS[stage] : STAGE_CONFIG[stage].label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <QuickStageButton
+                      label="Estimate booked"
+                      stage="appointment_booked"
+                      current={form.stage}
+                      onSelect={applyQuickStage}
+                    />
+                    <QuickStageButton
+                      label="Job won"
+                      stage="won"
+                      current={form.stage}
+                      onSelect={applyQuickStage}
+                      highlight
+                    />
+                    <QuickStageButton
+                      label="Mark lost"
+                      stage="lost"
+                      current={form.stage}
+                      onSelect={applyQuickStage}
+                      danger
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Name">
+                      <input
+                        className={inputClass}
+                        value={form.name}
+                        onChange={(e) => update("name", e.target.value)}
+                      />
+                    </Field>
+                    <Field label="Estimated Value">
+                      <input
+                        type="number"
+                        className={`${inputClass} tabular-nums`}
+                        value={form.estimatedValue}
+                        onChange={(e) => update("estimatedValue", Number(e.target.value))}
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Phone">
+                      <input
+                        className={inputClass}
+                        value={form.phone}
+                        onChange={(e) => update("phone", e.target.value)}
+                      />
+                    </Field>
+                    <Field label="Email">
+                      <input
+                        type="email"
+                        className={inputClass}
+                        value={form.email}
+                        onChange={(e) => update("email", e.target.value)}
+                      />
+                    </Field>
+                  </div>
+
+                  <Field label="Service Requested">
+                    <input
+                      className={inputClass}
+                      value={form.serviceRequested}
+                      onChange={(e) => update("serviceRequested", e.target.value)}
+                    />
+                  </Field>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Source">
+                      <select
+                        className={inputClass}
+                        value={form.source}
+                        onChange={(e) => update("source", e.target.value)}
+                      >
+                        {LEAD_SOURCES.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                    <Field label="Status">
+                      <select
+                        className={inputClass}
+                        value={form.status}
+                        onChange={(e) => handleStageChange(e.target.value as PipelineStage)}
+                      >
+                        {PIPELINE_STAGES.map((stage) => (
+                          <option key={stage} value={stage}>
+                            {isPortal ? PORTAL_STAGE_LABELS[stage] : STAGE_CONFIG[stage].label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  </div>
+                </>
+              )}
 
               <Field label="Notes">
                 <textarea
@@ -190,12 +282,13 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
                   className={`${inputClass} resize-none`}
                   value={form.notes}
                   onChange={(e) => update("notes", e.target.value)}
+                  placeholder={isPortal ? "Add context about this lead, follow-ups, or job details…" : undefined}
                 />
               </Field>
 
               <div className="flex items-center justify-between pt-2 text-[11px] text-silver-dim">
                 <span>Pipeline value: {formatCurrency(form.estimatedValue)}</span>
-                <span>ID: {form.id}</span>
+                {!isPortal ? <span>ID: {form.id}</span> : null}
               </div>
             </div>
           ) : (
@@ -205,16 +298,20 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
 
         {tab === "details" && (
           <div className="shrink-0 bg-black-surface border-t border-silver/10 px-6 py-4 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                onDelete(form.id);
-                onClose();
-              }}
-              className="text-[13px] text-red-400/70 hover:text-red-400 transition-colors"
-            >
-              Delete lead
-            </button>
+            {allowDelete ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onDelete(form.id);
+                  onClose();
+                }}
+                className="text-[13px] text-red-400/70 hover:text-red-400 transition-colors"
+              >
+                Delete lead
+              </button>
+            ) : (
+              <span />
+            )}
             <div className="flex gap-2">
               <Button variant="secondary" size="sm" onClick={onClose}>
                 Cancel
@@ -227,6 +324,62 @@ export function LeadModal({ lead, onClose, onSave, onDelete }: LeadModalProps) {
         )}
       </div>
     </div>
+  );
+}
+
+function QuickStageButton({
+  label,
+  stage,
+  current,
+  onSelect,
+  highlight = false,
+  danger = false,
+}: {
+  label: string;
+  stage: PipelineStage;
+  current: PipelineStage;
+  onSelect: (stage: PipelineStage) => void;
+  highlight?: boolean;
+  danger?: boolean;
+}) {
+  const active = current === stage;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(stage)}
+      className={`px-3 py-1.5 rounded-md text-[12px] font-medium border transition-colors ${
+        active
+          ? highlight
+            ? "border-forest-glow/50 bg-forest-mid/20 text-forest-glow"
+            : danger
+              ? "border-red-400/40 bg-red-400/10 text-red-400"
+              : "border-silver/25 bg-white/[0.06] text-foreground"
+          : highlight
+            ? "border-forest-mid/30 text-forest-glow hover:bg-forest-mid/10"
+            : danger
+              ? "border-red-400/20 text-red-400/80 hover:bg-red-400/10"
+              : "border-silver/15 text-silver-muted hover:text-foreground hover:bg-white/[0.03]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ReadOnlyField({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className: string;
+}) {
+  return (
+    <Field label={label}>
+      <div className={className}>{value}</div>
+    </Field>
   );
 }
 

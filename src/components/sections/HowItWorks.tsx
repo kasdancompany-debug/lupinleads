@@ -8,6 +8,7 @@ import { RiseOnScroll } from "@/components/motion/RiseOnScroll";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { FloatingProductCard } from "@/components/marketing/mockups/FloatingProductCard";
 import { CrmPipelineMockup } from "@/components/marketing/mockups/CrmPipelineMockup";
+import { HOW_IT_WORKS_SECTION } from "@/lib/constants";
 
 export function HowItWorks() {
   return (
@@ -15,10 +16,10 @@ export function HowItWorks() {
       <div className="section-body">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           <StickySectionHeader
-            eyebrow="The growth system"
-            title="From ad click to"
-            highlight="booked job."
-            description="Meta Ads and creative bring homeowners in. Branded forms capture them. CRM and AI follow-up move them to a booked estimate. Reporting shows what closed — one path, not five tools."
+            eyebrow={HOW_IT_WORKS_SECTION.eyebrow}
+            title={HOW_IT_WORKS_SECTION.title}
+            highlight={HOW_IT_WORKS_SECTION.highlight}
+            description={HOW_IT_WORKS_SECTION.description}
           />
           <SlideIn direction="right" delay={0.1}>
             <RiseOnScroll offset={20}>
@@ -29,12 +30,12 @@ export function HowItWorks() {
           </SlideIn>
         </div>
 
-        <div className="rounded-2xl border border-forest-mid/25 bg-charcoal/30 p-6 sm:p-8 lg:p-10">
+        <div className="brand-panel p-6 sm:p-8 lg:p-10 relative overflow-hidden">
           <SectionIntro
             align="center"
-            eyebrow="The journey"
-            title="Click to booked job"
-            description="Six connected steps — ad click through signed contract."
+            eyebrow={HOW_IT_WORKS_SECTION.journeyEyebrow}
+            title={HOW_IT_WORKS_SECTION.journeyTitle}
+            description={HOW_IT_WORKS_SECTION.journeyDescription}
             className="!mb-8 lg:!mb-10 max-w-2xl mx-auto"
           />
           <GrowthJourneyFlow />

@@ -2,8 +2,9 @@
 
 import type { ReactNode } from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SectionIntro } from "@/components/ui/SectionIntro";
 import { Button } from "@/components/ui/Button";
-import { FEATURES, CTAS } from "@/lib/constants";
+import { FEATURES, CTAS, WHAT_YOU_GET_SECTION } from "@/lib/constants";
 import { scrollToBook } from "@/lib/marketing";
 
 const icons: Record<string, ReactNode> = {
@@ -47,43 +48,36 @@ const icons: Record<string, ReactNode> = {
 
 export function Features() {
   return (
-    <section id="features" className="section-deep py-32 lg:py-40 relative overflow-hidden">
-      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-40" />
-      <div className="absolute top-0 left-0 right-0 section-divider" />
-
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <ScrollReveal className="max-w-3xl mx-auto text-center mb-20">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-forest-glow mb-4 font-medium">
-            How it works
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-6">
-            Everything you need to{" "}
-            <span className="text-gradient-forest">fill your calendar</span>
-          </h2>
-          <p className="text-silver-muted text-lg leading-relaxed">
-            Meta brings the traffic. We capture, qualify, and deliver estimate-ready leads — then
-            track every job through your pipeline.
-          </p>
+    <section id="what-you-get" className="section-deep home-section-pad relative overflow-hidden">
+      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-[0.14]" />
+      <div className="relative page-container">
+        <ScrollReveal className="mb-12 lg:mb-16">
+          <SectionIntro
+            align="center"
+            variant="display"
+            eyebrow={WHAT_YOU_GET_SECTION.eyebrow}
+            title={WHAT_YOU_GET_SECTION.title}
+            highlight={WHAT_YOU_GET_SECTION.highlight}
+            description={WHAT_YOU_GET_SECTION.description}
+            className="max-w-3xl mx-auto"
+          />
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {FEATURES.map((feature, index) => (
             <ScrollReveal key={feature.title} delay={index * 80}>
-              <article className="value-card rounded-xl p-8 h-full group">
-                <div className="w-12 h-12 rounded-xl bg-forest-mid/20 border border-forest-mid/35 flex items-center justify-center text-forest-glow mb-6 group-hover:scale-105 transition-transform duration-300">
+              <article className="value-card brand-card-lift rounded-xl p-6 sm:p-8 h-full group">
+                <div className="brand-icon-chip w-12 h-12 mb-6 group-hover:border-lupin-purple/30 transition-colors duration-300">
                   {icons[feature.icon]}
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">{feature.title}</h3>
-                <p className="text-silver-muted leading-relaxed text-sm">{feature.description}</p>
+                <h3 className="type-card-title mb-3">{feature.title}</h3>
+                <p className="type-card-body">{feature.description}</p>
               </article>
             </ScrollReveal>
           ))}
         </div>
 
-        <ScrollReveal delay={400} className="mt-16 text-center">
-          <p className="text-silver-muted text-sm mb-5">
-            Not sure which pieces you need? We&apos;ll map it on a free strategy call.
-          </p>
+        <ScrollReveal delay={400} className="mt-14 lg:mt-16 text-center">
           <Button size="lg" emphasis onClick={scrollToBook}>
             {CTAS.primary}
           </Button>

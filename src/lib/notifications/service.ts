@@ -124,7 +124,7 @@ export async function sendInstantNotification(input: {
   const notifyEmail = input.email || process.env.NOTIFICATION_EMAIL;
   if (resendKey && notifyEmail) {
     try {
-      await fetch("https://api.resend.com/emails", {
+      const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${resendKey}`,
@@ -137,6 +137,10 @@ export async function sendInstantNotification(input: {
           text: input.message,
         }),
       });
+      if (!response.ok) {
+        const detail = await response.text().catch(() => "");
+        console.error("Resend email failed:", response.status, detail);
+      }
     } catch (err) {
       console.error("Email notification failed:", err);
     }

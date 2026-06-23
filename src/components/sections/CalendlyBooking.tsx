@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { CalendlyEmbed } from "@/components/ui/CalendlyEmbed";
 import { Button } from "@/components/ui/Button";
-import { getCalendlyUrl } from "@/lib/calendly";
+import { getCalendlyUrl, type CalendlyPrefill } from "@/lib/calendly";
+import { openCalendlyInNewTab } from "@/lib/calendly-widget";
+import { scrollToBook } from "@/lib/marketing";
 
 interface CalendlyBookingProps {
   calendlyUrl?: string | null;
-  prefill?: { name?: string; email?: string };
+  prefill?: CalendlyPrefill;
   compact?: boolean;
 }
 
@@ -16,56 +17,51 @@ export function CalendlyBooking({ calendlyUrl, prefill, compact = false }: Calen
 
   if (!resolvedUrl) {
     return (
-      <div className="glass-card p-8 text-center max-w-lg mx-auto">
-        <p className="text-foreground font-medium mb-2">Scheduling not configured yet</p>
-        <p className="text-silver-muted text-sm mb-6">
-          Add <code className="text-forest-glow">NEXT_PUBLIC_CALENDLY_URL</code> in Vercel, then
-          redeploy.
+      <div className="rounded-xl border border-silver/15 bg-black-surface/40 p-8 text-center">
+        <p className="text-foreground font-medium mb-2">Pick a time on the call</p>
+        <p className="text-silver-muted text-sm mb-6 max-w-sm mx-auto">
+          Online scheduling isn&apos;t set up yet. Send us a message and we&apos;ll book your free
+          lead strategy call manually.
         </p>
-        <Button onClick={() => window.location.assign("/#book-call")}>
-          Use the contact form instead
+        <Button type="button" emphasis onClick={scrollToBook}>
+          Go to contact form
         </Button>
       </div>
     );
   }
 
+  const mobileHeight = compact ? 640 : 720;
+
   return (
-    <div className={compact ? "" : "glass-card p-4 sm:p-6"}>
+    <div className={compact ? "" : "rounded-xl border border-silver/10 bg-black-surface/30 p-3 sm:p-5"}>
       <CalendlyEmbed
         url={resolvedUrl}
         prefill={prefill}
-        minHeight={compact ? 620 : 700}
+        minHeight={mobileHeight}
+        className="rounded-lg"
       />
-      <p className="text-center text-[12px] text-silver-dim mt-4">
-        {compact ? (
-          <>
-            Calendar not showing?{" "}
-            <a
-              href={resolvedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-forest-glow hover:text-forest-light"
-            >
-              Open Calendly directly
-            </a>
-          </>
-        ) : (
-          <>
-            Prefer a callback?{" "}
-            <Link href="/#book-call" className="text-forest-glow hover:text-forest-light">
-              Send us a message
-            </Link>{" "}
-            — or{" "}
-            <a
-              href={resolvedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-forest-glow hover:text-forest-light"
-            >
-              open the calendar in a new tab
-            </a>
-          </>
-        )}
+      <p className="text-center text-[12px] text-silver-dim mt-4 px-2 leading-relaxed">
+        Calendar not loading?{" "}
+        <button
+          type="button"
+          onClick={() => openCalendlyInNewTab(prefill)}
+          className="text-forest-glow hover:text-forest-light underline-offset-2 hover:underline"
+        >
+          Open in Calendly
+        </button>
+        {" · "}
+        <button
+          type="button"
+          onClick={() =>
+            document.getElementById("book-call-form")?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            })
+          }
+          className="text-forest-glow hover:text-forest-light underline-offset-2 hover:underline"
+        >
+          Use the contact form
+        </button>
       </p>
     </div>
   );

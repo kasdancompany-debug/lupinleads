@@ -1,5 +1,7 @@
 import type { ContractorLead, PipelineStage } from "./types";
+import type { PortalLeadUpdateInput } from "./portal-update";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getCrmLeads } from "@/lib/data/crm-leads";
 
 interface DbLead {
   id: string;
@@ -11,6 +13,7 @@ interface DbLead {
   notes: string;
   source: string;
   campaign: string | null;
+  meta_leadgen_id: string | null;
   status: PipelineStage;
   stage: PipelineStage;
   form_submission_id: string | null;
@@ -36,10 +39,11 @@ function toLead(row: DbLead): ContractorLead {
   };
 }
 
-function toDbLead(lead: ContractorLead): Omit<DbLead, "form_submission_id" | "consultation_request_id" | "campaign"> & {
+function toDbLead(lead: ContractorLead): Omit<DbLead, "form_submission_id" | "consultation_request_id" | "campaign" | "meta_leadgen_id"> & {
   form_submission_id?: string | null;
   consultation_request_id?: string | null;
   campaign?: string | null;
+  meta_leadgen_id?: string | null;
 } {
   return {
     id: lead.id,
@@ -57,21 +61,9 @@ function toDbLead(lead: ContractorLead): Omit<DbLead, "form_submission_id" | "co
   };
 }
 
-export async function listCrmLeads(): Promise<ContractorLead[]> {
-  const supabase = createAdminClient();
-  if (!supabase) return [];
-
-  const { data, error } = await supabase
-    .from("crm_leads")
-    .select("*")
-    .order("updated_at", { ascending: false });
-
-  if (error) {
-    console.error("listCrmLeads:", error);
-    return [];
-  }
-
-  return (data as DbLead[]).map(toLead);
+/** @deprecated Use getCrmLeads from @/lib/data/crm-leads */
+export async function listCrmLeads(campaign?: string): Promise<ContractorLead[]> {
+  return getCrmLeads({ clientSlug: campaign });
 }
 
 export async function createCrmLead(
@@ -79,6 +71,7 @@ export async function createCrmLead(
     formSubmissionId?: string;
     consultationRequestId?: string;
     campaign?: string | null;
+    metaLeadgenId?: string | null;
   }
 ): Promise<ContractorLead | null> {
   const supabase = createAdminClient();
@@ -95,6 +88,7 @@ export async function createCrmLead(
       notes: lead.notes,
       source: lead.source,
       campaign: lead.campaign ?? null,
+      meta_leadgen_id: lead.metaLeadgenId ?? null,
       status: lead.status,
       stage: lead.stage,
       form_submission_id: lead.formSubmissionId ?? null,
@@ -105,6 +99,118 @@ export async function createCrmLead(
 
   if (error) {
     console.error("createCrmLead:", error);
+    return null;
+  }
+
+  return toLead(data as DbLead);
+}
+
+export async function findCrmLeadByMetaLeadgenId(
+  metaLeadgenId: string
+): Promise<(ContractorLead & { campaign: string | null }) | null> {
+  const supabase = createAdminClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("crm_leads")
+    .select("*")
+    .eq("meta_leadgen_id", metaLeadgenId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const row = data as DbLead;
+  return { ...toLead(row), campaign: row.campaign };
+}
+
+export async function getCrmLeadCampaign(id: string): Promise<string | null> {
+  const supabase = createAdminClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("crm_leads")
+    .select("campaign")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return (data as { campaign: string | null }).campaign;
+}
+
+export async function getCrmLeadById(
+  id: string
+): Promise<(ContractorLead & { campaign: string | null }) | null> {
+  const supabase = createAdminClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("crm_leads")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  const row = data as DbLead;
+  return { ...toLead(row), campaign: row.campaign };
+}
+
+export async function updatePortalCrmLead(
+  id: string,
+  clientSlug: string,
+  input: PortalLeadUpdateInput
+): Promise<ContractorLead | null> {
+  const existing = await getCrmLeadById(id);
+  if (!existing || existing.campaign !== clientSlug) {
+    return null;
+  }
+
+  const stage = input.stage ?? existing.stage;
+  const lead: ContractorLead = {
+    id: existing.id,
+    name: existing.name,
+    phone: existing.phone,
+    email: existing.email,
+    serviceRequested: existing.serviceRequested,
+    estimatedValue: input.estimatedValue ?? existing.estimatedValue,
+    notes: input.notes ?? existing.notes,
+    source: existing.source,
+    status: stage,
+    stage,
+    createdAt: existing.createdAt,
+    updatedAt: new Date().toISOString(),
+  };
+
+  return updateCrmLeadForCampaign(lead, clientSlug);
+}
+
+export async function updateCrmLeadForCampaign(
+  lead: ContractorLead,
+  campaign: string
+): Promise<ContractorLead | null> {
+  const supabase = createAdminClient();
+  if (!supabase) return null;
+
+  const row = toDbLead(lead);
+  const { data, error } = await supabase
+    .from("crm_leads")
+    .update({
+      name: row.name,
+      phone: row.phone,
+      email: row.email,
+      service_requested: row.service_requested,
+      estimated_value: row.estimated_value,
+      notes: row.notes,
+      source: row.source,
+      status: row.status,
+      stage: row.stage,
+    })
+    .eq("id", lead.id)
+    .eq("campaign", campaign)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("updateCrmLeadForCampaign:", error);
     return null;
   }
 

@@ -11,7 +11,8 @@ export type SectionVariant =
   | "elevated"
   | "deep"
   | "contrast"
-  | "mesh";
+  | "mesh"
+  | "stone";
 
 const variantClass: Record<SectionVariant, string> = {
   forest: "section-forest",
@@ -23,6 +24,7 @@ const variantClass: Record<SectionVariant, string> = {
   deep: "section-deep",
   contrast: "section-contrast",
   mesh: "section-emerald",
+  stone: "section-stone",
 };
 
 const variantAmbient: Partial<Record<SectionVariant, string>> = {
@@ -52,7 +54,7 @@ export function SectionShell({
   return (
     <motion.section
       id={id}
-      className={`py-16 md:py-24 lg:py-28 relative overflow-hidden ${variantClass[variant]} ${className}`}
+      className={`home-section-pad relative overflow-hidden ${variantClass[variant]} ${className}`}
       initial={reduce ? false : { opacity: 0 }}
       whileInView={reduce ? undefined : { opacity: 1 }}
       viewport={{ once: true, amount: 0.05 }}
@@ -60,15 +62,17 @@ export function SectionShell({
     >
       {variantAmbient[variant] && (
         <div
-          className={`absolute inset-0 pointer-events-none opacity-80 ${variantAmbient[variant]}`}
+          className={`absolute inset-0 pointer-events-none opacity-50 ${variantAmbient[variant]}`}
         />
       )}
       {showMesh && (
-        <div className="absolute inset-0 mesh-gradient pointer-events-none opacity-40" />
+        <div className="absolute inset-0 mesh-gradient pointer-events-none opacity-25" />
       )}
-      <div className="absolute top-0 left-0 right-0 section-divider pointer-events-none" />
-      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-25" />
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">{children}</div>
+      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-[0.14]" />
+      {variant !== "stone" ? (
+        <div className="absolute inset-0 brand-stem-watermark pointer-events-none opacity-[0.22]" />
+      ) : null}
+      <div className="relative page-container">{children}</div>
     </motion.section>
   );
 }

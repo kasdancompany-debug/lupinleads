@@ -11,22 +11,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-forest-glow text-black font-semibold hover:bg-[#6dd4a0] border border-forest-glow/80 shadow-lg shadow-forest-glow/25 focus-visible:ring-2 focus-visible:ring-forest-glow focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    "bg-forest-green-bright text-stone-white hover:bg-forest-green border border-forest-green-bright/70 shadow-md shadow-forest-green-deep/25 hover:shadow-lg hover:shadow-forest-green-deep/30 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-lupin-purple-light/80 focus-visible:ring-offset-2 focus-visible:ring-offset-deep-soil",
   secondary:
-    "bg-black-surface text-foreground border border-silver/25 hover:border-silver/45 hover:bg-black-elevated focus-visible:ring-2 focus-visible:ring-silver/30",
+    "bg-black-surface/90 text-foreground border border-silver/18 hover:border-lupin-purple/25 hover:bg-charcoal-elevated active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-silver/25",
   ghost:
-    "text-silver-muted hover:text-foreground hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-silver/20",
+    "text-silver-muted hover:text-foreground hover:bg-white/[0.04] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-silver/20",
   outline:
-    "border border-silver/20 text-silver-muted font-medium hover:text-foreground hover:bg-white/[0.03] hover:border-silver/30 focus-visible:ring-2 focus-visible:ring-silver/25",
+    "border border-silver/16 text-silver-muted hover:text-foreground hover:bg-white/[0.02] hover:border-forest-green-bright/30 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-silver/20",
 };
 
 const emphasisStyles =
-  "shadow-xl shadow-forest-glow/35 ring-1 ring-forest-glow/25 hover:shadow-forest-glow/45 hover:ring-forest-glow/40";
+  "ring-1 ring-lupin-purple/25 hover:ring-lupin-purple/35 brand-glow-accent";
 
 const sizeStyles = {
-  sm: "px-4 py-2 text-sm min-h-[40px]",
-  md: "px-6 py-3 text-sm min-h-[44px]",
-  lg: "px-8 py-3.5 text-base min-h-[48px]",
+  sm: "px-4 py-2 min-h-[40px]",
+  md: "px-6 py-3 min-h-[44px]",
+  lg: "px-8 py-3.5 min-h-[48px]",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -48,9 +48,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={`
-          inline-flex items-center justify-center gap-2 rounded-md font-medium
-          tracking-wide transition-all duration-200
-          disabled:opacity-50 disabled:cursor-not-allowed
+          type-cta inline-flex items-center justify-center gap-2 rounded-lg
+          transition-[color,background-color,border-color,box-shadow,transform] duration-300 ease-out
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
           ${variantStyles[variant]}
           ${emphasis && variant === "primary" ? emphasisStyles : ""}
           ${sizeStyles[size]}

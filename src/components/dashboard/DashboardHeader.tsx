@@ -2,14 +2,20 @@ interface DashboardHeaderProps {
   clientName: string;
   periodLabel: string;
   isLive?: boolean;
+  label?: string;
 }
 
-export function DashboardHeader({ clientName, periodLabel, isLive = true }: DashboardHeaderProps) {
+export function DashboardHeader({
+  clientName,
+  periodLabel,
+  isLive = true,
+  label = "Agency Dashboard",
+}: DashboardHeaderProps) {
   return (
     <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
       <div>
         <p className="text-[11px] uppercase tracking-[0.15em] text-silver-dim mb-1">
-          Agency Dashboard
+          {label}
         </p>
         <h1 className="text-xl font-medium text-foreground tracking-tight">
           {clientName}

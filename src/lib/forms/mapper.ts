@@ -72,5 +72,8 @@ export function resolveCampaign(
   },
   defaultCampaign: string | null
 ): string | null {
-  return tracking.campaign || tracking.utmCampaign || defaultCampaign || null;
+  const raw = tracking.campaign || tracking.utmCampaign || defaultCampaign || null;
+  if (!raw) return null;
+  const normalized = raw.trim().toLowerCase();
+  return normalized || null;
 }

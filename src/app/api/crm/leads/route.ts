@@ -1,22 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCrmLead, listCrmLeads } from "@/lib/crm/db";
+import { apiAuthError, requireAgencyApiAccess } from "@/lib/auth";
+import { getCrmLeads } from "@/lib/data/crm-leads";
+import { createCrmLead } from "@/lib/crm/db";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 
-export async function GET() {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ leads: [], source: "local" });
-  }
+export async function GET(request: NextRequest) {
+  try {
+    await requireAgencyApiAccess(request);
 
-  const leads = await listCrmLeads();
-  return NextResponse.json({ leads, source: "supabase" });
+    const { searchParams } = new URL(request.url);
+    const clientSlug = searchParams.get("clientSlug")?.trim() || undefined;
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ leads: [], source: "local" });
+    }
+
+    const leads = await getCrmLeads({ clientSlug });
+    return NextResponse.json({ leads, source: "supabase" });
+  } catch (error) {
+    return apiAuthError(error);
+  }
 }
 
 export async function POST(request: NextRequest) {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
-
   try {
+    await requireAgencyApiAccess(request);
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
+
     const body = await request.json();
     const lead = await createCrmLead({
       name: body.name,
@@ -36,7 +49,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ lead }, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  } catch (error) {
+    return apiAuthError(error);
   }
 }

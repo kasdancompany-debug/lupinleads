@@ -1,10 +1,13 @@
 import type { ContractorLead, NewLeadInput } from "./types";
 
-export async function fetchCrmLeads(): Promise<{
+export async function fetchCrmLeads(clientSlug?: string): Promise<{
   leads: ContractorLead[];
   source: "supabase" | "local";
 }> {
-  const res = await fetch("/api/crm/leads");
+  const query = clientSlug
+    ? `?clientSlug=${encodeURIComponent(clientSlug)}`
+    : "";
+  const res = await fetch(`/api/crm/leads${query}`);
   const data = await res.json();
   return {
     leads: data.leads ?? [],

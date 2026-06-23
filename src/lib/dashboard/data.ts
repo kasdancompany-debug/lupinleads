@@ -1,5 +1,7 @@
 import { SITE } from "@/lib/constants";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { getCrmLeads } from "@/lib/data/crm-leads";
+import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import type { ContractorLead } from "@/lib/crm/types";
 import type {
   Appointment,
   DashboardData,
@@ -9,19 +11,13 @@ import type {
   MonthlyMetrics,
 } from "./types";
 
-interface CrmLeadRow {
-  id: string;
-  name: string;
-  email: string;
-  service_requested: string;
-  estimated_value: number;
-  source: string;
-  stage: string;
-  created_at: string;
-  updated_at: string;
-}
-
 const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+export type GetDashboardDataOptions = {
+  /** When set, only leads where campaign = clientSlug. When omitted, all leads (agency). */
+  clientSlug?: string;
+  clientName?: string;
+};
 
 export function calculateRoi(revenue: number, spend: number): number {
   if (spend === 0) return 0;
@@ -68,20 +64,20 @@ function crmStageToStatus(stage: string): LeadStatus {
   }
 }
 
-function crmToLead(row: CrmLeadRow): Lead {
+function crmToLead(row: ContractorLead): Lead {
   return {
     id: row.id,
     name: row.name,
-    company: row.service_requested?.trim() || "—",
+    company: row.serviceRequested?.trim() || "—",
     email: row.email,
     source: row.source || "CRM",
     status: crmStageToStatus(row.stage),
-    estimatedValue: Number(row.estimated_value) || 0,
-    createdAt: row.created_at,
+    estimatedValue: row.estimatedValue || 0,
+    createdAt: row.createdAt,
   };
 }
 
-function crmToAppointment(row: CrmLeadRow): Appointment | null {
+function crmToAppointment(row: ContractorLead): Appointment | null {
   if (row.stage !== "appointment_booked" && row.stage !== "estimate_sent") {
     return null;
   }
@@ -89,8 +85,8 @@ function crmToAppointment(row: CrmLeadRow): Appointment | null {
   return {
     id: row.id,
     leadName: row.name,
-    company: row.service_requested?.trim() || "—",
-    scheduledAt: row.updated_at,
+    company: row.serviceRequested?.trim() || "—",
+    scheduledAt: row.updatedAt,
     type: row.stage === "estimate_sent" ? "Estimate Sent" : "Appointment",
     status: "scheduled",
   };
@@ -100,19 +96,19 @@ function isInMonth(isoDate: string, key: string): boolean {
   return monthKey(new Date(isoDate)) === key;
 }
 
-function buildTrends(crmLeads: CrmLeadRow[], monthKeys: string[]): MonthlyMetrics[] {
+function buildTrends(crmLeads: ContractorLead[], monthKeys: string[]): MonthlyMetrics[] {
   return monthKeys.map((key) => {
-    const leadsGenerated = crmLeads.filter((r) => isInMonth(r.created_at, key)).length;
+    const leadsGenerated = crmLeads.filter((r) => isInMonth(r.createdAt, key)).length;
 
     const appointmentsBooked = crmLeads.filter(
       (r) =>
-        isInMonth(r.updated_at, key) &&
+        isInMonth(r.updatedAt, key) &&
         (r.stage === "appointment_booked" || r.stage === "estimate_sent")
     ).length;
 
     const revenueClosed = crmLeads
-      .filter((r) => r.stage === "won" && isInMonth(r.updated_at, key))
-      .reduce((sum, r) => sum + (Number(r.estimated_value) || 0), 0);
+      .filter((r) => r.stage === "won" && isInMonth(r.updatedAt, key))
+      .reduce((sum, r) => sum + (r.estimatedValue || 0), 0);
 
     const totalSpend = 0;
 
@@ -156,14 +152,14 @@ function buildSummary(trends: MonthlyMetrics[]): DashboardSummary {
   };
 }
 
-function emptyDashboardData(): DashboardData {
+function emptyDashboardData(clientName?: string): DashboardData {
   const now = new Date();
   const periodLabel = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const monthKeys = getLast6MonthKeys();
   const trends = buildTrends([], monthKeys);
 
   return {
-    clientName: SITE.name,
+    clientName: clientName ?? SITE.name,
     periodLabel,
     summary: buildSummary(trends),
     trends,
@@ -173,42 +169,23 @@ function emptyDashboardData(): DashboardData {
   };
 }
 
-async function fetchCrmLeads(
-  supabase: NonNullable<ReturnType<typeof createAdminClient>>
-): Promise<CrmLeadRow[]> {
-  const { data, error } = await supabase
-    .from("crm_leads")
-    .select("*")
-    .order("updated_at", { ascending: false });
+export async function getDashboardData(
+  options: GetDashboardDataOptions = {}
+): Promise<DashboardData> {
+  const displayName = options.clientName ?? SITE.name;
 
-  if (error) {
-    // Table may not exist until migration 002 is run
-    if (error.code !== "42P01" && error.code !== "PGRST205") {
-      console.error("getDashboardData crm_leads:", error);
-    }
-    return [];
-  }
-
-  return (data ?? []) as CrmLeadRow[];
-}
-
-export async function getDashboardData(): Promise<DashboardData> {
   if (!isSupabaseConfigured()) {
-    return emptyDashboardData();
+    return emptyDashboardData(displayName);
   }
 
-  const supabase = createAdminClient();
-  if (!supabase) {
-    return emptyDashboardData();
-  }
-
-  const crmLeads = await fetchCrmLeads(supabase);
+  const crmLeads = await getCrmLeads({ clientSlug: options.clientSlug });
 
   const monthKeys = getLast6MonthKeys();
   const trends = buildTrends(crmLeads, monthKeys);
   const summary = buildSummary(trends);
 
-  const latestLeads = crmLeads.map(crmToLead)
+  const latestLeads = crmLeads
+    .map(crmToLead)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 8);
 
@@ -222,7 +199,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   const periodLabel = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
   return {
-    clientName: SITE.name,
+    clientName: displayName,
     periodLabel,
     summary,
     trends,

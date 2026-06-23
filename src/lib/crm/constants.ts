@@ -37,12 +37,14 @@ export const STAGE_CONFIG: Record<
 };
 
 export const LEAD_SOURCES = [
+  "Manual",
+  "Test",
+  "Facebook",
   "Google Ads",
   "Referral",
   "Website",
   "Yard Sign",
   "HomeAdvisor",
-  "Facebook",
   "Repeat Customer",
   "Other",
 ] as const;

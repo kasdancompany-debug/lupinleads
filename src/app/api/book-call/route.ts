@@ -1,50 +1,75 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createCrmLeadFromStrategyCall } from "@/lib/crm/strategy-call";
 import { sendInstantNotification } from "@/lib/notifications/service";
-import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import {
+  formatStrategyCallNotification,
+  parseStrategyCallBody,
+  validateStrategyCallForm,
+} from "@/lib/strategy-call/validate";
+
+import type { StrategyCallPayload, StrategyCallValidationError } from "@/lib/strategy-call/types";
+
+function isValidationError(
+  result: StrategyCallPayload | StrategyCallValidationError
+): result is StrategyCallValidationError {
+  return "success" in result && result.success === false;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, company, phone, message } = body;
+    let body: Record<string, unknown>;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
 
-    if (!name?.trim() || !email?.trim()) {
+    const formInput = parseStrategyCallBody(body);
+    const validated = validateStrategyCallForm(formInput);
+
+    if (isValidationError(validated)) {
       return NextResponse.json(
-        { error: "Name and email are required" },
+        { error: validated.error, fieldErrors: validated.fieldErrors },
         { status: 400 }
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
-    }
+    const payload = validated;
 
     if (!isSupabaseConfigured()) {
-      console.log("Book call submission (Supabase not configured):", {
-        name,
-        email,
-        company,
-        phone,
-        message,
-      });
-      return NextResponse.json({
-        success: true,
-        message: "Request received. We'll be in touch soon.",
-      });
+      return NextResponse.json(
+        {
+          error:
+            "We're unable to save your request right now. Email hello@lupinleads.com and we'll help you book a call.",
+        },
+        { status: 503 }
+      );
     }
 
-    const supabase = await createClient();
+    const admin = createAdminClient();
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error:
+            "We're unable to save your request right now. Email hello@lupinleads.com and we'll help you book a call.",
+        },
+        { status: 503 }
+      );
+    }
 
-    const { data: consultation, error } = await supabase
+    const { data: consultation, error } = await admin
       .from("consultation_requests")
       .insert({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        company: company?.trim() || null,
-        phone: phone?.trim() || null,
-        message: message?.trim() || null,
+        name: payload.name,
+        email: payload.email,
+        company: payload.businessName,
+        phone: payload.phone,
+        trade: payload.trade,
+        city: payload.city,
+        website: payload.website,
+        monthly_ad_budget: payload.monthlyAdBudget,
+        message: payload.message,
       })
       .select("id")
       .single();
@@ -52,52 +77,55 @@ export async function POST(request: NextRequest) {
     if (error || !consultation) {
       console.error("Supabase insert error:", error);
       return NextResponse.json(
-        { error: "Failed to save your request. Please try again." },
+        { error: "We couldn't save your request. Please try again in a moment." },
         { status: 500 }
       );
     }
 
     const crmLead = await createCrmLeadFromStrategyCall({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      company,
-      phone,
-      message,
+      ...payload,
       consultationRequestId: consultation.id,
     });
 
     if (!crmLead) {
       console.error("Failed to create CRM lead for strategy call:", consultation.id);
+      return NextResponse.json(
+        { error: "We couldn't save your request. Please try again in a moment." },
+        { status: 500 }
+      );
     }
 
-    await sendInstantNotification({
-      title: "New strategy call request",
-      message: [
-        `${name.trim()} submitted the Book A Strategy Call form.`,
-        email ? `Email: ${email.trim()}` : null,
-        phone?.trim() ? `Phone: ${phone.trim()}` : null,
-        company?.trim() ? `Company: ${company.trim()}` : null,
-        message?.trim() ? `Message: ${message.trim()}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n"),
-      metadata: {
-        consultationRequestId: consultation.id,
-        crmLeadId: crmLead?.id,
-        source: "Strategy Call",
-        leadName: name.trim(),
-      },
-    });
+    try {
+      await sendInstantNotification({
+        title: `Strategy call: ${payload.businessName} (${payload.trade})`,
+        message: formatStrategyCallNotification(payload),
+        metadata: {
+          consultationRequestId: consultation.id,
+          crmLeadId: crmLead.id,
+          source: "Strategy Call",
+          leadName: payload.name,
+          businessName: payload.businessName,
+          trade: payload.trade,
+          city: payload.city,
+          email: payload.email,
+          phone: payload.phone,
+        },
+      });
+    } catch (notifyError) {
+      // Lead is saved — notification failure should not block the user
+      console.error("Strategy call notification failed:", notifyError);
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Request received. We'll be in touch within 24 hours.",
-      crmLeadId: crmLead?.id,
+      message: "Request received. We'll be in touch within one business day.",
+      consultationRequestId: consultation.id,
+      crmLeadId: crmLead.id,
     });
   } catch (error) {
     console.error("Book call error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred" },
+      { error: "Something went wrong on our end. Please try again." },
       { status: 500 }
     );
   }

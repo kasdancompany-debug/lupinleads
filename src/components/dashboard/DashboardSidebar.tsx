@@ -20,21 +20,14 @@ const NAV_ITEMS = [
     ),
   },
   {
-    label: "Lead Forms",
-    href: "/dashboard/forms",
+    label: "Clients",
+    href: "/dashboard/clients",
     icon: (
       <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="2" y="2" width="12" height="12" rx="1" />
-        <path d="M5 6H11M5 8.5H9M5 11H11" />
-      </svg>
-    ),
-  },
-  {
-    label: "AI Assistant",
-    href: "/dashboard/assistant",
-    icon: (
-      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M8 1.5L9.5 6H14L10.5 8.5L12 13L8 10.5L4 13L5.5 8.5L2 6H6.5L8 1.5Z" />
+        <circle cx="6" cy="5" r="2.5" />
+        <path d="M2 13.5C2 11 4 9.5 6 9.5C8 9.5 10 11 10 13.5" />
+        <circle cx="11.5" cy="5.5" r="1.75" />
+        <path d="M9.5 13.5C9.5 11.8 10.6 10.5 11.5 10.5C12.4 10.5 13.5 11.8 13.5 13.5" />
       </svg>
     ),
   },
@@ -50,22 +43,13 @@ const NAV_ITEMS = [
     ),
   },
   {
-    label: "Leads",
-    href: "/dashboard#leads",
+    label: "Ad Spend",
+    href: "/dashboard/spend",
     icon: (
       <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="8" cy="5" r="2.5" />
-        <path d="M3 14C3 11 5.5 9 8 9C10.5 9 13 11 13 14" />
-      </svg>
-    ),
-  },
-  {
-    label: "Appointments",
-    href: "/dashboard#appointments",
-    icon: (
-      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="2" y="3" width="12" height="11" rx="1" />
-        <path d="M2 6H14M5 1V4M11 1V4" />
+        <circle cx="8" cy="8" r="6" />
+        <path d="M8 5V8L10 10" />
+        <path d="M5 11H11" />
       </svg>
     ),
   },
@@ -137,6 +121,34 @@ export function DashboardSidebar() {
           );
         })}
       </nav>
+
+      <div className="px-3 pb-2">
+        <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-silver-dim">Dev</p>
+        <Link
+          href="/dashboard/dev/isolation-test"
+          className={`
+            flex items-center gap-3 px-3 py-2 rounded-md text-[12px] transition-colors
+            ${pathname.startsWith("/dashboard/dev/isolation-test")
+              ? "bg-white/[0.06] text-foreground"
+              : "text-silver-muted hover:text-foreground hover:bg-white/[0.03]"
+            }
+          `}
+        >
+          Isolation tests
+        </Link>
+        <Link
+          href="/dashboard/dev/meta-lead"
+          className={`
+            flex items-center gap-3 px-3 py-2 rounded-md text-[12px] transition-colors
+            ${pathname.startsWith("/dashboard/dev/meta-lead")
+              ? "bg-white/[0.06] text-foreground"
+              : "text-silver-muted hover:text-foreground hover:bg-white/[0.03]"
+            }
+          `}
+        >
+          Meta lead test
+        </Link>
+      </div>
 
       <div className="px-4 py-4 border-t border-silver/8">
         <div className="flex items-center gap-3 px-2">

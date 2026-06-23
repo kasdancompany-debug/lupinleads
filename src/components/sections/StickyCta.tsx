@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { CTAS } from "@/lib/constants";
-import { formatFoundingPriceLine, scrollToBook } from "@/lib/marketing";
+import { formatFoundingPriceLine } from "@/lib/marketing";
 
 const HIDE_NEAR_IDS = ["pricing", "book-call", "site-footer"];
 
@@ -47,21 +47,20 @@ export function StickyCta() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 pointer-events-auto">
         <div className="flex flex-col gap-2.5">
           <div className="min-w-0 text-center sm:text-left">
-            <p className="text-[13px] sm:text-sm font-semibold text-foreground leading-snug">
+            <p className="type-nav-mobile font-semibold text-foreground leading-snug">
               Turn ad clicks into booked jobs
             </p>
-            <p className="text-[11px] sm:text-xs text-silver-muted mt-0.5 leading-relaxed">
+            <p className="type-label text-silver-muted mt-0.5 leading-relaxed">
               {priceLine}
             </p>
           </div>
-          <Button
+          <BookCallButton
             size="md"
             emphasis
-            onClick={scrollToBook}
             className="w-full min-h-[48px] text-sm font-semibold"
           >
             {CTAS.primary}
-          </Button>
+          </BookCallButton>
         </div>
       </div>
     </div>

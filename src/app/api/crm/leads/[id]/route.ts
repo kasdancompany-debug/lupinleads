@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiAuthError, requireAgencyApiAccess } from "@/lib/auth";
 import { deleteCrmLead, updateCrmLead } from "@/lib/crm/db";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import type { ContractorLead, PipelineStage } from "@/lib/crm/types";
@@ -9,11 +10,13 @@ export async function PUT(
 ) {
   const { id } = await params;
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
-
   try {
+    await requireAgencyApiAccess(request);
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
+
     const body = await request.json();
     const lead: ContractorLead = {
       id,
@@ -36,25 +39,31 @@ export async function PUT(
     }
 
     return NextResponse.json({ lead: updated });
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  } catch (error) {
+    return apiAuthError(error);
   }
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
+  try {
+    await requireAgencyApiAccess(request);
 
-  const ok = await deleteCrmLead(id);
-  if (!ok) {
-    return NextResponse.json({ error: "Failed to delete lead" }, { status: 500 });
-  }
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
 
-  return NextResponse.json({ success: true });
+    const ok = await deleteCrmLead(id);
+    if (!ok) {
+      return NextResponse.json({ error: "Failed to delete lead" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return apiAuthError(error);
+  }
 }

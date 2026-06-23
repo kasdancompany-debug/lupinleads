@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BrandEyebrow } from "@/components/ui/BrandEyebrow";
 
 interface SectionIntroProps {
   eyebrow: string;
@@ -17,7 +18,7 @@ export function SectionIntro({
   highlight,
   description,
   align = "left",
-  variant = "bold",
+  variant = "display",
   className = "",
   children,
 }: SectionIntroProps) {
@@ -27,7 +28,7 @@ export function SectionIntro({
     <header
       className={`section-header ${centered ? "section-header--center mx-auto" : ""} ${className}`}
     >
-      {eyebrow ? <p className="section-eyebrow">{eyebrow}</p> : null}
+      {eyebrow ? <BrandEyebrow align={centered ? "center" : "left"}>{eyebrow}</BrandEyebrow> : null}
       <h2 className={variant === "display" ? "section-headline-display" : "section-headline"}>
         {title}
         {highlight && (

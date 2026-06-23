@@ -7,7 +7,14 @@ import { ReportMetricCard } from "./ReportMetricCard";
 import { BrandingPanel } from "./BrandingPanel";
 import { formatCurrency } from "@/lib/dashboard/format";
 
-export function ExecutiveReportsDashboard() {
+export function ExecutiveReportsDashboard({
+  variant = "agency",
+}: {
+  variant?: "agency" | "portal";
+}) {
+  const isPortal = variant === "portal";
+  const dataEndpoint = isPortal ? "/api/portal/reports/data" : "/api/reports/data";
+  const pdfEndpoint = isPortal ? "/api/portal/reports/pdf" : "/api/reports/pdf";
   const [clientId, setClientId] = useState("");
   const [reportMonth, setReportMonth] = useState("");
   const [report, setReport] = useState<ExecutiveReport | null>(null);
@@ -17,14 +24,19 @@ export function ExecutiveReportsDashboard() {
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [empty, setEmpty] = useState(false);
+  const [adSpendEntered, setAdSpendEntered] = useState(false);
+
+  const CPL_ROAS_PLACEHOLDER = "Pending ad spend";
 
   const loadReport = useCallback(async (cId: string, month?: string) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ clientId: cId });
+      const params = new URLSearchParams();
+      if (!isPortal) params.set("clientId", cId);
       if (month) params.set("month", month);
 
-      const res = await fetch(`/api/reports/data?${params}`);
+      const query = params.toString();
+      const res = await fetch(query ? `${dataEndpoint}?${query}` : dataEndpoint);
       const data = await res.json();
 
       if (data.empty || !data.report) {
@@ -38,23 +50,29 @@ export function ExecutiveReportsDashboard() {
 
       setEmpty(false);
       setReport(data.report);
-      setClients(data.clients);
+      setAdSpendEntered(Boolean(data.adSpendEntered ?? data.report?.current?.adSpendEntered));
+      if (data.clients) setClients(data.clients);
       setMonths(data.months);
+      if (data.clientId) setClientId(data.clientId);
       if (!month) {
         setReportMonth((prev) => prev || data.report.reportMonth);
       }
 
       const brandings = getBrandings();
-      const b = brandings.find((x) => x.clientId === cId) ?? data.report.branding;
+      const resolvedClientId = isPortal ? data.clientId ?? cId : cId;
+      const b =
+        brandings.find((x) => x.clientId === resolvedClientId) ?? data.report.branding;
       setBranding(b);
     } catch {
       setEmpty(true);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [dataEndpoint, isPortal]);
 
   useEffect(() => {
+    if (isPortal) return;
+
     fetch("/api/reports/data")
       .then((res) => res.json())
       .then((data) => {
@@ -70,26 +88,35 @@ export function ExecutiveReportsDashboard() {
         setEmpty(true);
         setLoading(false);
       });
-  }, []);
+  }, [isPortal]);
 
   useEffect(() => {
+    if (isPortal) {
+      loadReport("", reportMonth || undefined);
+      return;
+    }
+
     if (!clientId) return;
     loadReport(clientId, reportMonth || undefined);
-  }, [clientId, reportMonth, loadReport]);
+  }, [clientId, reportMonth, loadReport, isPortal]);
 
   async function downloadPdf() {
     if (!report || !branding) return;
     setDownloading(true);
 
     try {
-      const res = await fetch("/api/reports/pdf", {
+      const res = await fetch(pdfEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clientId,
-          reportMonth: report.reportMonth,
-          branding,
-        }),
+        body: JSON.stringify(
+          isPortal
+            ? { reportMonth: report.reportMonth }
+            : {
+                clientId,
+                reportMonth: report.reportMonth,
+                branding,
+              }
+        ),
       });
 
       if (!res.ok) throw new Error("Download failed");
@@ -98,7 +125,7 @@ export function ExecutiveReportsDashboard() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `executive-report-${clientId}-${report.reportMonth}.pdf`;
+      a.download = `executive-report-${isPortal ? report.clientName : clientId}-${report.reportMonth}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch {
@@ -131,12 +158,20 @@ export function ExecutiveReportsDashboard() {
           <h1 className="text-xl font-medium text-foreground">Monthly Performance</h1>
         </div>
         <div className="dashboard-card p-10 text-center max-w-xl">
-          <p className="text-foreground font-medium mb-2">No client reports yet</p>
+          <p className="text-foreground font-medium mb-2">
+            {isPortal ? "No reports available yet" : "No client reports yet"}
+          </p>
           <p className="text-[13px] text-silver-muted leading-relaxed">
-            Reports pull live data from <code className="text-forest-glow">crm_leads</code> by
-            client campaign tag. When you onboard a founding partner, set their{" "}
-            <code className="text-forest-glow">campaign</code> on leads and add branding in
-            Supabase to generate PDFs here.
+            {isPortal
+              ? "Your monthly performance report will appear here once lead data is available for your account."
+              : (
+                <>
+                  Reports pull live data from <code className="text-forest-glow">crm_leads</code> by
+                  client campaign tag. When you onboard a founding partner, set their{" "}
+                  <code className="text-forest-glow">campaign</code> on leads and add branding in
+                  Supabase to generate PDFs here.
+                </>
+              )}
           </p>
         </div>
       </div>
@@ -144,6 +179,8 @@ export function ExecutiveReportsDashboard() {
   }
 
   const { current, previous, trends, highlights } = report;
+  const cplPlaceholder = !adSpendEntered ? CPL_ROAS_PLACEHOLDER : undefined;
+  const roasPlaceholder = !adSpendEntered ? CPL_ROAS_PLACEHOLDER : undefined;
 
   return (
     <div>
@@ -158,20 +195,22 @@ export function ExecutiveReportsDashboard() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <select
-            value={clientId}
-            onChange={(e) => {
-              setClientId(e.target.value);
-              setReportMonth("");
-            }}
-            className="dashboard-card px-3 py-2 text-[13px] text-foreground bg-black-surface"
-          >
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          {!isPortal ? (
+            <select
+              value={clientId}
+              onChange={(e) => {
+                setClientId(e.target.value);
+                setReportMonth("");
+              }}
+              className="dashboard-card px-3 py-2 text-[13px] text-foreground bg-black-surface"
+            >
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          ) : null}
 
           <select
             value={reportMonth}
@@ -213,6 +252,18 @@ export function ExecutiveReportsDashboard() {
         </p>
       </div>
 
+      {!isPortal && !adSpendEntered ? (
+        <div className="dashboard-card px-5 py-4 mb-6 border-l-2 border-l-amber-400/40 bg-amber-400/[0.04]">
+          <p className="text-sm text-foreground leading-relaxed">
+            Ad spend has not been entered for this month.{" "}
+            <a href="/dashboard/spend" className="text-forest-glow hover:underline">
+              Log spend
+            </a>{" "}
+            to show CPL and ROAS.
+          </p>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
         <ReportMetricCard
           label="Leads"
@@ -226,6 +277,8 @@ export function ExecutiveReportsDashboard() {
           previous={previous?.costPerLead}
           format="currency"
           invertChange
+          placeholder={cplPlaceholder}
+          hideChange={!adSpendEntered}
         />
         <ReportMetricCard
           label="Appointments"
@@ -250,11 +303,13 @@ export function ExecutiveReportsDashboard() {
           value={current.roas}
           previous={previous?.roas}
           format="roas"
+          placeholder={roasPlaceholder}
+          hideChange={!adSpendEntered}
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className={isPortal ? "space-y-6" : "grid grid-cols-1 lg:grid-cols-3 gap-6"}>
+        <div className={isPortal ? "space-y-6" : "lg:col-span-2 space-y-6"}>
           <div className="dashboard-card overflow-hidden">
             <div className="px-5 py-4 border-b border-silver/8">
               <p className="text-[11px] uppercase tracking-wider text-silver-dim">
@@ -286,7 +341,7 @@ export function ExecutiveReportsDashboard() {
                       <td className="px-5 py-3 font-medium text-foreground">{row.label}</td>
                       <td className="px-5 py-3 tabular-nums text-silver-muted">{row.leads}</td>
                       <td className="px-5 py-3 tabular-nums text-silver-muted">
-                        {formatCurrency(row.costPerLead)}
+                        {row.adSpendEntered ? formatCurrency(row.costPerLead) : "—"}
                       </td>
                       <td className="px-5 py-3 tabular-nums text-silver-muted">
                         {row.appointments}
@@ -297,7 +352,9 @@ export function ExecutiveReportsDashboard() {
                       <td className="px-5 py-3 tabular-nums text-forest-glow">
                         {formatCurrency(row.revenue)}
                       </td>
-                      <td className="px-5 py-3 tabular-nums text-silver-muted">{row.roas}×</td>
+                      <td className="px-5 py-3 tabular-nums text-silver-muted">
+                        {row.adSpendEntered && row.roas > 0 ? `${row.roas}×` : "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -320,17 +377,19 @@ export function ExecutiveReportsDashboard() {
           </div>
         </div>
 
-        <div>
-          <BrandingPanel
-            branding={branding}
-            onSave={(b) => {
-              setBranding(b);
-              setReport((prev) =>
-                prev ? { ...prev, branding: b, clientName: b.clientName } : prev
-              );
-            }}
-          />
-        </div>
+        {!isPortal ? (
+          <div>
+            <BrandingPanel
+              branding={branding}
+              onSave={(b) => {
+                setBranding(b);
+                setReport((prev) =>
+                  prev ? { ...prev, branding: b, clientName: b.clientName } : prev
+                );
+              }}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

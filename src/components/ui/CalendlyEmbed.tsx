@@ -1,38 +1,15 @@
 "use client";
 
-import Script from "next/script";
-import { useCallback, useState } from "react";
-
-declare global {
-  interface Window {
-    Calendly?: {
-      initInlineWidget: (options: {
-        url: string;
-        parentElement: HTMLElement;
-        prefill?: { name?: string; email?: string };
-      }) => void;
-    };
-  }
-}
+import { useCallback, useEffect, useState } from "react";
+import { buildCalendlyUrl, type CalendlyPrefill } from "@/lib/calendly";
+import { loadCalendlyScript, openCalendlyInNewTab } from "@/lib/calendly-widget";
+import { Button } from "@/components/ui/Button";
 
 interface CalendlyEmbedProps {
   url: string;
-  prefill?: { name?: string; email?: string };
+  prefill?: CalendlyPrefill;
   minHeight?: number;
   className?: string;
-}
-
-function buildCalendlyUrl(
-  baseUrl: string,
-  prefill?: { name?: string; email?: string }
-): string {
-  const parsed = new URL(baseUrl);
-  if (prefill?.name) parsed.searchParams.set("name", prefill.name);
-  if (prefill?.email) parsed.searchParams.set("email", prefill.email);
-  parsed.searchParams.set("background_color", "0a0a0a");
-  parsed.searchParams.set("text_color", "e8e8e8");
-  parsed.searchParams.set("primary_color", "52b788");
-  return parsed.toString();
 }
 
 export function CalendlyEmbed({
@@ -44,6 +21,16 @@ export function CalendlyEmbed({
   const [scriptReady, setScriptReady] = useState(false);
   const [initFailed, setInitFailed] = useState(false);
   const embedUrl = buildCalendlyUrl(url, prefill);
+
+  useEffect(() => {
+    let cancelled = false;
+    void loadCalendlyScript().then((ready) => {
+      if (!cancelled) setScriptReady(ready);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const initWidget = useCallback(
     (container: HTMLDivElement | null) => {
@@ -73,44 +60,69 @@ export function CalendlyEmbed({
       if (!ok) {
         window.setTimeout(() => {
           if (!initWidget(node)) setInitFailed(true);
-        }, 1200);
+        }, 1500);
       }
     },
     [initWidget, scriptReady]
   );
 
+  if (!scriptReady && !initFailed) {
+    return (
+      <div
+        className={`flex items-center justify-center rounded-sm border border-silver/10 bg-black-surface/40 ${className}`}
+        style={{ minWidth: "280px", height: `${Math.min(minHeight, 420)}px` }}
+        aria-busy="true"
+        aria-label="Loading calendar"
+      >
+        <p className="text-sm text-silver-muted">Loading calendar…</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div
-        ref={containerRef}
-        className={`calendly-inline-widget w-full overflow-hidden rounded-sm ${className}`}
-        data-url={embedUrl}
-        style={{ minWidth: "280px", height: `${minHeight}px` }}
-      />
-
-      {initFailed && (
-        <div className="text-center mt-4 p-4 border border-silver/15 rounded-sm">
-          <p className="text-silver-muted text-sm mb-3">
-            Calendar didn&apos;t load in-page. Open it directly:
-          </p>
-          <a
-            href={embedUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium bg-forest-mid text-foreground rounded-sm border border-forest-light/30 hover:bg-forest-light transition-colors"
-          >
-            Book on Calendly →
-          </a>
-        </div>
+      {!initFailed && (
+        <div
+          ref={containerRef}
+          className={`calendly-inline-widget w-full overflow-hidden rounded-sm ${className}`}
+          data-url={embedUrl}
+          style={{ minWidth: "280px", height: `${minHeight}px` }}
+        />
       )}
 
-      <Script
-        id="calendly-widget"
-        src="https://assets.calendly.com/assets/external/widget.js"
-        strategy="afterInteractive"
-        onReady={() => setScriptReady(true)}
-        onLoad={() => setScriptReady(true)}
-      />
+      {initFailed && (
+        <div
+          className="text-center p-6 sm:p-8 border border-silver/15 rounded-xl bg-black-surface/40"
+          style={{ minHeight: Math.min(minHeight, 320) }}
+        >
+          <p className="text-foreground font-medium mb-2">Calendar didn&apos;t load</p>
+          <p className="text-silver-muted text-sm mb-5 max-w-sm mx-auto">
+            This can happen on slow connections or with strict browser settings. Open Calendly
+            directly or use the contact form below.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              type="button"
+              emphasis
+              onClick={() => openCalendlyInNewTab(prefill)}
+            >
+              Open Calendly
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                document.getElementById("book-call-form")?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
+            >
+              Use contact form
+            </Button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -27,4 +27,7 @@ export interface ContractorLead {
 export type NewLeadInput = Omit<
   ContractorLead,
   "id" | "status" | "stage" | "createdAt" | "updatedAt"
->;
+> & {
+  /** Client slug — stored as crm_leads.campaign for portal scoping */
+  campaign?: string | null;
+};

@@ -3,24 +3,22 @@
 import { useState } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { FAQ_ITEMS, CTAS } from "@/lib/constants";
-import { Button } from "@/components/ui/Button";
-import { scrollToBook } from "@/lib/marketing";
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="section-surface py-16 md:py-24 lg:py-28 relative overflow-hidden">
-      <div className="absolute inset-0 section-glow-top pointer-events-none opacity-40" />
-      <div className="absolute top-0 left-0 right-0 section-divider pointer-events-none" />
-      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-25" />
-      <div className="relative max-w-3xl mx-auto px-6 lg:px-8">
+    <section id="faq" className="section-surface home-section-pad relative overflow-hidden">
+      <div className="absolute inset-0 section-glow-top pointer-events-none opacity-30" />
+      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-[0.12]" />
+      <div className="relative page-container max-w-3xl">
         <ScrollReveal>
           <SectionHeading
             eyebrow="FAQ"
-            title="Straight answers for contractors"
-            description="How the growth system works, what you own, and what you pay — before your strategy call."
+            title="Straight answers before you book"
+            description="Founding partner pricing, ad spend, and what you actually get — no surprises on the call."
             bold
           />
         </ScrollReveal>
@@ -34,11 +32,9 @@ export function FAQ() {
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-white/[0.02] transition-colors"
+                    className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 text-left hover:bg-forest-green-deep/10 transition-colors duration-200"
                   >
-                    <span className="text-[15px] font-semibold text-foreground pr-4">
-                      {item.question}
-                    </span>
+                    <span className="type-card-title pr-4">{item.question}</span>
                     <svg
                       className={`w-5 h-5 text-forest-glow shrink-0 transition-transform ${
                         isOpen ? "rotate-180" : ""
@@ -53,9 +49,7 @@ export function FAQ() {
                   </button>
                   {isOpen && (
                     <div className="px-6 pb-5 border-t border-silver/8">
-                      <p className="text-silver-muted text-sm leading-relaxed pt-4">
-                        {item.answer}
-                      </p>
+                      <p className="type-card-body pt-4">{item.answer}</p>
                     </div>
                   )}
                 </div>
@@ -65,15 +59,15 @@ export function FAQ() {
         </div>
 
         <ScrollReveal delay={200}>
-          <div className="text-center value-card rounded-2xl p-10 glow-green border-forest-mid/25">
-            <p className="text-xl font-bold text-foreground mb-2">Still have questions?</p>
-            <p className="text-silver-muted text-sm mb-6 max-w-sm mx-auto">
+          <div className="text-center value-card rounded-2xl p-8 sm:p-10 border-forest-green-bright/18">
+            <p className="type-card-title text-[1.125rem] mb-2">Still have questions?</p>
+            <p className="type-card-body mb-6 max-w-sm mx-auto">
               Book a free strategy call. We&apos;ll walk through the full system for your trade and
               market.
             </p>
-            <Button size="lg" emphasis onClick={scrollToBook}>
+            <BookCallButton size="lg" emphasis>
               {CTAS.primary}
-            </Button>
+            </BookCallButton>
           </div>
         </ScrollReveal>
       </div>

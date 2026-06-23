@@ -1,24 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiAuthError, requireAgencyApiAccess } from "@/lib/auth";
 import { deleteForm, getFormById, updateForm } from "@/lib/forms/db";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import type { FormField } from "@/lib/forms/types";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
+  try {
+    await requireAgencyApiAccess(request);
 
-  const form = await getFormById(id);
-  if (!form) {
-    return NextResponse.json({ error: "Form not found" }, { status: 404 });
-  }
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
 
-  return NextResponse.json({ form });
+    const form = await getFormById(id);
+    if (!form) {
+      return NextResponse.json({ error: "Form not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ form });
+  } catch (error) {
+    return apiAuthError(error);
+  }
 }
 
 export async function PUT(
@@ -27,11 +34,13 @@ export async function PUT(
 ) {
   const { id } = await params;
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
-
   try {
+    await requireAgencyApiAccess(request);
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
+
     const body = await request.json();
     const form = await updateForm(id, {
       name: body.name,
@@ -48,25 +57,31 @@ export async function PUT(
     }
 
     return NextResponse.json({ form });
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  } catch (error) {
+    return apiAuthError(error);
   }
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
-  }
+  try {
+    await requireAgencyApiAccess(request);
 
-  const ok = await deleteForm(id);
-  if (!ok) {
-    return NextResponse.json({ error: "Failed to delete form" }, { status: 500 });
-  }
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
+    }
 
-  return NextResponse.json({ success: true });
+    const ok = await deleteForm(id);
+    if (!ok) {
+      return NextResponse.json({ error: "Failed to delete form" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return apiAuthError(error);
+  }
 }

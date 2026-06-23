@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { WolfMark } from "@/components/ui/WolfMark";
+import { SiteLogo } from "@/components/ui/SiteLogo";
 import { Button } from "@/components/ui/Button";
 import { SITE } from "@/lib/constants";
 
+export const metadata = {
+  title: "Welcome",
+  description: "Your LUPIN LEADS subscription is confirmed.",
+  robots: { index: false, follow: false },
+};
+
 export default function SuccessPage() {
   return (
-    <div className="min-h-screen hero-gradient flex items-center justify-center px-6">
+    <div className="min-h-screen min-h-[100dvh] hero-gradient flex items-center justify-center px-5 sm:px-6">
       <div className="absolute inset-0 grain-overlay pointer-events-none" />
       <div className="relative text-center max-w-lg">
-        <WolfMark size={64} className="text-forest-glow mx-auto mb-8" />
+        <SiteLogo href="" size={56} showName={false} className="justify-center mb-8" />
         <h1 className="font-display text-4xl text-gradient-silver mb-4">
           Welcome to LUPIN LEADS
         </h1>

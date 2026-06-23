@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { WolfCrest } from "@/components/ui/WolfCrest";
-import { Button } from "@/components/ui/Button";
-import { NAV_LINKS, SITE, CTAS } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
+import { SiteLogo } from "@/components/ui/SiteLogo";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
+import { NAV_LINKS, CTAS } from "@/lib/constants";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -20,6 +18,13 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <nav
@@ -28,63 +33,63 @@ export function Navbar() {
             ? "border-b border-forest-mid/25 bg-forest-black/95 backdrop-blur-xl shadow-lg shadow-forest-black/30"
             : "border-b border-transparent bg-forest-black/50 backdrop-blur-sm"
         }`}
+        aria-label="Main"
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[4.5rem]">
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group min-w-0">
-              <WolfCrest
-                size={32}
-                className="sm:w-9 sm:h-9 text-forest-glow transition-colors group-hover:text-forest-light shrink-0"
-              />
-              <span className="font-display text-base sm:text-lg lg:text-xl tracking-[0.1em] text-foreground truncate">
-                {SITE.name}
-              </span>
-            </Link>
+            <SiteLogo
+              size={34}
+              nameClassName="type-wordmark text-base sm:text-lg lg:text-[1.25rem] text-foreground truncate"
+            />
 
             <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-silver-muted hover:text-foreground transition-colors"
+                  className="type-nav text-silver-muted hover:text-foreground transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
-              <Button size="sm" emphasis onClick={scrollToBook}>
+              <BookCallButton size="sm" emphasis>
                 {CTAS.primary}
-              </Button>
+              </BookCallButton>
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <Button
+              <BookCallButton
                 size="sm"
                 emphasis
-                onClick={scrollToBook}
-                className="text-[10px] sm:text-xs px-2.5 sm:px-3 leading-tight"
+                className="text-[10px] sm:text-xs px-2.5 sm:px-3 leading-tight min-h-[40px]"
               >
-                {CTAS.primary}
-              </Button>
+                {CTAS.short}
+              </BookCallButton>
               <button
                 type="button"
-                className="p-2 text-silver-muted hover:text-foreground"
+                className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-silver-muted hover:text-foreground"
                 onClick={() => setOpen(!open)}
-                aria-label="Toggle menu"
+                aria-label={open ? "Close menu" : "Open menu"}
+                aria-expanded={open}
+                aria-controls="mobile-nav"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
                   {open ? <path d="M6 6L18 18M6 18L18 6" /> : <path d="M4 8H20M4 16H20" />}
                 </svg>
               </button>
             </div>
           </div>
 
-          {open && (
-            <div className="md:hidden pb-5 border-t border-silver/10 pt-3 space-y-3">
+          {open ? (
+            <div
+              id="mobile-nav"
+              className="md:hidden pb-5 border-t border-silver/10 pt-3 space-y-1 max-h-[calc(100dvh-4rem)] overflow-y-auto"
+            >
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="block py-1 text-silver-muted hover:text-foreground transition-colors"
+                  className="type-nav-mobile block py-3 px-1 text-silver-muted hover:text-foreground transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
@@ -92,13 +97,13 @@ export function Navbar() {
               ))}
               <a
                 href="#book-call"
-                className="block py-1 text-silver-muted hover:text-foreground transition-colors"
+                className="type-nav-mobile block py-3 px-1 text-sage-green font-semibold"
                 onClick={() => setOpen(false)}
               >
                 {CTAS.primary}
               </a>
             </div>
-          )}
+          ) : null}
         </div>
       </nav>
     </header>

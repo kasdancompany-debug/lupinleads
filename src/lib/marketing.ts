@@ -1,4 +1,7 @@
 import { FOUNDING_PARTNER } from "@/lib/constants";
+import { isCalendlyConfigured } from "@/lib/calendly";
+import { openCalendlyPopup } from "@/lib/calendly-widget";
+import type { CalendlyPrefill } from "@/lib/calendly";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-CA", {
@@ -14,9 +17,42 @@ export function formatFoundingPriceLine(separator: "·" | "•" = "·") {
 }
 
 export function scrollToBook() {
-  document.getElementById("book-call")?.scrollIntoView({ behavior: "smooth" });
+  const el = document.getElementById("book-call");
+  if (!el) return false;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  return true;
+}
+
+export function scrollToHowItWorks() {
+  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
 }
 
 export function scrollToPricing() {
   document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+}
+
+export type BookLeadStrategyCallOptions = {
+  /** When true, always scroll to the contact form section (skip Calendly popup). */
+  preferForm?: boolean;
+  prefill?: CalendlyPrefill;
+};
+
+/**
+ * Primary booking action sitewide.
+ * - Calendly configured: popup overlay (new tab fallback) — or scroll to embed when preferForm.
+ * - Not configured: scroll to contact form at #book-call.
+ */
+export async function bookLeadStrategyCall(
+  options: BookLeadStrategyCallOptions = {}
+): Promise<"popup" | "tab" | "form" | "failed"> {
+  const { preferForm = false, prefill } = options;
+
+  if (!preferForm && isCalendlyConfigured()) {
+    const result = await openCalendlyPopup(prefill);
+    if (result === "popup" || result === "tab") return result;
+    // Popup and tab both failed — fall through to form section
+  }
+
+  const scrolled = scrollToBook();
+  return scrolled ? "form" : "failed";
 }
