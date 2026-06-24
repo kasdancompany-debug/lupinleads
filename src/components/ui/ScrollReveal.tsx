@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useReducedMotion } from "framer-motion";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -24,8 +25,14 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) {
+      setVisible(true);
+      return;
+    }
+
     const node = ref.current;
     if (!node) return;
 
@@ -41,15 +48,17 @@ export function ScrollReveal({
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [reduceMotion]);
+
+  const isHidden = !visible && !reduceMotion;
 
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out will-change-transform ${
-        visible
-          ? "opacity-100 translate-x-0 translate-y-0"
-          : `opacity-0 ${hiddenOffset[direction]}`
+        isHidden
+          ? `opacity-0 ${hiddenOffset[direction]}`
+          : "opacity-100 translate-x-0 translate-y-0"
       } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >

@@ -2645,3 +2645,53 @@ body {
   background: color-mix(in srgb, var(--silver) 15%, transparent);
   border-radius: 2px;
 }
+
+/* ── A11y & polish ── */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--forest-mid);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 2px solid var(--lupin-purple-light);
+  outline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--lupin-purple-light) 85%, white);
+  outline-offset: 2px;
+}
+
+.section-skeleton {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--forest-mid) 6%, transparent) 50%,
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-skeleton {
+    animation: none;
+  }
+}

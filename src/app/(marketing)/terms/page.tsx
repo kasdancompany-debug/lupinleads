@@ -6,6 +6,7 @@ import { FOUNDING_PARTNER } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: `Terms governing use of ${LEGAL.companyName} marketing services and platform.`,
+  alternates: { canonical: `${LEGAL.siteUrl}/terms` },
 };
 
 export default function TermsPage() {

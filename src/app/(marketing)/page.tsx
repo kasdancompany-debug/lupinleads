@@ -5,14 +5,29 @@ import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Features } from "@/components/sections/Features";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
 
+const LaunchIn48Hours = dynamic(
+  () => import("@/components/sections/LaunchIn48Hours").then((m) => m.LaunchIn48Hours),
+  { loading: () => <SectionPlaceholder /> }
+);
+
 const ClickToClosedJob = dynamic(
   () => import("@/components/sections/ClickToClosedJob").then((m) => m.ClickToClosedJob),
   { loading: () => <SectionPlaceholder tall /> }
 );
 
+const GoodMonthSection = dynamic(
+  () => import("@/components/sections/GoodMonthSection").then((m) => m.GoodMonthSection),
+  { loading: () => <SectionPlaceholder /> }
+);
+
 const Pricing = dynamic(
   () => import("@/components/sections/Pricing").then((m) => m.Pricing),
   { loading: () => <SectionPlaceholder tall /> }
+);
+
+const BuilderCredibility = dynamic(
+  () => import("@/components/sections/BuilderCredibility").then((m) => m.BuilderCredibility),
+  { loading: () => <SectionPlaceholder /> }
 );
 
 const TrustSection = dynamic(
@@ -32,7 +47,7 @@ const BookACall = dynamic(
 function SectionPlaceholder({ tall = false }: { tall?: boolean }) {
   return (
     <div
-      className={`section-charcoal ${tall ? "min-h-[480px]" : "min-h-[320px]"} animate-pulse`}
+      className={`section-charcoal ${tall ? "min-h-[480px]" : "min-h-[320px]"} section-skeleton`}
       aria-hidden
     />
   );
@@ -45,11 +60,14 @@ export default function Home() {
       <GrowthDivider variant="stem" />
       <ProblemSection />
       <HowItWorks />
-      <ClickToClosedJob />
+      <LaunchIn48Hours />
       <GrowthDivider variant="branch" align="left" />
+      <ClickToClosedJob />
       <Features />
-      <Pricing />
+      <GoodMonthSection />
       <GrowthDivider variant="whisper" />
+      <Pricing />
+      <BuilderCredibility />
       <TrustSection />
       <FAQ />
       <GrowthDivider variant="stem" align="right" />

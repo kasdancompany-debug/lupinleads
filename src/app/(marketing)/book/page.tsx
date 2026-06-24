@@ -1,17 +1,20 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { CalendlyBooking } from "@/components/sections/CalendlyBooking";
-import { SiteLogo } from "@/components/ui/SiteLogo";
+import { SectionIntro } from "@/components/ui/SectionIntro";
 import { getCalendlyUrl, isCalendlyConfigured } from "@/lib/calendly";
 import { CTAS } from "@/lib/constants";
+import { SITE_URL } from "@/lib/site-metadata";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: CTAS.primary,
   description:
     "Book a free lead strategy call with LUPIN LEADS. We'll review your trade, market, and whether Facebook and Instagram ads make sense for your contracting business.",
   robots: { index: true, follow: true },
+  alternates: { canonical: `${SITE_URL}/book` },
 };
 
 export default function BookPage() {
@@ -22,40 +25,26 @@ export default function BookPage() {
   const calendlyUrl = getCalendlyUrl();
 
   return (
-    <div className="min-h-screen bg-black">
-      <header className="border-b border-silver/10">
-        <div className="max-w-5xl mx-auto px-5 sm:px-6 py-5 flex items-center justify-between gap-4">
-          <SiteLogo size={32} nameClassName="font-display text-lg sm:text-xl text-foreground tracking-[0.08em]" />
-          <Link
-            href="/#pricing"
-            className="text-[13px] text-silver-muted hover:text-foreground transition-colors shrink-0 min-h-[44px] flex items-center"
-          >
-            View pricing
-          </Link>
-        </div>
-      </header>
+    <div className="page-container py-10 sm:py-14 max-w-3xl">
+      <SectionIntro
+        align="center"
+        eyebrow={CTAS.primary}
+        title="Pick a time that works"
+        description="15 minutes to review your trade, market, and whether founding partner pricing is a fit."
+        className="max-w-lg mx-auto !mb-10"
+      />
 
-      <main className="max-w-5xl mx-auto px-5 sm:px-6 py-10 sm:py-12">
-        <div className="mb-8 text-center">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-forest-glow mb-3">
-            {CTAS.primary}
-          </p>
-          <h1 className="font-display text-3xl sm:text-4xl text-foreground mb-3">
-            Pick a time that works
-          </h1>
-          <p className="text-silver-muted text-sm max-w-lg mx-auto">
-            15 minutes to review your trade, market, and whether founding partner pricing is a fit.
-          </p>
-        </div>
+      <CalendlyBooking calendlyUrl={calendlyUrl} compact />
 
-        <CalendlyBooking calendlyUrl={calendlyUrl} />
-
-        <p className="text-center mt-8 text-sm text-silver-dim">
-          <Link href="/#book-call" className="text-forest-glow hover:text-forest-light">
-            Prefer a callback? Send a message instead
-          </Link>
-        </p>
-      </main>
+      <p className="text-center mt-8 text-sm text-silver-dim">
+        <Link href="/#book-call" className="text-forest-glow hover:text-forest-light">
+          Prefer a callback? Send a message instead
+        </Link>
+        {" · "}
+        <Link href="/#pricing" className="text-silver-muted hover:text-foreground">
+          View pricing
+        </Link>
+      </p>
     </div>
   );
 }

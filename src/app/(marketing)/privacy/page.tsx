@@ -5,6 +5,7 @@ import { LEGAL } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: `How ${LEGAL.companyName} collects, uses, and protects your information.`,
+  alternates: { canonical: `${LEGAL.siteUrl}/privacy` },
 };
 
 export default function PrivacyPage() {

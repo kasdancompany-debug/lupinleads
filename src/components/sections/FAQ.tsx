@@ -26,11 +26,17 @@ export function FAQ() {
         <div className="space-y-3 mb-12">
           {FAQ_ITEMS.map((item, index) => {
             const isOpen = openIndex === index;
+            const panelId = `faq-panel-${index}`;
+            const buttonId = `faq-button-${index}`;
+
             return (
               <ScrollReveal key={item.question} delay={index * 50}>
                 <div className="value-card rounded-xl overflow-hidden">
                   <button
+                    id={buttonId}
                     type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 text-left hover:bg-forest-green-deep/10 transition-colors duration-200"
                   >
@@ -43,15 +49,20 @@ export function FAQ() {
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.5"
+                      aria-hidden
                     >
                       <path d="M5 8L10 13L15 8" />
                     </svg>
                   </button>
-                  {isOpen && (
-                    <div className="px-6 pb-5 border-t border-silver/8">
-                      <p className="type-card-body pt-4">{item.answer}</p>
-                    </div>
-                  )}
+                  <div
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={buttonId}
+                    hidden={!isOpen}
+                    className="px-6 pb-5 border-t border-silver/8"
+                  >
+                    <p className="type-card-body pt-4">{item.answer}</p>
+                  </div>
                 </div>
               </ScrollReveal>
             );

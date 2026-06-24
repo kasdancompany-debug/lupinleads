@@ -4,9 +4,10 @@ import { GrowthPattern } from "@/components/ui/GrowthPattern";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { BookCallButton } from "@/components/marketing/BookCallButton";
-import { FOUNDING_PARTNER, CTAS } from "@/lib/constants";
+import { FOUNDING_PARTNER, CTAS, SITE } from "@/lib/constants";
 import { getFoundingPartnerAvailability } from "@/lib/founding-partner";
 import { formatFoundingPriceLine } from "@/lib/marketing";
+import { PricingComparison } from "@/components/sections/PricingComparison";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-CA", {
@@ -74,7 +75,7 @@ export function Pricing() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-silver/10 bg-black-surface/50 p-6 sm:p-8 mb-8 text-center">
+            <div className="rounded-xl border border-silver/10 bg-black-surface/50 p-6 sm:p-8 mb-6 text-center">
               <div className="flex flex-wrap items-end justify-center gap-x-3 gap-y-1 mb-2">
                 <span className="type-price-display">
                   {formatPrice(FOUNDING_PARTNER.introPrice)}
@@ -86,6 +87,15 @@ export function Pricing() {
               </p>
               <p className="text-[12px] sm:text-sm text-silver-dim mt-2">
                 Founding rate locked from month 2 · Ad spend billed by Meta on your account
+              </p>
+            </div>
+
+            <div className="flex justify-center mb-8">
+              <p className="inline-flex items-center gap-2 text-sm text-silver-muted border border-forest-mid/30 bg-forest-mid/10 rounded-full px-4 py-2">
+                <svg className="w-4 h-4 text-forest-glow shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 3l1.2 3.6L17 7.2l-3 2.6.9 3.6L12 11.8 9.1 13.4 10 9.8 7 7.2l3.8-.6L12 3z" strokeLinejoin="round" />
+                </svg>
+                {SITE.guaranteeShort}
               </p>
             </div>
 
@@ -115,6 +125,8 @@ export function Pricing() {
             </div>
           </article>
         </FadeIn>
+
+        <PricingComparison />
       </div>
     </section>
   );

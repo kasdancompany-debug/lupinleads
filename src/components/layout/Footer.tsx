@@ -1,6 +1,6 @@
 import { SiteLogo } from "@/components/ui/SiteLogo";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
-import { WolfWatermark } from "@/components/ui/WolfWatermark";
+import { GrowthPattern } from "@/components/ui/GrowthPattern";
 import { NAV_LINKS, SITE, CTAS } from "@/lib/constants";
 
 export function Footer() {
@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer id="site-footer" className="border-t border-forest-mid/15 section-footer relative overflow-hidden">
       <div className="absolute inset-0 grain-overlay pointer-events-none opacity-20" />
-      <WolfWatermark className="absolute right-0 bottom-0 w-[400px] h-[400px] translate-x-1/6 translate-y-1/6 pointer-events-none" />
+      <GrowthPattern tone="dark" intensity="whisper" placement="corners" className="opacity-25" />
       <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 sm:gap-12">
           <div className="md:col-span-2">

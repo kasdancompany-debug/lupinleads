@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StickyCta } from "@/components/sections/StickyCta";
 import { CalendlyBootstrap } from "@/components/marketing/CalendlyBootstrap";
+import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: `${SITE.name} — Contractor Leads from Facebook & Instagram Ads`,
@@ -24,9 +25,20 @@ export default function MarketingLayout({
 }) {
   return (
     <>
+      <OrganizationJsonLd />
+      <WebSiteJsonLd />
+      <FaqJsonLd />
       <CalendlyBootstrap />
+      <a
+        href="#main-content"
+        className="skip-to-content"
+      >
+        Skip to main content
+      </a>
       <Navbar />
-      <main className="pb-[7.5rem] sm:pb-32 md:pb-0">{children}</main>
+      <main id="main-content" className="pb-[7.5rem] sm:pb-32 md:pb-0">
+        {children}
+      </main>
       <Footer />
       <StickyCta />
     </>

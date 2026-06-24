@@ -3,7 +3,7 @@
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionShell } from "@/components/motion/SectionShell";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { WolfMark } from "@/components/ui/WolfMark";
+import { LupinMark } from "@/components/ui/LupinMark";
 import { Button } from "@/components/ui/Button";
 import { BUILDER_CREDIBILITY, CTAS } from "@/lib/constants";
 import { scrollToBook } from "@/lib/marketing";
@@ -45,7 +45,7 @@ export function BuilderCredibility() {
           <FadeIn delay={0.1}>
             <div className="flex items-center gap-4 mb-2">
               <div className="w-14 h-14 rounded-full border border-forest-mid/30 bg-forest-mid/10 flex items-center justify-center shrink-0">
-                <WolfMark size={28} className="text-forest-glow/80" />
+                <LupinMark size={28} className="opacity-90" />
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">Who builds Lupin</p>
