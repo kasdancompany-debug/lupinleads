@@ -11,7 +11,7 @@ export default function NotFound() {
       <div className="absolute inset-0 grain-overlay pointer-events-none opacity-40" />
 
       <header className="relative z-10 px-5 sm:px-6 py-5">
-        <SiteLogo height={36} priority />
+        <SiteLogo priority />
       </header>
 
       <main className="relative z-10 flex-1 flex items-center justify-center px-5 sm:px-6 py-12">

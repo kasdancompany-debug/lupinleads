@@ -13,11 +13,7 @@ export function Footer() {
       <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 sm:gap-12">
           <div className="md:col-span-2">
-            <SiteLogo
-              height={44}
-              layout="footer"
-              className="mb-6"
-            />
+            <SiteLogo layout="footer" className="mb-6" />
             <p className="text-silver-muted max-w-sm leading-relaxed mb-4 text-sm">
               {SITE.footerTagline}
             </p>

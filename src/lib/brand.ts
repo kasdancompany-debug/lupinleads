@@ -10,6 +10,7 @@ export const BRAND_ASSETS = {
   favicon32: "/brand/lupin-favicon-32.png",
   favicon16: "/brand/lupin-favicon-16.png",
   tagline: "More leads. Better jobs. Bigger business.",
+  taglineUpper: "MORE LEADS. BETTER JOBS. BIGGER BUSINESS.",
 } as const;
 
 export const BRAND_DIMENSIONS = {

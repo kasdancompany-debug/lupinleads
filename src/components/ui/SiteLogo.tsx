@@ -1,79 +1,59 @@
-import Image from "next/image";
 import Link from "next/link";
-import { BRAND_ASSETS, BRAND_DIMENSIONS } from "@/lib/brand";
+import { BRAND_ASSETS } from "@/lib/brand";
+import { BrandWordmark } from "@/components/ui/BrandWordmark";
+import { LupinMark } from "@/components/ui/LupinMark";
 
 type SiteLogoProps = {
   href?: string;
   className?: string;
   /** Dark site header/footer vs light backgrounds (PDF, email). */
   variant?: "dark" | "light" | "mark";
-  /** Nav uses compact lockup (no tagline); footer uses full lockup. */
-  layout?: "nav" | "footer" | "full";
-  height?: number;
+  /** Nav is compact; footer includes tagline. */
+  layout?: "nav" | "footer";
   priority?: boolean;
 };
-
-const LOGO_POLISH =
-  "block shrink-0 select-none transition-[filter,opacity] duration-300 ease-out opacity-[0.97] group-hover:opacity-100 group-hover:drop-shadow-[0_2px_14px_rgba(82,183,136,0.18)]";
 
 export function SiteLogo({
   href = "/",
   className = "",
   variant = "dark",
   layout = "nav",
-  height = 46,
   priority = false,
 }: SiteLogoProps) {
-  const isMark = variant === "mark";
+  const isMarkOnly = variant === "mark";
   const isLight = variant === "light";
-  const isNav = layout === "nav";
+  const markSize = layout === "footer" ? 40 : 36;
+  const wordmarkSize = layout === "footer" ? "lg" : "md";
+  const label = `Lupin Leads — ${BRAND_ASSETS.tagline}`;
 
-  const src = isMark
-    ? BRAND_ASSETS.mark
-    : isLight
-      ? isNav
-        ? BRAND_ASSETS.lockupNavLight
-        : BRAND_ASSETS.lockupLight
-      : isNav
-        ? BRAND_ASSETS.lockupNavDark
-        : BRAND_ASSETS.lockupDark;
-
-  const dims = isMark
-    ? BRAND_DIMENSIONS.mark
-    : isLight
-      ? isNav
-        ? BRAND_DIMENSIONS.lockupNavLight
-        : BRAND_DIMENSIONS.lockupLight
-      : isNav
-        ? BRAND_DIMENSIONS.lockupNavDark
-        : BRAND_DIMENSIONS.lockupDark;
-
-  const width = Math.round((height / dims.height) * dims.width);
-
-  const image = (
-    <Image
-      src={src}
-      alt={`Lupin Leads — ${BRAND_ASSETS.tagline}`}
-      width={width}
-      height={height}
-      priority={priority}
-      quality={100}
-      className={`${LOGO_POLISH} ${isMark ? "rounded-sm" : ""}`}
-      style={{
-        height,
-        width,
-        maxWidth: isMark ? height : isNav ? "min(100%, 280px)" : "min(100%, 320px)",
-      }}
-    />
+  const inner = isMarkOnly ? (
+    <LupinMark size={40} priority={priority} />
+  ) : (
+    <span className="inline-flex items-center gap-2.5 sm:gap-3 min-w-0">
+      <LupinMark size={markSize} priority={priority} />
+      <BrandWordmark
+        variant={isLight ? "light" : "dark"}
+        showTagline={layout === "footer"}
+        size={wordmarkSize}
+      />
+    </span>
   );
 
   if (!href) {
-    return <span className={`inline-flex items-center min-w-0 ${className}`}>{image}</span>;
+    return (
+      <span className={`inline-flex items-center min-w-0 ${className}`} aria-label={label}>
+        {inner}
+      </span>
+    );
   }
 
   return (
-    <Link href={href} className={`group inline-flex items-center min-w-0 ${className}`}>
-      {image}
+    <Link
+      href={href}
+      className={`group inline-flex items-center min-w-0 opacity-[0.98] transition-opacity duration-300 hover:opacity-100 ${className}`}
+      aria-label={label}
+    >
+      {inner}
     </Link>
   );
 }

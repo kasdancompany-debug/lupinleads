@@ -37,12 +37,7 @@ export function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[4.5rem]">
-            <SiteLogo
-              height={46}
-              layout="nav"
-              priority
-              className="shrink-0"
-            />
+            <SiteLogo layout="nav" priority className="shrink-0" />
 
             <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {NAV_LINKS.map((link) => (

@@ -124,6 +124,46 @@ body {
   font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
 }
 
+/* Composed brand wordmark (header / footer) */
+.brand-wordmark {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.brand-wordmark--dark .brand-wordmark__lupin {
+  background: linear-gradient(165deg, #7ee0a8 0%, #52b788 42%, #3da56f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-wordmark--dark .brand-wordmark__leads {
+  color: var(--stone-white);
+}
+
+.brand-wordmark--light .brand-wordmark__lupin {
+  color: var(--forest-green);
+}
+
+.brand-wordmark--light .brand-wordmark__leads {
+  color: var(--deep-soil-black);
+}
+
+.brand-wordmark__tagline {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--forest-light) 82%, white);
+}
+
 /* Eyebrows & small labels */
 .type-eyebrow,
 .section-eyebrow {

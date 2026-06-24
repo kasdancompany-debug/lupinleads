@@ -7,8 +7,8 @@ type LupinMarkProps = {
   priority?: boolean;
 };
 
-/** Official Lupin Leads logo mark — lupin stem + growth path. */
-export function LupinMark({ size = 40, className = "", priority = false }: LupinMarkProps) {
+/** Official Lupin Leads icon — lupin stem + growth arrow. */
+export function LupinMark({ size = 36, className = "", priority = false }: LupinMarkProps) {
   const { width: nativeW, height: nativeH } = BRAND_DIMENSIONS.mark;
   const height = size;
   const width = Math.round((size / nativeH) * nativeW);
@@ -20,7 +20,8 @@ export function LupinMark({ size = 40, className = "", priority = false }: Lupin
       width={width}
       height={height}
       priority={priority}
-      className={`shrink-0 ${className}`}
+      quality={100}
+      className={`block shrink-0 select-none drop-shadow-[0_1px_12px_rgba(82,183,136,0.14)] ${className}`}
       style={{ width, height }}
       aria-hidden
     />

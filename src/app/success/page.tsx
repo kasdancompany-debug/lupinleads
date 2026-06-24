@@ -14,7 +14,7 @@ export default function SuccessPage() {
     <div className="min-h-screen min-h-[100dvh] hero-gradient flex items-center justify-center px-5 sm:px-6">
       <div className="absolute inset-0 grain-overlay pointer-events-none" />
       <div className="relative text-center max-w-lg">
-        <SiteLogo href="" height={36} priority className="justify-center mb-8" />
+        <SiteLogo href="" priority className="justify-center mb-8" />
         <h1 className="font-display text-4xl text-gradient-silver mb-4">
           Welcome to LUPIN LEADS
         </h1>
