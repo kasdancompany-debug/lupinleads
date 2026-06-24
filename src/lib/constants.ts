@@ -268,8 +268,6 @@ export const FOUNDING_PARTNER = {
   introPrice: 299,
   regularPrice: 499,
   slotsTotal: 5,
-  slotsRemaining: 5,
-  slotsLabel: "Only 5 founding partner spots",
   currency: "CAD" as const,
   description:
     "The full lead generation system at a locked-in rate — Facebook and Instagram ads, creative, quote forms, CRM, follow-up, and reporting. One management fee. You pay ad spend directly to Meta.",
@@ -288,13 +286,22 @@ export const FOUNDING_PARTNER = {
     "Management fee in CAD. Ad spend is separate and paid directly to Meta on your account — typically $2,000–$5,000/month depending on market and goals.",
 } as const;
 
-export const FOUNDING_PARTNER_SPOTS = [
-  { id: 1, label: "Spot 1", status: "open" as const },
-  { id: 2, label: "Spot 2", status: "open" as const },
-  { id: 3, label: "Spot 3", status: "open" as const },
-  { id: 4, label: "Spot 4", status: "open" as const },
-  { id: 5, label: "Spot 5", status: "open" as const },
-] as const;
+/** Update status to "claimed" when a spot is sold — labels and counts update sitewide. */
+export type FoundingPartnerSpotStatus = "open" | "claimed";
+
+export type FoundingPartnerSpot = {
+  id: number;
+  label: string;
+  status: FoundingPartnerSpotStatus;
+};
+
+export const FOUNDING_PARTNER_SPOTS: FoundingPartnerSpot[] = [
+  { id: 1, label: "Spot 1", status: "open" },
+  { id: 2, label: "Spot 2", status: "open" },
+  { id: 3, label: "Spot 3", status: "open" },
+  { id: 4, label: "Spot 4", status: "open" },
+  { id: 5, label: "Spot 5", status: "open" },
+];
 
 export type CaseStudyStatus = "published" | "sample" | "pending";
 

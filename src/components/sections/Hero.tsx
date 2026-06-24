@@ -5,7 +5,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { HeroGrowthVisual } from "@/components/ui/HeroGrowthVisual";
 import { BookCallButton } from "@/components/marketing/BookCallButton";
-import { SITE, CTAS, HERO_BENEFITS, FOUNDING_PARTNER } from "@/lib/constants";
+import { SITE, CTAS, HERO_BENEFITS } from "@/lib/constants";
+import { getFoundingPartnerAvailability } from "@/lib/founding-partner";
 import { formatFoundingPriceLine, scrollToHowItWorks } from "@/lib/marketing";
 import {
   defaultTransition,
@@ -45,7 +46,8 @@ const BENEFIT_ICONS: Record<(typeof HERO_BENEFITS)[number]["id"], ReactNode> = {
 export function Hero() {
   const reduce = useReducedMotion();
   const mount = reduce ? false : "visible";
-  const ctaMicrocopy = `${FOUNDING_PARTNER.slotsLabel} · ${formatFoundingPriceLine("·")}`;
+  const availability = getFoundingPartnerAvailability();
+  const ctaMicrocopy = `${availability.slotsLabel} · ${formatFoundingPriceLine("·")}`;
 
   return (
     <section className="relative min-h-[auto] lg:min-h-[100svh] flex items-center hero-soil overflow-hidden">
@@ -136,7 +138,7 @@ export function Hero() {
                   emphasis
                   className="w-full text-base sm:text-lg min-h-[52px] px-6 sm:px-8"
                 >
-                  {CTAS.strategyCall}
+                  {CTAS.primary}
                 </BookCallButton>
               </div>
               <Button

@@ -4,7 +4,8 @@ import { GrowthPattern } from "@/components/ui/GrowthPattern";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { BookCallButton } from "@/components/marketing/BookCallButton";
-import { FOUNDING_PARTNER, CTAS, FOUNDING_PARTNER_SPOTS } from "@/lib/constants";
+import { FOUNDING_PARTNER, CTAS } from "@/lib/constants";
+import { getFoundingPartnerAvailability } from "@/lib/founding-partner";
 import { formatFoundingPriceLine } from "@/lib/marketing";
 
 function formatPrice(price: number) {
@@ -16,6 +17,8 @@ function formatPrice(price: number) {
 }
 
 export function Pricing() {
+  const availability = getFoundingPartnerAvailability();
+
   return (
     <section id="pricing" className="section-gradient home-section-pad relative overflow-hidden">
       <GrowthPattern tone="dark" intensity="whisper" placement="corners" />
@@ -30,7 +33,7 @@ export function Pricing() {
             eyebrow="Founding partner offer"
             title="Lock in your rate."
             highlight="$299 to start."
-            description={`${FOUNDING_PARTNER.slotsLabel}. ${formatFoundingPriceLine("·")} You pay ad spend directly to Meta.`}
+            description={`${availability.slotsLabel}. ${formatFoundingPriceLine("·")} You pay ad spend directly to Meta.`}
             className="max-w-2xl mx-auto"
           />
         </FadeIn>
@@ -41,16 +44,25 @@ export function Pricing() {
 
             <div className="text-center mb-8">
               <span className="type-label inline-block bg-forest-mid/80 text-foreground px-4 py-1.5 rounded-full border border-forest-mid/40 mb-5">
-                {FOUNDING_PARTNER.slotsLabel}
+                {availability.slotsLabel}
               </span>
               <div className="flex flex-wrap justify-center gap-2 mb-6" aria-label="Founding partner availability">
-                {FOUNDING_PARTNER_SPOTS.map((spot) => (
+                {availability.allSpots.map((spot) => (
                   <span
                     key={spot.id}
-                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full border border-forest-mid/35 bg-forest-mid/10 text-forest-glow"
+                    className={`inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full border ${
+                      spot.status === "open"
+                        ? "border-forest-mid/35 bg-forest-mid/10 text-forest-glow"
+                        : "border-silver/15 bg-silver/5 text-silver-dim"
+                    }`}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-forest-glow" aria-hidden />
-                    {spot.label} · Open
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        spot.status === "open" ? "bg-forest-glow" : "bg-silver/40"
+                      }`}
+                      aria-hidden
+                    />
+                    {spot.label} · {spot.status === "open" ? "Open" : "Claimed"}
                   </span>
                 ))}
               </div>

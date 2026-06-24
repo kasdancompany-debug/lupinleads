@@ -68,12 +68,20 @@ export function Footer() {
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-silver-dim">
           <p>&copy; {year} {SITE.name}. All rights reserved.</p>
-          <a
-            href={`mailto:${SITE.email}`}
-            className="hover:text-silver-muted transition-colors"
-          >
-            {SITE.email}
-          </a>
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-5 gap-y-2">
+            <a href="/privacy" className="hover:text-silver-muted transition-colors">
+              Privacy
+            </a>
+            <a href="/terms" className="hover:text-silver-muted transition-colors">
+              Terms
+            </a>
+            <a
+              href={`mailto:${SITE.email}`}
+              className="hover:text-silver-muted transition-colors"
+            >
+              {SITE.email}
+            </a>
+          </div>
         </div>
       </div>
     </footer>

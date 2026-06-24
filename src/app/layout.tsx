@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import { rootMetadata } from "@/lib/site-metadata";
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={`${cormorant.variable} ${dmSans.variable} antialiased bg-forest-black text-foreground`}
       >
+        <SiteAnalytics />
         {children}
       </body>
     </html>

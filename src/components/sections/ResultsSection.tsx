@@ -7,15 +7,16 @@ import { SectionIntro } from "@/components/ui/SectionIntro";
 import { Button } from "@/components/ui/Button";
 import {
   CASE_STUDIES,
-  FOUNDING_PARTNER,
   CTAS,
   type CaseStudy,
 } from "@/lib/constants";
+import { getFoundingPartnerAvailability } from "@/lib/founding-partner";
 import { scrollToBook } from "@/lib/marketing";
 import { defaultTransition, defaultViewport, staggerContainer } from "@/lib/motion-config";
 
 export function ResultsSection() {
   const reduce = useReducedMotion();
+  const availability = getFoundingPartnerAvailability();
   const featured = CASE_STUDIES.find((s) => s.featured) ?? CASE_STUDIES[0];
   const upcoming = CASE_STUDIES.filter((s) => s.id !== featured.id);
 
@@ -61,7 +62,7 @@ export function ResultsSection() {
       <FadeIn delay={0.14}>
         <div className="mt-10 lg:mt-14 pt-8 border-t border-silver/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <p className="text-sm text-silver-dim max-w-xl leading-relaxed">
-            {FOUNDING_PARTNER.slotsLabel}. Be the first published result — with your numbers and
+            {availability.slotsLabel}. Be the first published result — with your numbers and
             your approval.
           </p>
           <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 w-full sm:w-auto">
