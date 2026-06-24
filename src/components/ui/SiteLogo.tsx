@@ -1,52 +1,59 @@
+import Image from "next/image";
 import Link from "next/link";
-import { LupinMark } from "@/components/ui/LupinMark";
+import { BRAND_ASSETS, BRAND_DIMENSIONS } from "@/lib/brand";
 
 type SiteLogoProps = {
-  size?: number;
-  showName?: boolean;
   href?: string;
   className?: string;
-  nameClassName?: string;
-  variant?: "dark" | "light";
+  /** Dark site header/footer vs light backgrounds (PDF, email). */
+  variant?: "dark" | "light" | "mark";
+  height?: number;
+  priority?: boolean;
 };
 
 export function SiteLogo({
-  size = 32,
-  showName = true,
   href = "/",
   className = "",
-  nameClassName = "font-sans text-base sm:text-lg tracking-[0.06em] truncate",
   variant = "dark",
+  height = 36,
+  priority = false,
 }: SiteLogoProps) {
-  const content = (
-    <>
-      <LupinMark
-        size={size}
-        className="transition-transform duration-300 group-hover:scale-[1.03]"
-      />
-      {showName ? (
-        <span className={nameClassName}>
-          <span className="wordmark-lupin">Lupin</span>{" "}
-          <span className={variant === "light" ? "text-deep-soil" : "wordmark-leads"}>Leads</span>
-        </span>
-      ) : null}
-    </>
+  const isMark = variant === "mark";
+  const isLight = variant === "light";
+
+  const src = isMark
+    ? BRAND_ASSETS.mark
+    : isLight
+      ? BRAND_ASSETS.lockupLight
+      : BRAND_ASSETS.lockupDark;
+
+  const dims = isMark
+    ? BRAND_DIMENSIONS.mark
+    : isLight
+      ? BRAND_DIMENSIONS.lockupLight
+      : BRAND_DIMENSIONS.lockupDark;
+
+  const width = Math.round((height / dims.height) * dims.width);
+
+  const image = (
+    <Image
+      src={src}
+      alt={`Lupin Leads — ${BRAND_ASSETS.tagline}`}
+      width={width}
+      height={height}
+      priority={priority}
+      className={`h-auto w-auto max-h-[2.25rem] sm:max-h-10 ${isMark ? "rounded-sm" : ""}`}
+      style={{ height, width: "auto", maxWidth: isMark ? height : "min(100%, 220px)" }}
+    />
   );
 
   if (!href) {
-    return (
-      <span className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}>
-        {content}
-      </span>
-    );
+    return <span className={`inline-flex items-center min-w-0 ${className}`}>{image}</span>;
   }
 
   return (
-    <Link
-      href={href}
-      className={`group inline-flex items-center gap-2.5 min-w-0 ${className}`}
-    >
-      {content}
+    <Link href={href} className={`group inline-flex items-center min-w-0 ${className}`}>
+      {image}
     </Link>
   );
 }

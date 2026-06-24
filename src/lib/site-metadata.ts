@@ -46,8 +46,4 @@ export const rootMetadata: Metadata = {
     index: true,
     follow: true,
   },
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-icon", type: "image/png" }],
-  },
 };

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
+import { BRAND_ASSETS } from "@/lib/brand";
 import { rootMetadata } from "@/lib/site-metadata";
 import "./globals.css";
 
@@ -18,12 +19,21 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = rootMetadata;
+export const metadata: Metadata = {
+  ...rootMetadata,
+  icons: {
+    icon: [
+      { url: BRAND_ASSETS.favicon32, sizes: "32x32", type: "image/png" },
+      { url: BRAND_ASSETS.favicon16, sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: BRAND_ASSETS.appIcon, sizes: "180x180", type: "image/png" }],
+  },
+};
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a0a0a",
+  themeColor: "#0a1410",
 };
 
 export default function RootLayout({

@@ -14,8 +14,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 sm:gap-12">
           <div className="md:col-span-2">
             <SiteLogo
-              size={32}
-              nameClassName="type-wordmark text-xl sm:text-2xl text-foreground"
+              height={36}
               className="mb-6"
             />
             <p className="text-silver-muted max-w-sm leading-relaxed mb-4 text-sm">

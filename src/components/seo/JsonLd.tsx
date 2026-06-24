@@ -18,6 +18,7 @@ export function OrganizationJsonLd() {
         "@type": "Organization",
         name: SITE.name,
         url: SITE_URL,
+        logo: `${SITE_URL}/brand/lupin-mark.png`,
         email: SITE.email,
         description: SITE.description,
         areaServed: {
