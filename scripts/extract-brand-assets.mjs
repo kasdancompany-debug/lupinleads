@@ -11,31 +11,59 @@ async function writeMeta(filename) {
   return { width: meta.width ?? 0, height: meta.height ?? 0 };
 }
 
-async function extractPng(filename, crop, trimThreshold = 0) {
-  let pipeline = sharp(sheet).extract(crop);
-  if (trimThreshold > 0) {
-    pipeline = pipeline.trim({ threshold: trimThreshold });
+function sampleCornerBg(data, info) {
+  const w = info.width;
+  const h = info.height;
+  const indices = [0, (w - 1) * 4, (h - 1) * w * 4, ((h - 1) * w + (w - 1)) * 4];
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  for (const idx of indices) {
+    r += data[idx];
+    g += data[idx + 1];
+    b += data[idx + 2];
   }
-  await pipeline.png().toFile(path.join(brandDir, filename));
-  return writeMeta(filename);
+  return { r: Math.round(r / 4), g: Math.round(g / 4), b: Math.round(b / 4) };
 }
 
-async function removeWhiteBg(buffer) {
-  const { data, info } = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+function featherAlphaFromBg(data, bg, tolerance, feather = 10) {
   for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    if (r > 235 && g > 235 && b > 235) {
+    const dr = data[i] - bg.r;
+    const dg = data[i + 1] - bg.g;
+    const db = data[i + 2] - bg.b;
+    const dist = Math.sqrt(dr * dr + dg * dg + db * db);
+    if (dist <= tolerance) {
       data[i + 3] = 0;
+    } else if (dist < tolerance + feather) {
+      const t = (dist - tolerance) / feather;
+      data[i + 3] = Math.round(data[i + 3] * t);
     }
   }
+}
+
+async function removeCornerBg(buffer, tolerance, feather = 10) {
+  const { data, info } = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const bg = sampleCornerBg(data, info);
+  featherAlphaFromBg(data, bg, tolerance, feather);
   return sharp(data, { raw: info }).png().toBuffer();
 }
 
+async function saveTransparent(filename, crop, { trimThreshold = 0, tolerance = 34, feather = 10 } = {}) {
+  let pipeline = sharp(sheet).extract(crop).png();
+  if (trimThreshold > 0) {
+    pipeline = pipeline.trim({ threshold: trimThreshold });
+  }
+  const raw = await pipeline.toBuffer();
+  const transparent = await removeCornerBg(raw, tolerance, feather);
+  await sharp(transparent).png().toFile(path.join(brandDir, filename));
+  return writeMeta(filename);
+}
+
 async function buildFavicons(markBuffer) {
-  const trimmedMark = await removeWhiteBg(
-    await sharp(markBuffer).trim({ threshold: 32 }).png().toBuffer()
+  const trimmedMark = await removeCornerBg(
+    await sharp(markBuffer).trim({ threshold: 32 }).png().toBuffer(),
+    18,
+    8
   );
 
   for (const size of [16, 32, 180, 512]) {
@@ -76,25 +104,43 @@ async function buildFavicons(markBuffer) {
 }
 
 async function main() {
-  // Icon mark (center of stacked primary logo)
-  await extractPng("lupin-mark.png", { left: 415, top: 62, width: 195, height: 108 }, 16);
+  await saveTransparent("lupin-mark.png", { left: 415, top: 62, width: 195, height: 108 }, {
+    trimThreshold: 16,
+    tolerance: 18,
+    feather: 8,
+  });
 
   const markBuffer = await sharp(path.join(brandDir, "lupin-mark.png")).png().toBuffer();
   await buildFavicons(markBuffer);
 
-  // Horizontal lockups — row labeled "Horizontal Lockup" on brand sheet
-  await extractPng("lupin-lockup-light.png", { left: 42, top: 308, width: 345, height: 110 });
-  await extractPng("lupin-lockup-nav-light.png", { left: 42, top: 318, width: 345, height: 66 });
+  await saveTransparent("lupin-lockup-light.png", { left: 42, top: 330, width: 345, height: 98 }, {
+    tolerance: 20,
+    feather: 8,
+  });
+  await saveTransparent("lupin-lockup-nav-light.png", { left: 42, top: 340, width: 345, height: 58 }, {
+    tolerance: 20,
+    feather: 8,
+  });
 
-  // Dark-mode horizontal lockup (bottom of brand sheet)
-  await extractPng("lupin-lockup-dark.png", { left: 50, top: 524, width: 385, height: 82 });
+  await saveTransparent("lupin-lockup-dark.png", { left: 50, top: 524, width: 385, height: 82 }, {
+    tolerance: 34,
+    feather: 12,
+  });
+  await saveTransparent("lupin-lockup-nav-dark.png", { left: 50, top: 524, width: 385, height: 36 }, {
+    tolerance: 34,
+    feather: 12,
+  });
 
-  // Stacked primary logo
-  await extractPng("lupin-logo-primary.png", { left: 310, top: 42, width: 410, height: 290 }, 18);
+  await saveTransparent("lupin-logo-primary.png", { left: 310, top: 42, width: 410, height: 290 }, {
+    trimThreshold: 18,
+    tolerance: 20,
+    feather: 8,
+  });
 
   const dims = {
     mark: await writeMeta("lupin-mark.png"),
     lockupDark: await writeMeta("lupin-lockup-dark.png"),
+    lockupNavDark: await writeMeta("lupin-lockup-nav-dark.png"),
     lockupLight: await writeMeta("lupin-lockup-light.png"),
     lockupNavLight: await writeMeta("lupin-lockup-nav-light.png"),
     logoPrimary: await writeMeta("lupin-logo-primary.png"),

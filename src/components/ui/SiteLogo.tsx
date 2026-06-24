@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BRAND_ASSETS, BRAND_DIMENSIONS, BRAND_NAV_CLIP } from "@/lib/brand";
+import { BRAND_ASSETS, BRAND_DIMENSIONS } from "@/lib/brand";
 
 type SiteLogoProps = {
   href?: string;
@@ -13,12 +13,15 @@ type SiteLogoProps = {
   priority?: boolean;
 };
 
+const LOGO_POLISH =
+  "block shrink-0 select-none transition-[filter,opacity] duration-300 ease-out opacity-[0.97] group-hover:opacity-100 group-hover:drop-shadow-[0_2px_14px_rgba(82,183,136,0.18)]";
+
 export function SiteLogo({
   href = "/",
   className = "",
   variant = "dark",
   layout = "nav",
-  height = 44,
+  height = 46,
   priority = false,
 }: SiteLogoProps) {
   const isMark = variant === "mark";
@@ -31,7 +34,9 @@ export function SiteLogo({
       ? isNav
         ? BRAND_ASSETS.lockupNavLight
         : BRAND_ASSETS.lockupLight
-      : BRAND_ASSETS.lockupDark;
+      : isNav
+        ? BRAND_ASSETS.lockupNavDark
+        : BRAND_ASSETS.lockupDark;
 
   const dims = isMark
     ? BRAND_DIMENSIONS.mark
@@ -39,38 +44,25 @@ export function SiteLogo({
       ? isNav
         ? BRAND_DIMENSIONS.lockupNavLight
         : BRAND_DIMENSIONS.lockupLight
-      : BRAND_DIMENSIONS.lockupDark;
+      : isNav
+        ? BRAND_DIMENSIONS.lockupNavDark
+        : BRAND_DIMENSIONS.lockupDark;
 
   const width = Math.round((height / dims.height) * dims.width);
-  const clipDarkNav = isNav && !isMark && !isLight;
-  const renderHeight = clipDarkNav
-    ? Math.round(height / BRAND_NAV_CLIP.dark)
-    : height;
 
-  const image = clipDarkNav ? (
-    <div className="overflow-hidden shrink-0" style={{ height, width }}>
-      <Image
-        src={src}
-        alt={`Lupin Leads — ${BRAND_ASSETS.tagline}`}
-        width={width}
-        height={renderHeight}
-        priority={priority}
-        className="block max-w-none"
-        style={{ width, height: renderHeight }}
-      />
-    </div>
-  ) : (
+  const image = (
     <Image
       src={src}
       alt={`Lupin Leads — ${BRAND_ASSETS.tagline}`}
       width={width}
       height={height}
       priority={priority}
-      className={`block shrink-0 ${isMark ? "rounded-sm" : ""}`}
+      quality={100}
+      className={`${LOGO_POLISH} ${isMark ? "rounded-sm" : ""}`}
       style={{
         height,
         width,
-        maxWidth: isMark ? height : isNav ? "min(100%, 260px)" : "min(100%, 300px)",
+        maxWidth: isMark ? height : isNav ? "min(100%, 280px)" : "min(100%, 320px)",
       }}
     />
   );

@@ -2,6 +2,7 @@
 export const BRAND_ASSETS = {
   mark: "/brand/lupin-mark.png",
   lockupDark: "/brand/lupin-lockup-dark.png",
+  lockupNavDark: "/brand/lupin-lockup-nav-dark.png",
   lockupLight: "/brand/lupin-lockup-light.png",
   lockupNavLight: "/brand/lupin-lockup-nav-light.png",
   logoPrimary: "/brand/lupin-logo-primary.png",
@@ -14,12 +15,8 @@ export const BRAND_ASSETS = {
 export const BRAND_DIMENSIONS = {
   mark: { width: 195, height: 108 },
   lockupDark: { width: 385, height: 82 },
-  lockupLight: { width: 345, height: 110 },
-  lockupNavLight: { width: 345, height: 66 },
+  lockupNavDark: { width: 385, height: 36 },
+  lockupLight: { width: 345, height: 98 },
+  lockupNavLight: { width: 345, height: 58 },
   logoPrimary: { width: 410, height: 290 },
-} as const;
-
-/** Dark lockup includes tagline in-file; nav clips to the wordmark row. */
-export const BRAND_NAV_CLIP = {
-  dark: 0.66,
 } as const;
