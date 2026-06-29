@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { MetaPixel } from "@/components/analytics/MetaPixel";
 
 function getPlausibleDomain(): string | null {
@@ -6,22 +7,17 @@ function getPlausibleDomain(): string | null {
   return domain || null;
 }
 
-function getGaMeasurementId(): string | null {
-  const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim();
-  return id && id.startsWith("G-") ? id : null;
-}
-
 /**
  * Loads analytics when configured.
- * Meta Pixel: always on with ID 1529278638734834 unless NEXT_PUBLIC_META_PIXEL_ID=disabled.
+ * Meta Pixel + Google Analytics are on by default; set env to "disabled" to turn off.
  */
 export function SiteAnalytics() {
   const plausibleDomain = getPlausibleDomain();
-  const gaId = getGaMeasurementId();
 
   return (
     <>
       <MetaPixel />
+      <GoogleAnalytics />
 
       {plausibleDomain ? (
         <Script
@@ -30,23 +26,6 @@ export function SiteAnalytics() {
           src="https://plausible.io/js/script.js"
           strategy="afterInteractive"
         />
-      ) : null}
-
-      {gaId ? (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            strategy="afterInteractive"
-          />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${gaId}', { anonymize_ip: true });
-            `}
-          </Script>
-        </>
       ) : null}
     </>
   );
