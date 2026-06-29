@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 
 function getPlausibleDomain(): string | null {
   const domain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim();
@@ -11,19 +12,17 @@ function getGaMeasurementId(): string | null {
 }
 
 /**
- * Loads privacy-friendly analytics when env vars are set.
- * Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN and/or NEXT_PUBLIC_GA_MEASUREMENT_ID in Vercel.
+ * Loads analytics when configured.
+ * Meta Pixel: always on with ID 1529278638734834 unless NEXT_PUBLIC_META_PIXEL_ID=disabled.
  */
 export function SiteAnalytics() {
   const plausibleDomain = getPlausibleDomain();
   const gaId = getGaMeasurementId();
 
-  if (!plausibleDomain && !gaId) {
-    return null;
-  }
-
   return (
     <>
+      <MetaPixel />
+
       {plausibleDomain ? (
         <Script
           defer
