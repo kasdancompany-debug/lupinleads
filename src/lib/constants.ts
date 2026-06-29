@@ -130,8 +130,8 @@ export const TRUST_GUARANTEES = [
   },
   {
     id: "strategist",
-    title: "One point of contact",
-    description: "A named strategist on your account — not a rotating rep who has to re-read your file every month.",
+    title: "Direct account contact",
+    description: "Work with the same strategist on your account — not a rotating call centre that re-reads your file every month.",
   },
   {
     id: "your-leads",
@@ -167,7 +167,7 @@ export const PROBLEM_CARDS = [
   {
     title: "Shared leads are a race",
     description:
-      "Lead marketplaces sell the same homeowner to four contractors. Price wars and no-shows follow.",
+      "Marketplaces like Angi and HomeAdvisor often sell the same homeowner inquiry to multiple contractors at once — so you're competing with several other pros, not owning the lead.",
     icon: "pipeline",
   },
   {
@@ -283,8 +283,11 @@ export const FOUNDING_PARTNER = {
     "Your Meta account — your ad spend",
   ],
   footnote:
-    "Management fee in CAD. Ad spend is separate and paid directly to Meta on your account — typically $2,000–$5,000/month depending on market and goals.",
+    "Management fees in CAD plus applicable taxes (e.g. HST). Ad spend is separate and paid directly to Meta on your account — typically $2,000–$5,000/month depending on market and goals.",
 } as const;
+
+export const PRICING_COMPARISON_DISCLAIMER =
+  "Comparisons reflect typical setups we see with contractors. DIY results, agency packages, and marketplace lead programs vary by provider and market.";
 
 /** Update status to "claimed" when a spot is sold — labels and counts update sitewide. */
 export type FoundingPartnerSpotStatus = "open" | "claimed";
@@ -540,7 +543,7 @@ export const FAQ_ITEMS = [
   {
     question: "What is the Founding Partner Program?",
     answer:
-      "$299 CAD for your first month, then $499/mo locked in. Includes Facebook and Instagram ad management, creative, quote forms, CRM, follow-up support, and monthly reporting. Only 5 spots. Ad spend is separate — you pay Meta directly on your account.",
+      "$299 CAD plus applicable taxes for your first month, then $499/mo plus applicable taxes locked in. Includes Facebook and Instagram ad management, creative, quote forms, CRM, follow-up support, and monthly reporting. Only 5 spots. Ad spend is separate — you pay Meta directly on your account.",
   },
   {
     question: "Do I pay ad spend on top of the monthly fee?",
@@ -560,7 +563,7 @@ export const FAQ_ITEMS = [
   {
     question: "How is this different from HomeAdvisor or Angi?",
     answer:
-      "Those sites sell the same lead to multiple contractors. Lupin builds demand through your ads and delivers exclusive quote requests to you — no racing four other companies for the same homeowner.",
+      "Marketplaces like Angi and HomeAdvisor typically match one homeowner inquiry to multiple contractors at once (often several pros per lead). Lupin builds demand through your ads and delivers quote requests from your forms to you alone — not a shared inbox where competitors bought the same contact.",
   },
   {
     question: "How fast can we launch?",

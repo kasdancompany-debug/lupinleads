@@ -86,7 +86,7 @@ export function Pricing() {
                 then {formatPrice(FOUNDING_PARTNER.regularPrice)}/mo + ad spend
               </p>
               <p className="text-[12px] sm:text-sm text-silver-dim mt-2">
-                Founding rate locked from month 2 · Ad spend billed by Meta on your account
+                All management fees in CAD plus applicable taxes (e.g. HST) · Founding rate locked from month 2 · Ad spend billed by Meta on your account
               </p>
             </div>
 

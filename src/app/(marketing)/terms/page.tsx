@@ -36,10 +36,11 @@ export default function TermsPage() {
 
       <LegalSection title="Founding partner pricing">
         <p>
-          Founding partner offers (currently ${FOUNDING_PARTNER.introPrice} CAD for the first month,
-          then ${FOUNDING_PARTNER.regularPrice} CAD/month management fee, plus ad spend) are limited
-          in availability and described on our pricing page. Promotional pricing applies only while
-          the offer is active and while your account remains in good standing.
+          Founding partner offers (currently ${FOUNDING_PARTNER.introPrice} CAD plus applicable
+          taxes for the first month, then ${FOUNDING_PARTNER.regularPrice} CAD/month management fee
+          plus applicable taxes, plus ad spend) are limited in availability and described on our
+          pricing page. Promotional pricing applies only while the offer is active and while your
+          account remains in good standing.
         </p>
       </LegalSection>
 

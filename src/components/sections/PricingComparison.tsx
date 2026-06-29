@@ -1,7 +1,7 @@
 "use client";
 
 import { FadeIn } from "@/components/motion/FadeIn";
-import { PRICING_COMPARISON } from "@/lib/constants";
+import { PRICING_COMPARISON, PRICING_COMPARISON_DISCLAIMER } from "@/lib/constants";
 
 type CellValue = boolean | "partial";
 
@@ -95,6 +95,9 @@ export function PricingComparison() {
             </table>
           </div>
         </div>
+        <p className="text-[11px] sm:text-xs text-silver-dim text-center max-w-2xl mx-auto mt-4 leading-relaxed">
+          {PRICING_COMPARISON_DISCLAIMER}
+        </p>
       </div>
     </FadeIn>
   );

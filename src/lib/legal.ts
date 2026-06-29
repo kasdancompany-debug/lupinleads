@@ -6,5 +6,5 @@ export const LEGAL = {
   contactEmail: SITE.email,
   siteUrl: SITE_URL,
   jurisdiction: "Ontario, Canada",
-  lastUpdated: "June 24, 2026",
+  lastUpdated: "June 15, 2026",
 } as const;

@@ -105,9 +105,26 @@ export default function PrivacyPage() {
 
       <LegalSection title="Cookies and analytics">
         <p>
-          We may use privacy-focused analytics (e.g. Plausible) or Google Analytics to understand
-          site traffic. These tools may use cookies or similar technologies. You can control cookies
-          through your browser settings.
+          We use cookies and similar technologies to measure site traffic and advertising
+          performance. Depending on configuration, this may include:
+        </p>
+        <ul className="list-disc pl-5 space-y-2">
+          <li>
+            <strong className="text-foreground">Google Analytics</strong> — page views and general
+            usage (Google&apos;s privacy policy applies)
+          </li>
+          <li>
+            <strong className="text-foreground">Meta Pixel</strong> — ad measurement and
+            remarketing related to our own marketing (Meta&apos;s privacy policy applies)
+          </li>
+          <li>
+            <strong className="text-foreground">Plausible</strong> — privacy-focused analytics, if
+            enabled
+          </li>
+        </ul>
+        <p>
+          You can control cookies through your browser settings. Some analytics tools offer opt-out
+          browser extensions. Disabling cookies may not affect core site functionality.
         </p>
       </LegalSection>
 
