@@ -8,7 +8,7 @@ import { SlideIn } from "@/components/motion/SlideIn";
 import { StepFlow } from "@/components/motion/StepFlow";
 import { RiseOnScroll } from "@/components/motion/RiseOnScroll";
 import { getCalendlyUrl, isCalendlyConfigured } from "@/lib/calendly";
-import { openCalendlyInNewTab } from "@/lib/calendly-widget";
+import { scrollToBook } from "@/lib/marketing";
 import { GrowthPattern } from "@/components/ui/GrowthPattern";
 import { FINAL_CTA_SECTION } from "@/lib/constants";
 import { SectionIntro } from "@/components/ui/SectionIntro";
@@ -43,7 +43,7 @@ export function BookACall() {
     setBookingPrefill(prefill);
     setShowForm(true);
     if (hasCalendly) {
-      openCalendlyInNewTab(prefill);
+      requestAnimationFrame(() => scrollToBook());
     }
   }
 

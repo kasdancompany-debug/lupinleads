@@ -33,7 +33,10 @@ export function CalendlyBooking({ calendlyUrl, prefill, compact = false }: Calen
   const mobileHeight = compact ? 640 : 720;
 
   return (
-    <div className={compact ? "" : "rounded-xl border border-silver/10 bg-black-surface/30 p-3 sm:p-5"}>
+    <div
+      id="book-call-calendar"
+      className={compact ? "" : "rounded-xl border border-silver/10 bg-black-surface/30 p-3 sm:p-5"}
+    >
       <CalendlyEmbed
         url={resolvedUrl}
         prefill={prefill}

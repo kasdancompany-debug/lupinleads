@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiteLogo } from "@/components/ui/SiteLogo";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { GrowthPattern } from "@/components/ui/GrowthPattern";
@@ -17,12 +18,12 @@ export function Footer() {
             <p className="text-silver-muted max-w-sm leading-relaxed mb-4 text-sm">
               {SITE.footerTagline}
             </p>
-            <a
-              href="#book-call"
+            <Link
+              href="/#book-call"
               className="inline-flex text-sm font-semibold text-forest-glow hover:text-forest-light transition-colors"
             >
               {CTAS.primary} →
-            </a>
+            </Link>
           </div>
 
           <div>

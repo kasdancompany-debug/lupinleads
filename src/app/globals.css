@@ -631,6 +631,11 @@ body {
   padding-block: var(--section-pad-y);
 }
 
+#book-call,
+#book-call-calendar {
+  scroll-margin-top: 5.5rem;
+}
+
 .brand-panel {
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, var(--forest-green-bright) 16%, var(--silver) 8%);

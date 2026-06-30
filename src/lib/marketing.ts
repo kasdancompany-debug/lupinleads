@@ -1,7 +1,4 @@
 import { FOUNDING_PARTNER } from "@/lib/constants";
-import { isCalendlyConfigured } from "@/lib/calendly";
-import { openCalendlyPopup } from "@/lib/calendly-widget";
-import type { CalendlyPrefill } from "@/lib/calendly";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-CA", {
@@ -16,11 +13,25 @@ export function formatFoundingPriceLine(separator: "·" | "•" = "·") {
   return `${formatPrice(FOUNDING_PARTNER.introPrice)} first month ${separator} then ${formatPrice(FOUNDING_PARTNER.regularPrice)}/mo + ad spend`;
 }
 
-export function scrollToBook() {
-  const el = document.getElementById("book-call");
-  if (!el) return false;
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
-  return true;
+/** Scroll to the Calendly embed on the homepage, or navigate there from other routes. */
+export function scrollToBook(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const calendar = document.getElementById("book-call-calendar");
+  const section = document.getElementById("book-call");
+  const target = calendar ?? section;
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  }
+
+  if (window.location.pathname !== "/") {
+    window.location.assign("/#book-call");
+    return true;
+  }
+
+  return false;
 }
 
 export function scrollToHowItWorks() {
@@ -31,28 +42,6 @@ export function scrollToPricing() {
   document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
 }
 
-export type BookLeadStrategyCallOptions = {
-  /** When true, always scroll to the contact form section (skip Calendly popup). */
-  preferForm?: boolean;
-  prefill?: CalendlyPrefill;
-};
-
-/**
- * Primary booking action sitewide.
- * - Calendly configured: popup overlay (new tab fallback) — or scroll to embed when preferForm.
- * - Not configured: scroll to contact form at #book-call.
- */
-export async function bookLeadStrategyCall(
-  options: BookLeadStrategyCallOptions = {}
-): Promise<"popup" | "tab" | "form" | "failed"> {
-  const { preferForm = false, prefill } = options;
-
-  if (!preferForm && isCalendlyConfigured()) {
-    const result = await openCalendlyPopup(prefill);
-    if (result === "popup" || result === "tab") return result;
-    // Popup and tab both failed — fall through to form section
-  }
-
-  const scrolled = scrollToBook();
-  return scrolled ? "form" : "failed";
+export function bookLeadStrategyCall(): "form" | "failed" {
+  return scrollToBook() ? "form" : "failed";
 }

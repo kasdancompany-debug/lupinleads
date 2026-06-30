@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SiteLogo } from "@/components/ui/SiteLogo";
 import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { NAV_LINKS, CTAS } from "@/lib/constants";
+import { scrollToBook } from "@/lib/marketing";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -92,13 +93,16 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <a
-                href="#book-call"
-                className="type-nav-mobile block py-3 px-1 text-sage-green font-semibold"
-                onClick={() => setOpen(false)}
+              <button
+                type="button"
+                className="type-nav-mobile block w-full text-left py-3 px-1 text-sage-green font-semibold"
+                onClick={() => {
+                  setOpen(false);
+                  scrollToBook();
+                }}
               >
                 {CTAS.primary}
-              </a>
+              </button>
             </div>
           ) : null}
         </div>

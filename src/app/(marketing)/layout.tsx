@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/site-metadata";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StickyCta } from "@/components/sections/StickyCta";
+import { BookCallHashScroll } from "@/components/marketing/BookCallHashScroll";
 import { CalendlyBootstrap } from "@/components/marketing/CalendlyBootstrap";
 import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 
@@ -29,6 +30,7 @@ export default function MarketingLayout({
       <WebSiteJsonLd />
       <FaqJsonLd />
       <CalendlyBootstrap />
+      <BookCallHashScroll />
       <a
         href="#main-content"
         className="skip-to-content"
