@@ -4,9 +4,8 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionShell } from "@/components/motion/SectionShell";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { LupinMark } from "@/components/ui/LupinMark";
-import { Button } from "@/components/ui/Button";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { BUILDER_CREDIBILITY, CTAS } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
 
 export function BuilderCredibility() {
   const { eyebrow, title, paragraphs, pillars, pullQuote, assurance } = BUILDER_CREDIBILITY;
@@ -92,9 +91,9 @@ export function BuilderCredibility() {
                 ))}
               </ul>
               <div className="mt-6 pt-6 border-t border-silver/10">
-                <Button size="md" emphasis onClick={scrollToBook} className="w-full sm:w-auto">
+                <BookCallButton size="lg" emphasis>
                   {CTAS.primary}
-                </Button>
+                </BookCallButton>
               </div>
             </aside>
           </FadeIn>

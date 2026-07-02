@@ -632,8 +632,42 @@ body {
 }
 
 #book-call,
-#book-call-calendar {
+#book-call-calendar,
+#pricing {
   scroll-margin-top: 5.5rem;
+}
+
+.founder-media-frame {
+  border: 1px solid color-mix(in srgb, var(--forest-green-bright) 22%, transparent);
+  background: color-mix(in srgb, var(--charcoal) 70%, var(--deep-soil-black));
+  box-shadow: var(--brand-shadow-card);
+}
+
+.founder-media-placeholder {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 20%, color-mix(in srgb, var(--forest-green-bright) 18%, transparent), transparent),
+    linear-gradient(165deg, color-mix(in srgb, var(--forest-green-deep) 35%, var(--charcoal)), var(--deep-soil-black));
+}
+
+.founder-stack-panel {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--silver) 6%, transparent);
+}
+
+.pricing-urgency-note {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lupin-purple-light) 12%, transparent);
+}
+
+.sales-trust-card {
+  border: 1px solid color-mix(in srgb, var(--silver) 10%, transparent);
+  background: color-mix(in srgb, var(--charcoal) 55%, var(--deep-soil-black));
+}
+
+.sales-trust-solution {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--forest-green-bright) 12%, transparent);
+}
+
+.sales-trust-footnote {
+  box-shadow: var(--brand-shadow-card);
 }
 
 .brand-panel {

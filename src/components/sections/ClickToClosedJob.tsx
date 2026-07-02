@@ -16,10 +16,9 @@ import {
   type JourneyStep,
 } from "@/components/ui/JourneyStemDiagram";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Button } from "@/components/ui/Button";
 import { SectionIntro } from "@/components/ui/SectionIntro";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { CTAS } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
 import { easePremium } from "@/lib/motion-config";
 
 const STEPS: JourneyStep[] = [
@@ -115,7 +114,7 @@ export function ClickToClosedJob() {
               eyebrow="The full journey"
               title="Ad click to"
               highlight="booked job."
-              description="Six stages on one growth path — from Meta ad click to signed work. Every handoff tracked on the same stem."
+              description="Six stages on one pipeline — from Meta ad click to booked estimate and signed work. Every handoff tracked in your CRM."
               className="max-w-3xl mx-auto"
             />
           </FadeIn>
@@ -189,11 +188,11 @@ export function ClickToClosedJob() {
       <div className="relative section-forest border-t border-forest-green-bright/10 py-10 lg:py-12">
         <div className="page-container flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-silver-muted max-w-xl leading-relaxed text-center sm:text-left">
-            See how ad click to booked job maps to your trade and market on a free strategy call.
+            See how ad click to booked estimate maps to your trade and market on a strategy call.
           </p>
-          <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 w-full sm:w-auto">
+          <BookCallButton size="lg" emphasis className="shrink-0">
             {CTAS.primary}
-          </Button>
+          </BookCallButton>
         </div>
       </div>
     </section>

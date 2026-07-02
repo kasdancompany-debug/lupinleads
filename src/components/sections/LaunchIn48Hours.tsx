@@ -5,9 +5,8 @@ import { SectionShell } from "@/components/motion/SectionShell";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { OnboardingTimeline } from "@/components/motion/OnboardingTimeline";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { Button } from "@/components/ui/Button";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { ONBOARDING_STEPS, CTAS } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
 import { easePremium } from "@/lib/motion-config";
 
 export function LaunchIn48Hours() {
@@ -37,7 +36,7 @@ export function LaunchIn48Hours() {
             eyebrow="Onboarding"
             title="Launch in"
             highlight="48 hours."
-            description="Connect your Meta account, build the stack, and go live — ads, forms, CRM, and reporting ready to turn clicks into booked jobs."
+            description="Connect your Meta account, launch ads and landing pages, and wire your pipeline — typically live within 48 hours so quote requests can move to booked estimates."
             className="max-w-3xl mx-auto"
           />
         </FadeIn>
@@ -48,8 +47,8 @@ export function LaunchIn48Hours() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 pt-4 border-t border-silver/10">
             <div className="flex items-center gap-6 text-center sm:text-left">
               {[
-                { label: "Your Meta account", sub: "You own ad spend" },
-                { label: "Full stack built", sub: "Ads to reporting" },
+                { label: "Ads + landing page", sub: "Built for your trade" },
+                { label: "CRM wired", sub: "Leads to estimates" },
                 { label: "Live in 48 hrs", sub: "Typical timeline" },
               ].map((item) => (
                 <div key={item.label} className="hidden md:block">
@@ -58,9 +57,9 @@ export function LaunchIn48Hours() {
                 </div>
               ))}
             </div>
-            <Button size="lg" emphasis onClick={scrollToBook} className="shrink-0 px-8">
+            <BookCallButton size="lg" emphasis>
               {CTAS.primary}
-            </Button>
+            </BookCallButton>
           </div>
         </FadeIn>
       </div>

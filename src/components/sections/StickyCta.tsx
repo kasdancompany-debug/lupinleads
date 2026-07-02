@@ -48,17 +48,13 @@ export function StickyCta() {
         <div className="flex flex-col gap-2.5">
           <div className="min-w-0 text-center sm:text-left">
             <p className="type-nav-mobile font-semibold text-foreground leading-snug">
-              Turn ad clicks into booked jobs
+              Turn Meta ads into booked estimates
             </p>
             <p className="type-label text-silver-muted mt-0.5 leading-relaxed">
               {priceLine}
             </p>
           </div>
-          <BookCallButton
-            size="md"
-            emphasis
-            className="w-full min-h-[48px] text-sm font-semibold"
-          >
+          <BookCallButton size="lg" emphasis preset="sticky">
             {CTAS.primary}
           </BookCallButton>
         </div>

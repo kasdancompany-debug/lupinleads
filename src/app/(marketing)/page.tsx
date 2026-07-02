@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { HowItWorks } from "@/components/sections/HowItWorks";
@@ -15,8 +16,19 @@ const ClickToClosedJob = dynamic(
   { loading: () => <SectionPlaceholder tall /> }
 );
 
+const AgencyComparisonSection = dynamic(
+  () =>
+    import("@/components/sections/AgencyComparisonSection").then((m) => m.AgencyComparisonSection),
+  { loading: () => <SectionPlaceholder /> }
+);
+
 const GoodMonthSection = dynamic(
   () => import("@/components/sections/GoodMonthSection").then((m) => m.GoodMonthSection),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const FounderLedSection = dynamic(
+  () => import("@/components/sections/FounderLedSection").then((m) => m.FounderLedSection),
   { loading: () => <SectionPlaceholder /> }
 );
 
@@ -56,6 +68,7 @@ function SectionPlaceholder({ tall = false }: { tall?: boolean }) {
 export default function Home() {
   return (
     <>
+      <FaqJsonLd />
       <Hero />
       <GrowthDivider variant="stem" />
       <ProblemSection />
@@ -64,7 +77,11 @@ export default function Home() {
       <GrowthDivider variant="branch" align="left" />
       <ClickToClosedJob />
       <Features />
+      <GrowthDivider variant="whisper" />
+      <AgencyComparisonSection />
       <GoodMonthSection />
+      <GrowthDivider variant="stem" align="left" />
+      <FounderLedSection />
       <GrowthDivider variant="whisper" />
       <Pricing />
       <BuilderCredibility />

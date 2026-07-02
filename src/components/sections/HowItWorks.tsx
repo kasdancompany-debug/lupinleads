@@ -1,45 +1,41 @@
 "use client";
 
+import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionShell } from "@/components/motion/SectionShell";
-import { GrowthJourneyFlow } from "@/components/motion/GrowthJourneyFlow";
-import { StickySectionHeader } from "@/components/motion/StickySectionHeader";
-import { SlideIn } from "@/components/motion/SlideIn";
-import { RiseOnScroll } from "@/components/motion/RiseOnScroll";
+import { OnboardingTimeline } from "@/components/motion/OnboardingTimeline";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { FloatingProductCard } from "@/components/marketing/mockups/FloatingProductCard";
-import { CrmPipelineMockup } from "@/components/marketing/mockups/CrmPipelineMockup";
-import { HOW_IT_WORKS_SECTION } from "@/lib/constants";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
+import { CTAS, HOW_IT_WORKS_SECTION, HOW_IT_WORKS_STEPS } from "@/lib/constants";
 
 export function HowItWorks() {
   return (
     <SectionShell id="how-it-works" variant="emerald">
-      <div className="section-body">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          <StickySectionHeader
+      <div className="section-body max-w-6xl mx-auto">
+        <FadeIn>
+          <SectionIntro
+            align="center"
+            variant="display"
             eyebrow={HOW_IT_WORKS_SECTION.eyebrow}
             title={HOW_IT_WORKS_SECTION.title}
             highlight={HOW_IT_WORKS_SECTION.highlight}
             description={HOW_IT_WORKS_SECTION.description}
+            className="max-w-3xl mx-auto"
           />
-          <SlideIn direction="right" delay={0.1}>
-            <RiseOnScroll offset={20}>
-              <FloatingProductCard>
-                <CrmPipelineMockup />
-              </FloatingProductCard>
-            </RiseOnScroll>
-          </SlideIn>
-        </div>
+        </FadeIn>
 
-        <div className="brand-panel p-6 sm:p-8 lg:p-10 relative overflow-hidden">
-          <SectionIntro
-            align="center"
-            eyebrow={HOW_IT_WORKS_SECTION.journeyEyebrow}
-            title={HOW_IT_WORKS_SECTION.journeyTitle}
-            description={HOW_IT_WORKS_SECTION.journeyDescription}
-            className="!mb-8 lg:!mb-10 max-w-2xl mx-auto"
-          />
-          <GrowthJourneyFlow />
-        </div>
+        <FadeIn delay={0.1}>
+          <div className="how-it-works-timeline mt-10 lg:mt-14">
+            <OnboardingTimeline steps={HOW_IT_WORKS_STEPS} />
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.18}>
+          <div className="flex justify-center mt-10 lg:mt-12 pt-8 border-t border-silver/10">
+            <BookCallButton size="lg" emphasis>
+              {CTAS.primary}
+            </BookCallButton>
+          </div>
+        </FadeIn>
       </div>
     </SectionShell>
   );

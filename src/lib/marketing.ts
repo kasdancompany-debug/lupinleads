@@ -38,8 +38,21 @@ export function scrollToHowItWorks() {
   document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
 }
 
-export function scrollToPricing() {
-  document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+export function scrollToPricing(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const section = document.getElementById("pricing");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  }
+
+  if (window.location.pathname !== "/") {
+    window.location.assign("/#pricing");
+    return true;
+  }
+
+  return false;
 }
 
 export function bookLeadStrategyCall(): "form" | "failed" {

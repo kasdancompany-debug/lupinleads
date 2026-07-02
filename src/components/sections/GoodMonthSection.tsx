@@ -3,7 +3,8 @@
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionShell } from "@/components/motion/SectionShell";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { SAMPLE_MONTH } from "@/lib/constants";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
+import { SAMPLE_MONTH, CTAS } from "@/lib/constants";
 
 type FunnelMetric = (typeof SAMPLE_MONTH.funnel)[number];
 type EfficiencyMetric = (typeof SAMPLE_MONTH.efficiency)[number];
@@ -20,7 +21,7 @@ export function GoodMonthSection() {
             eyebrow={statusLabel}
             title="What a good month"
             highlight="can look like."
-            description="Sample contractor workflow — ad spend, pipeline activity, and closed revenue from click to booked job."
+            description="Sample month for a home remodeling contractor — ad spend, estimates booked, and closed revenue tracked in one report."
             className="max-w-2xl mx-auto"
           />
         </FadeIn>
@@ -72,6 +73,11 @@ export function GoodMonthSection() {
           <p className="text-center text-xs sm:text-sm text-silver-dim max-w-2xl mx-auto leading-relaxed mt-8">
             {disclaimer}
           </p>
+          <div className="flex justify-center mt-8">
+            <BookCallButton size="lg" emphasis>
+              {CTAS.primary}
+            </BookCallButton>
+          </div>
         </FadeIn>
       </div>
     </SectionShell>

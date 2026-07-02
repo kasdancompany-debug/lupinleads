@@ -51,13 +51,13 @@ export function WebSiteJsonLd() {
   );
 }
 
-export function FaqJsonLd() {
+export function FaqJsonLd({ items = FAQ_ITEMS }: { items?: readonly { question: string; answer: string }[] }) {
   return (
     <JsonLdScript
       data={{
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: FAQ_ITEMS.map((item) => ({
+        mainEntity: items.map((item) => ({
           "@type": "Question",
           name: item.question,
           acceptedAnswer: {

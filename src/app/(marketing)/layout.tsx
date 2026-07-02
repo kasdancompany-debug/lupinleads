@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyCta } from "@/components/sections/StickyCta";
 import { BookCallHashScroll } from "@/components/marketing/BookCallHashScroll";
 import { CalendlyBootstrap } from "@/components/marketing/CalendlyBootstrap";
-import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: `${SITE.name} — Contractor Leads from Facebook & Instagram Ads`,
@@ -28,7 +28,6 @@ export default function MarketingLayout({
     <>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
-      <FaqJsonLd />
       <CalendlyBootstrap />
       <BookCallHashScroll />
       <a

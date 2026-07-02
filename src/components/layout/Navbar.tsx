@@ -56,11 +56,7 @@ export function Navbar() {
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <BookCallButton
-                size="sm"
-                emphasis
-                className="text-[10px] sm:text-xs px-2.5 sm:px-3 leading-tight min-h-[40px]"
-              >
+              <BookCallButton size="sm" emphasis preset="nav">
                 {CTAS.short}
               </BookCallButton>
               <button

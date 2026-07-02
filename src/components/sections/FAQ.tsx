@@ -18,7 +18,7 @@ export function FAQ() {
           <SectionHeading
             eyebrow="FAQ"
             title="Straight answers before you book"
-            description="Founding partner pricing, ad spend, and what you actually get — no surprises on the call."
+            description="Pricing, ad spend, who it's for, and what happens after a lead — plain answers before you apply."
             bold
           />
         </ScrollReveal>
@@ -73,8 +73,8 @@ export function FAQ() {
           <div className="text-center value-card rounded-2xl p-8 sm:p-10 border-forest-green-bright/18">
             <p className="type-card-title text-[1.125rem] mb-2">Still have questions?</p>
             <p className="type-card-body mb-6 max-w-sm mx-auto">
-              Book a free strategy call. We&apos;ll walk through the full system for your trade and
-              market.
+              Walk through your trade, market, and estimate goals — we&apos;ll show you how the
+              pipeline works.
             </p>
             <BookCallButton size="lg" emphasis>
               {CTAS.primary}

@@ -3,9 +3,8 @@
 import type { ReactNode } from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { Button } from "@/components/ui/Button";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { FEATURES, CTAS, WHAT_YOU_GET_SECTION } from "@/lib/constants";
-import { scrollToBook } from "@/lib/marketing";
 
 const icons: Record<string, ReactNode> = {
   target: (
@@ -78,9 +77,9 @@ export function Features() {
         </div>
 
         <ScrollReveal delay={400} className="mt-14 lg:mt-16 text-center">
-          <Button size="lg" emphasis onClick={scrollToBook}>
+          <BookCallButton size="lg" emphasis>
             {CTAS.primary}
-          </Button>
+          </BookCallButton>
         </ScrollReveal>
       </div>
     </section>

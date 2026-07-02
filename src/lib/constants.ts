@@ -1,30 +1,26 @@
 export const CTAS = {
-  primary: "Book My Free Lead Strategy Call",
-  strategyCall: "Book My Strategy Call",
+  primary: "Book a Strategy Call",
   short: "Book a Call",
-  founding: "Claim a Founding Partner Spot",
-  pricing: "See the Offer",
-  estimates: "Get More Quote Requests",
+  founding: "Apply for Founding Partner Access",
   howItWorks: "See How It Works",
-  talk: "Talk to Us",
-  calendar: "Pick a Time on the Calendar",
+  viewPricing: "View Pricing",
+  calendar: "Book on the Calendar",
 } as const;
 
 export const SITE = {
   name: "LUPIN LEADS",
-  tagline: "Contractor growth platform",
-  headline: "Turn ad clicks into booked jobs.",
-  headlineLead: "Turn ad clicks into",
-  headlineHighlight: "booked jobs.",
+  tagline: "Meta ads for contractors · Canada",
+  headline: "Turn Meta Ads into booked contractor estimates.",
+  headlineLead: "Turn Meta Ads into",
+  headlineHighlight: "booked contractor estimates.",
   coreLine: {
     lead: "You're not short on skill.",
     highlight: "You're short on quote requests.",
   },
-  supportingHeadline: "Turn ad clicks into booked jobs.",
   heroSubheadline:
-    "Meta ads, lead capture, and follow-up in one system — built for Canadian contractors who need booked estimates, not another agency pitch deck.",
+    "Facebook and Instagram ads, landing pages, CRM, and follow-up in one place — so quote requests turn into booked estimates on your calendar.",
   heroOneLiner:
-    "Facebook and Instagram ads that bring in homeowner quote requests — managed on your account, tracked in one place.",
+    "Facebook and Instagram ads that bring in homeowner quote requests — managed on your account, tracked through booked estimates.",
   heroTrades:
     "Roofers · HVAC · Plumbers · Landscapers · Electricians · General contractors",
   footerTagline:
@@ -32,7 +28,7 @@ export const SITE = {
   subheadline:
     "Contractor lead generation through Facebook and Instagram ads. You own your Meta account and ad spend.",
   description:
-    "Lupin Leads helps contractors get more quote requests from Facebook and Instagram ads — ads, capture, follow-up, and reporting in one system.",
+    "Lupin Leads helps Canadian contractors turn Meta ad spend into quote requests, booked estimates, and tracked pipeline — ads, landing pages, CRM, and reporting in one fee.",
   cta: CTAS.primary,
   ctaShort: CTAS.short,
   email: "hello@lupinleads.com",
@@ -74,6 +70,12 @@ export const HERO_BENEFITS = [
     description:
       "Set up for busy owners who need booked estimates, not another marketing dashboard to babysit.",
   },
+] as const;
+
+export const HERO_TRUST_BULLETS = [
+  "Built for contractors",
+  "CRM included",
+  "Founder-led setup",
 ] as const;
 
 export const TRADES_SECTION = {
@@ -199,9 +201,9 @@ export const PROBLEM_SECTION = {
 export const WHAT_YOU_GET_SECTION = {
   eyebrow: "What you get",
   title: "Everything to turn ad spend into",
-  highlight: "quote requests.",
+  highlight: "booked estimates.",
   description:
-    "One monthly fee covers the full stack — ads, creative, capture, CRM, follow-up, and reporting. Ad spend stays on your Meta account.",
+    "One monthly fee covers Meta ads, landing pages, CRM, follow-up, and reporting. Ad spend stays on your Meta account.",
 } as const;
 
 export const WHY_LUPIN_SECTION = {
@@ -212,12 +214,56 @@ export const WHY_LUPIN_SECTION = {
     "We're built for contractors who sell estimates — not e-commerce brands or national franchises. Here's what that means in practice.",
 } as const;
 
-export const FINAL_CTA_SECTION = {
-  eyebrow: "Free lead strategy call",
-  title: "Let's see if Facebook and Instagram",
-  highlight: "make sense for your trade.",
+export const CONTRACTOR_SALES_TRUST_SECTION = {
+  eyebrow: "Trust & proof",
+  title: "Built for real",
+  highlight: "contractor sales problems.",
   description:
-    "Tell us your service area, average job size, and how booked you want to be. We'll walk through ad budget, quote flow, and whether a founding partner spot is a fit — no pressure.",
+    "No fabricated reviews — just the gaps we see on every strategy call, and how Lupin is built to close them.",
+  foundingNote:
+    "We're currently accepting founding contractor partners while we build our first public case studies.",
+  cards: [
+    {
+      id: "missed-leads",
+      title: "Missed Leads",
+      problem:
+        "Quote requests land in email, voicemail, or DMs — and disappear when you're on a job site or driving between estimates.",
+      solution:
+        "Every inquiry from your ads flows into one pipeline with instant alerts — so new leads don't sit unread while a competitor calls back first.",
+    },
+    {
+      id: "slow-follow-up",
+      title: "Slow Follow-Up",
+      problem:
+        "Homeowners often contact two or three contractors. Whoever responds while they're still motivated usually wins the estimate.",
+      solution:
+        "Leads are prioritized with follow-up templates and draft messages — so your crew can reply in minutes, not the next morning.",
+    },
+    {
+      id: "no-pipeline",
+      title: "No Pipeline",
+      problem:
+        "Without clear stages, you can't tell what's new, quoted, or won — and good jobs quietly fall through the cracks.",
+      solution:
+        "A simple CRM from first click to booked job — stages, notes, and a client portal so everyone sees the same truth.",
+    },
+    {
+      id: "no-clear-roi",
+      title: "No Clear ROI",
+      problem:
+        "Ad dashboards show clicks and spend, but not which leads became estimates, jobs, or revenue on your calendar.",
+      solution:
+        "Reporting tied to your pipeline — ad spend, cost per lead, appointments, and closed jobs in one place you can read in five minutes.",
+    },
+  ],
+} as const;
+
+export const FINAL_CTA_SECTION = {
+  eyebrow: "Strategy call",
+  title: "See if Meta ads can fill your",
+  highlight: "estimate calendar.",
+  description:
+    "Tell us your trade, service area, and how booked you want to be. We'll walk through ad budget, follow-up, and whether a founding partner spot makes sense — no pressure.",
 } as const;
 
 export const ONBOARDING_STEPS = [
@@ -264,30 +310,70 @@ export const ONBOARDING_STEPS = [
 ] as const;
 
 export const FOUNDING_PARTNER = {
-  name: "Founding Partner Program",
+  name: "Founding Partner Growth System",
   introPrice: 299,
   regularPrice: 499,
   slotsTotal: 5,
   currency: "CAD" as const,
   description:
-    "The full lead generation system at a locked-in rate — Facebook and Instagram ads, creative, quote forms, CRM, follow-up, and reporting. One management fee. You pay ad spend directly to Meta.",
+    "Meta ads, landing page, CRM, lead tracking, and monthly reporting — built and supported founder-led, from your first strategy call through booked estimates.",
   includes: [
-    "Facebook & Instagram ad management",
-    "Custom ad creative included",
-    "Branded quote request forms",
-    "Contractor CRM pipeline",
-    "AI-assisted follow-up",
-    "Monthly performance reporting",
-    "Live in ~48 hours",
-    "30-day management fee guarantee",
-    "Your Meta account — your ad spend",
+    "Meta Ads setup",
+    "Campaign management",
+    "Landing page",
+    "CRM pipeline",
+    "Lead tracking",
+    "Monthly reporting",
+    "Founder-led support",
   ],
+  adSpendNote: "Ad spend is separate and paid directly to Meta.",
+  urgencyNote:
+    "We're onboarding a limited number of founding contractor partners as we publish our first case studies.",
   footnote:
-    "Management fees in CAD plus applicable taxes (e.g. HST). Ad spend is separate and paid directly to Meta on your account — typically $2,000–$5,000/month depending on market and goals.",
+    "Management fees in CAD plus applicable taxes (e.g. HST). Founding rate locked from month 2. Typical ad spend: $2,000–$5,000/month on your Meta account, depending on market and goals.",
+} as const;
+
+export const PRICING_SECTION = {
+  eyebrow: "Founding partner offer",
+  title: "One fee.",
+  highlight: "Booked estimates in mind.",
+  description:
+    "Starting at $299 for month one — ads, landing pages, CRM, and reporting priced for contractors who need estimate appointments, not another ads-only retainer.",
 } as const;
 
 export const PRICING_COMPARISON_DISCLAIMER =
   "Comparisons reflect typical setups we see with contractors. DIY results, agency packages, and marketplace lead programs vary by provider and market.";
+
+export const AGENCY_COMPARISON_SECTION = {
+  eyebrow: "The difference",
+  title: "Most agencies stop at the click.",
+  highlight: "We build the system after it.",
+  description:
+    "Leads only matter if they turn into conversations, estimates, and booked jobs.",
+  disclaimer:
+    "Many agencies run strong ad campaigns — this compares what usually happens after the click. Setups vary by provider and market.",
+  columns: {
+    typical: {
+      name: "Typical Ad Agency",
+      tagline: "Ads & reports",
+    },
+    lupin: {
+      name: "Lupin Leads",
+      tagline: "Ads + CRM + estimates",
+    },
+  },
+  rows: [
+    { label: "Runs Facebook/Instagram ads", typical: true, lupin: true },
+    { label: "Builds dedicated landing pages", typical: "partial", lupin: true },
+    { label: "Includes CRM pipeline", typical: false, lupin: true },
+    { label: "Tracks every lead", typical: "partial", lupin: true },
+    { label: "Shows booked estimates", typical: false, lupin: true },
+    { label: "Provides simple reporting", typical: "partial", lupin: true },
+    { label: "Helps improve follow-up", typical: false, lupin: true },
+    { label: "Built for contractors", typical: false, lupin: true },
+    { label: "Founder-led service", typical: false, lupin: true },
+  ],
+} as const;
 
 /** Update status to "claimed" when a spot is sold — labels and counts update sitewide. */
 export type FoundingPartnerSpotStatus = "open" | "claimed";
@@ -466,16 +552,50 @@ export const FEATURES = [
 
 export const HOW_IT_WORKS_SECTION = {
   eyebrow: "How it works",
-  title: "From scroll to",
-  highlight: "quote request.",
+  title: "Five steps from",
+  highlight: "call to booked estimates.",
   description:
-    "Homeowners see your ads on Facebook and Instagram, request a quote on your form, and land in your pipeline — ready for a call and a booked estimate.",
-  journeyEyebrow: "The flow",
-  journeyTitle: "Four steps, one system",
-  journeyDescription: "No shared leads. No guessing. Your ads, your forms, your calendar.",
+    "We learn your trade and market, build your ads and pipeline, then improve what fills your estimate calendar — not just what looks good in a dashboard.",
 } as const;
 
-/** Four-step journey for How It Works */
+export const HOW_IT_WORKS_STEPS = [
+  {
+    id: "strategy-call",
+    title: "Strategy Call",
+    description:
+      "We learn your trade, service area, offer, and current sales process.",
+    icon: "call",
+  },
+  {
+    id: "campaign-setup",
+    title: "Campaign Setup",
+    description:
+      "We build the Meta Ads, landing page, tracking, and lead capture flow.",
+    icon: "build",
+  },
+  {
+    id: "lead-pipeline",
+    title: "Lead Pipeline",
+    description: "Every lead enters your CRM so nothing gets lost.",
+    icon: "pipeline",
+  },
+  {
+    id: "follow-up-system",
+    title: "Follow-Up System",
+    description:
+      "You can track calls, messages, estimates, and booked jobs.",
+    icon: "followup",
+  },
+  {
+    id: "monthly-optimization",
+    title: "Monthly Optimization",
+    description:
+      "We improve the ads and pipeline based on what is actually converting.",
+    icon: "optimize",
+  },
+] as const;
+
+/** @deprecated Use HOW_IT_WORKS_STEPS — kept for GrowthJourneyFlow */
 export const HOW_IT_WORKS_JOURNEY = [
   {
     id: "meta-ads",
@@ -502,6 +622,48 @@ export const HOW_IT_WORKS_JOURNEY = [
       "See which ads produced quote requests, estimates, and jobs — so you know where to put budget next month.",
   },
 ] as const;
+
+export const FOUNDER_LED_SECTION = {
+  eyebrow: "Founder-led",
+  title: "Founder-led,",
+  highlight: "not handed off.",
+  description:
+    "Lupin Leads is run directly by Dan — not a junior media buyer, account coordinator, or outsourced fulfilment team you'll never meet.",
+  paragraphs: [
+    "When you work with Lupin, you get one operator building your ads, landing pages, CRM, reporting, and follow-up — tuned for how contractors actually book estimates.",
+    "No handoffs to a white-label agency. No mystery about who's reading your lead data or adjusting your campaigns. You know exactly who you're working with.",
+  ],
+  founder: {
+    name: "Dan",
+    role: "Founder · Lupin Leads",
+    /** Drop a headshot at this path to replace the placeholder frame. */
+    photoSrc: null as string | null,
+    /** Optional intro video URL — enables play overlay on the media frame. */
+    videoUrl: null as string | null,
+  },
+  stack: [
+    {
+      title: "Meta ads & creative",
+      description: "Campaigns, targeting, and creative built for your trade and service area.",
+    },
+    {
+      title: "Landing pages & forms",
+      description: "Branded quote flows that capture name, phone, and project details.",
+    },
+    {
+      title: "CRM & pipeline",
+      description: "Every lead in one place — stages, notes, and client portal access.",
+    },
+    {
+      title: "Reporting dashboard",
+      description: "Spend, cost per lead, and pipeline activity you can actually read.",
+    },
+    {
+      title: "Follow-up systems",
+      description: "Templates and workflows so quote requests don't die in the inbox.",
+    },
+  ],
+} as const;
 
 export const BUILDER_CREDIBILITY = {
   eyebrow: "Behind Lupin",
@@ -541,34 +703,43 @@ export const BUILDER_CREDIBILITY = {
 
 export const FAQ_ITEMS = [
   {
-    question: "What is the Founding Partner Program?",
+    question: "What is the Founding Partner Growth System?",
     answer:
-      "$299 CAD plus applicable taxes for your first month, then $499/mo plus applicable taxes locked in. Includes Facebook and Instagram ad management, creative, quote forms, CRM, follow-up support, and monthly reporting. Only 5 spots. Ad spend is separate — you pay Meta directly on your account.",
+      "$299 CAD plus applicable taxes for your first month, then $499/mo plus applicable taxes locked in. Includes Meta Ads setup, campaign management, landing page, CRM pipeline, lead tracking, monthly reporting, and founder-led support.",
   },
   {
-    question: "Do I pay ad spend on top of the monthly fee?",
+    question: "Why shouldn't I just hire a regular Facebook Ads agency?",
     answer:
-      "Yes. The $299/$499 is Lupin's management fee. Ad spend is billed by Meta to your own ad account — typically $2,000–$5,000/month depending on your market and goals. You always own the account and the data.",
+      "Most agencies focus only on clicks and leads. Lupin Leads includes the landing page, CRM, pipeline, tracking, and follow-up visibility so you can see what happens after the lead comes in.",
   },
   {
-    question: "Is this just running Facebook ads?",
+    question: "Is ad spend included?",
     answer:
-      "Ads are the top of the funnel. We also build your quote forms, wire leads into a CRM pipeline, support follow-up, and report on quote requests and closed jobs. The goal is booked estimates — not vanity metrics.",
+      "No. The monthly fee covers the system and management. Ad spend is paid separately and directly to Meta.",
   },
   {
-    question: "What contractors do you work with?",
+    question: "Do I need a website?",
+    answer: "No. Lupin can use dedicated landing pages built for your campaign.",
+  },
+  {
+    question: "What kinds of contractors is this for?",
     answer:
-      "Roofers, HVAC, plumbers, landscapers, electricians, and general contractors across Canada. If you sell estimates to homeowners and want more quote requests, we're built for that.",
+      "Home service and local contractors such as roofers, HVAC, plumbers, landscapers, electricians, cleaners, painters, and similar service businesses.",
+  },
+  {
+    question: "What happens after a lead comes in?",
+    answer:
+      "The lead enters your CRM pipeline so you can track contact attempts, estimates, follow-up, and booked jobs.",
   },
   {
     question: "How is this different from HomeAdvisor or Angi?",
     answer:
-      "Marketplaces like Angi and HomeAdvisor typically match one homeowner inquiry to multiple contractors at once (often several pros per lead). Lupin builds demand through your ads and delivers quote requests from your forms to you alone — not a shared inbox where competitors bought the same contact.",
+      "Marketplaces like Angi and HomeAdvisor typically match one homeowner inquiry to multiple contractors at once. Lupin builds demand through your ads and delivers quote requests to you alone — not a shared inbox where competitors bought the same contact.",
   },
   {
     question: "How fast can we launch?",
     answer:
-      "Most accounts go live in about 48 hours — ads, forms, and pipeline connected. Exact timing depends on Meta access and creative approvals.",
+      "Most accounts go live in about 48 hours — ads, landing page, and pipeline connected. Timing depends on Meta access and creative approvals.",
   },
   {
     question: "What does the 30-day guarantee cover?",

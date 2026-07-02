@@ -6,9 +6,9 @@ import { SectionShell } from "@/components/motion/SectionShell";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { SlideIn } from "@/components/motion/SlideIn";
 import { SectionIntro } from "@/components/ui/SectionIntro";
-import { Button } from "@/components/ui/Button";
+import { BookCallButton } from "@/components/marketing/BookCallButton";
 import { PROBLEM_CARDS, CTAS, SITE, PROBLEM_SECTION } from "@/lib/constants";
-import { scrollToBook, scrollToHowItWorks } from "@/lib/marketing";
+import { scrollToHowItWorks } from "@/lib/marketing";
 import { defaultTransition, defaultViewport, staggerContainer } from "@/lib/motion-config";
 
 const ICONS: Record<string, ReactNode> = {
@@ -120,9 +120,9 @@ export function ProblemSection() {
                 </p>
               </div>
               <div className="shrink-0">
-                <Button size="lg" emphasis onClick={scrollToBook} className="w-full sm:w-auto whitespace-nowrap">
+                <BookCallButton size="lg" emphasis className="whitespace-nowrap">
                   {CTAS.primary}
-                </Button>
+                </BookCallButton>
                 <p className="mt-3 text-center sm:text-left">
                   <button
                     type="button"

@@ -1,11 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { HeroGrowthVisual } from "@/components/ui/HeroGrowthVisual";
 import { BookCallButton } from "@/components/marketing/BookCallButton";
-import { SITE, CTAS, HERO_BENEFITS } from "@/lib/constants";
+import { SITE, CTAS, HERO_TRUST_BULLETS } from "@/lib/constants";
 import { getFoundingPartnerAvailability } from "@/lib/founding-partner";
 import { formatFoundingPriceLine, scrollToHowItWorks } from "@/lib/marketing";
 import {
@@ -13,35 +12,7 @@ import {
   fadeIn,
   slideLeft,
   slideRight,
-  staggerContainer,
-  defaultViewport,
 } from "@/lib/motion-config";
-
-const BENEFIT_ICONS: Record<(typeof HERO_BENEFITS)[number]["id"], ReactNode> = {
-  "see-leads": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="4" width="5" height="16" rx="1" />
-      <rect x="10" y="4" width="5" height="16" rx="1" />
-      <rect x="17" y="4" width="4" height="16" rx="1" />
-    </svg>
-  ),
-  "follow-up": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M13 2L4 14h7l-1 8 10-14H13L13 2z" strokeLinejoin="round" />
-    </svg>
-  ),
-  revenue: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M4 18V6M8 18v-5M12 18v-8M16 18v-3M20 18V9" strokeLinecap="round" />
-      <path d="M3 20h18" strokeLinecap="round" />
-    </svg>
-  ),
-  contractors: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M4 11.5L12 5l8 6.5V19a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-7.5z" strokeLinejoin="round" />
-    </svg>
-  ),
-};
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -59,7 +30,7 @@ export function Hero() {
         aria-hidden
       />
       <div className="absolute inset-0 grain-overlay pointer-events-none opacity-[0.18]" />
-      <div className="relative page-container pt-28 pb-14 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 w-full z-10">
+      <div className="relative page-container pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-10 lg:gap-8 xl:gap-12 items-center">
           <motion.div
             className="max-w-[44rem] order-1 relative z-20"
@@ -82,7 +53,7 @@ export function Hero() {
             </motion.div>
 
             <motion.h1
-              className="mb-6 sm:mb-8"
+              className="mb-5 sm:mb-7"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
@@ -96,7 +67,7 @@ export function Hero() {
             </motion.h1>
 
             <motion.div
-              className="lg:hidden mb-8 -mx-2 sm:mx-0"
+              className="lg:hidden mb-7 -mx-2 sm:mx-0"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
@@ -106,7 +77,7 @@ export function Hero() {
             </motion.div>
 
             <motion.p
-              className="hero-subhead mb-4"
+              className="hero-subhead mb-8 sm:mb-9 max-w-xl"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
@@ -115,29 +86,15 @@ export function Hero() {
               {SITE.heroSubheadline}
             </motion.p>
 
-            <motion.p
-              className="hero-trades-line max-w-xl mb-8 sm:mb-10"
-              initial={reduce ? false : "hidden"}
-              animate={mount}
-              variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.16 }}
-            >
-              {SITE.heroTrades}
-            </motion.p>
-
             <motion.div
-              className="hero-cta-stack mb-3"
+              className="hero-cta-stack mb-4"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
               transition={{ ...defaultTransition, delay: 0.2 }}
             >
               <div className="hero-cta-primary hero-cta-rail rounded-xl p-2 sm:p-2.5">
-                <BookCallButton
-                  size="lg"
-                  emphasis
-                  className="w-full text-base sm:text-lg min-h-[52px] px-6 sm:px-8"
-                >
+                <BookCallButton size="lg" emphasis>
                   {CTAS.primary}
                 </BookCallButton>
               </div>
@@ -151,12 +108,34 @@ export function Hero() {
               </Button>
             </motion.div>
 
+            <motion.ul
+              className="hero-trust-bullets flex flex-col sm:flex-row sm:flex-wrap gap-2.5 sm:gap-x-5 sm:gap-y-2 mb-4"
+              initial={reduce ? false : "hidden"}
+              animate={mount}
+              variants={fadeIn}
+              transition={{ ...defaultTransition, delay: 0.22 }}
+              aria-label="Key benefits"
+            >
+              {HERO_TRUST_BULLETS.map((bullet) => (
+                <li
+                  key={bullet}
+                  className="inline-flex items-center gap-2 text-sm text-silver-muted"
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-forest-glow shrink-0"
+                    aria-hidden="true"
+                  />
+                  {bullet}
+                </li>
+              ))}
+            </motion.ul>
+
             <motion.p
               className="type-label text-silver-dim leading-relaxed max-w-md"
               initial={reduce ? false : "hidden"}
               animate={mount}
               variants={fadeIn}
-              transition={{ ...defaultTransition, delay: 0.24 }}
+              transition={{ ...defaultTransition, delay: 0.26 }}
             >
               {ctaMicrocopy}
             </motion.p>
@@ -170,34 +149,6 @@ export function Hero() {
             transition={{ ...defaultTransition, delay: 0.18 }}
           >
             <HeroGrowthVisual variant="full" className="w-full" />
-          </motion.div>
-        </div>
-
-        <div className="hero-benefits-strip mt-14 lg:mt-20 pt-10 sm:pt-12">
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5"
-            initial={reduce ? false : "hidden"}
-            whileInView={reduce ? undefined : "visible"}
-            viewport={defaultViewport}
-            variants={staggerContainer}
-          >
-            {HERO_BENEFITS.map((benefit, index) => (
-              <motion.article
-                key={benefit.id}
-                className="hero-benefit-card rounded-xl p-5 lg:p-6 h-full"
-                variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                transition={{ ...defaultTransition, delay: index * 0.05 }}
-              >
-                <div className="brand-icon-chip w-9 h-9 mb-4">
-                  {BENEFIT_ICONS[benefit.id]}
-                </div>
-                <h3 className="type-card-title mb-2">{benefit.title}</h3>
-                <p className="type-card-body">{benefit.description}</p>
-              </motion.article>
-            ))}
           </motion.div>
         </div>
       </div>

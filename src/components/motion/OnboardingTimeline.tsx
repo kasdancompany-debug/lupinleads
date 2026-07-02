@@ -8,11 +8,32 @@ export interface OnboardingStep {
   id: string;
   title: string;
   description: string;
-  timing: string;
   icon: string;
+  timing?: string;
 }
 
 const ICONS: Record<string, ReactNode> = {
+  call: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path
+        d="M8 4h2l1.5 4.5L9 10.5a11.5 11.5 0 005 5l2-2.5L20.5 14H22l-2 8H18a2 2 0 01-2-2v-1.2A11.5 11.5 0 013 8.2V6a2 2 0 012-2z"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  pipeline: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="5" width="5" height="14" rx="1" />
+      <rect x="10" y="5" width="5" height="14" rx="1" />
+      <rect x="17" y="5" width="4" height="14" rx="1" />
+    </svg>
+  ),
+  followup: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" strokeLinejoin="round" />
+      <path d="M8 10h8M8 14h5" strokeLinecap="round" />
+    </svg>
+  ),
   connect: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" strokeLinecap="round" />
@@ -149,9 +170,11 @@ function TimelineNode({
       {layout === "horizontal" && (
         <>
           <p className="mt-3 text-sm font-semibold text-foreground">{step.title}</p>
-          <span className="mt-1 text-[10px] uppercase tracking-wider text-forest-glow">
-            {step.timing}
-          </span>
+          {step.timing ? (
+            <span className="mt-1 text-[10px] uppercase tracking-wider text-forest-glow">
+              {step.timing}
+            </span>
+          ) : null}
         </>
       )}
     </motion.div>
@@ -170,10 +193,12 @@ function UnifiedStepCard({ step, index }: { step: OnboardingStep; index: number 
         {ICONS[step.icon]}
       </div>
       <div className="flex items-center justify-between gap-2 mb-2">
-        <h3 className="font-semibold text-foreground text-sm">{step.title}</h3>
-        <span className="text-[10px] uppercase tracking-wider text-forest-glow shrink-0">
-          {step.timing}
-        </span>
+        <h3 className="font-semibold text-foreground text-sm leading-snug">{step.title}</h3>
+        {step.timing ? (
+          <span className="text-[10px] uppercase tracking-wider text-forest-glow shrink-0">
+            {step.timing}
+          </span>
+        ) : null}
       </div>
       <span className="text-[10px] uppercase tracking-[0.15em] text-silver-dim mb-2">
         Step {String(index + 1).padStart(2, "0")}
@@ -201,9 +226,11 @@ function StepCard({
       {compact && (
         <div className="flex items-center justify-between gap-2 mb-2">
           <h3 className="font-semibold text-foreground">{step.title}</h3>
-          <span className="text-[10px] uppercase tracking-wider text-forest-glow shrink-0">
-            {step.timing}
-          </span>
+          {step.timing ? (
+            <span className="text-[10px] uppercase tracking-wider text-forest-glow shrink-0">
+              {step.timing}
+            </span>
+          ) : null}
         </div>
       )}
       {!compact && (
