@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { ClientBranding, ExecutiveReport } from "@/lib/reports/types";
 import { getBrandings } from "@/lib/reports/branding";
@@ -256,9 +257,9 @@ export function ExecutiveReportsDashboard({
         <div className="dashboard-card px-5 py-4 mb-6 border-l-2 border-l-amber-400/40 bg-amber-400/[0.04]">
           <p className="text-sm text-foreground leading-relaxed">
             Ad spend has not been entered for this month.{" "}
-            <a href="/dashboard/spend" className="text-forest-glow hover:underline">
+            <Link href="/dashboard/spend" className="text-forest-glow hover:underline">
               Log spend
-            </a>{" "}
+            </Link>{" "}
             to show CPL and ROAS.
           </p>
         </div>
