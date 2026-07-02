@@ -14,7 +14,7 @@ export const BRAND_ASSETS = {
 } as const;
 
 export const BRAND_DIMENSIONS = {
-  mark: { width: 195, height: 108 },
+  mark: { width: 242, height: 321 },
   lockupDark: { width: 385, height: 82 },
   lockupNavDark: { width: 385, height: 36 },
   lockupLight: { width: 345, height: 98 },

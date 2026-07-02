@@ -1,4 +1,5 @@
-import { LupinMarkSvg } from "@/components/ui/LupinMarkSvg";
+import Image from "next/image";
+import { BRAND_ASSETS, BRAND_DIMENSIONS } from "@/lib/brand";
 
 type LupinMarkProps = {
   size?: number;
@@ -6,8 +7,23 @@ type LupinMarkProps = {
   priority?: boolean;
 };
 
-/** Official Lupin Leads icon — lupin stem + growth arrow (vector for crisp edges). */
+/** Official Lupin Leads icon — lupin stem + growth arrow. */
 export function LupinMark({ size = 36, className = "", priority = false }: LupinMarkProps) {
-  void priority;
-  return <LupinMarkSvg size={size} className={`block shrink-0 select-none ${className}`} />;
+  const { width: nativeW, height: nativeH } = BRAND_DIMENSIONS.mark;
+  const height = size;
+  const width = Math.round((size / nativeH) * nativeW);
+
+  return (
+    <Image
+      src={BRAND_ASSETS.mark}
+      alt=""
+      width={width}
+      height={height}
+      priority={priority}
+      unoptimized
+      className={`block shrink-0 select-none ${className}`}
+      style={{ width, height }}
+      aria-hidden
+    />
+  );
 }
