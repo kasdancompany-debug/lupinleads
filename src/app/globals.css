@@ -181,8 +181,10 @@ body {
 /* Shape-following light edge on the mark icon (dark headers) */
 .lupin-mark-outline {
   filter:
-    drop-shadow(0 0 0.35px rgba(255, 255, 255, 0.5))
-    drop-shadow(0 0 0.65px rgba(255, 255, 255, 0.18));
+    drop-shadow(0 0 0.4px rgba(255, 255, 255, 0.72))
+    drop-shadow(0 0 0.9px rgba(255, 255, 255, 0.34))
+    drop-shadow(0 0 1.25px rgba(255, 255, 255, 0.14))
+    brightness(1.04);
 }
 
 /* Eyebrows & small labels */
