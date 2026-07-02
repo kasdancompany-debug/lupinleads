@@ -5,10 +5,17 @@ type LupinMarkProps = {
   size?: number;
   className?: string;
   priority?: boolean;
+  /** Light edge ring so the mark reads on dark backgrounds. */
+  outline?: boolean;
 };
 
 /** Official Lupin Leads icon — lupin stem + growth arrow. */
-export function LupinMark({ size = 36, className = "", priority = false }: LupinMarkProps) {
+export function LupinMark({
+  size = 36,
+  className = "",
+  priority = false,
+  outline = false,
+}: LupinMarkProps) {
   const { width: nativeW, height: nativeH } = BRAND_DIMENSIONS.mark;
   const height = size;
   const width = Math.round((size / nativeH) * nativeW);
@@ -21,7 +28,7 @@ export function LupinMark({ size = 36, className = "", priority = false }: Lupin
       height={height}
       priority={priority}
       unoptimized
-      className={`block shrink-0 select-none ${className}`}
+      className={`block shrink-0 select-none ${outline ? "lupin-mark-outline" : ""} ${className}`}
       style={{ width, height }}
       aria-hidden
     />

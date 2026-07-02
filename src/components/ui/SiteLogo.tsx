@@ -22,15 +22,15 @@ export function SiteLogo({
 }: SiteLogoProps) {
   const isMarkOnly = variant === "mark";
   const isLight = variant === "light";
-  const markSize = layout === "footer" ? 40 : 38;
+  const markSize = layout === "footer" ? 40 : 44;
   const wordmarkSize = layout === "footer" ? "lg" : "md";
   const label = `Lupin Leads — ${BRAND_ASSETS.tagline}`;
 
   const inner = isMarkOnly ? (
-    <LupinMark size={40} priority={priority} />
+    <LupinMark size={40} priority={priority} outline={!isLight} />
   ) : (
     <span className="inline-flex items-center gap-2.5 sm:gap-3 min-w-0">
-      <LupinMark size={markSize} priority={priority} />
+      <LupinMark size={markSize} priority={priority} outline={!isLight} />
       <BrandWordmark
         variant={isLight ? "light" : "dark"}
         showTagline={layout === "footer"}
