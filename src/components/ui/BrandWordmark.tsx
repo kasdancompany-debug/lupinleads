@@ -4,6 +4,8 @@ type BrandWordmarkProps = {
   variant?: "dark" | "light";
   showTagline?: boolean;
   size?: "sm" | "md" | "lg";
+  /** Solid nav text — avoids gradient-clip halos on dark headers. */
+  crisp?: boolean;
 };
 
 const SIZE_CLASS = {
@@ -16,13 +18,14 @@ export function BrandWordmark({
   variant = "dark",
   showTagline = false,
   size = "md",
+  crisp = false,
 }: BrandWordmarkProps) {
   const isDark = variant === "dark";
 
   return (
     <span className="flex flex-col justify-center min-w-0">
       <span
-        className={`brand-wordmark ${isDark ? "brand-wordmark--dark" : "brand-wordmark--light"} ${SIZE_CLASS[size]}`}
+        className={`brand-wordmark ${isDark ? "brand-wordmark--dark" : "brand-wordmark--light"} ${crisp ? "brand-wordmark--crisp" : ""} ${SIZE_CLASS[size]}`}
       >
         <span className="brand-wordmark__lupin">Lupin</span>
         <span className="brand-wordmark__leads"> Leads</span>

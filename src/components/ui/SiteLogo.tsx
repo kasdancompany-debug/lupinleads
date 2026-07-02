@@ -22,7 +22,7 @@ export function SiteLogo({
 }: SiteLogoProps) {
   const isMarkOnly = variant === "mark";
   const isLight = variant === "light";
-  const markSize = layout === "footer" ? 40 : 36;
+  const markSize = layout === "footer" ? 40 : 38;
   const wordmarkSize = layout === "footer" ? "lg" : "md";
   const label = `Lupin Leads — ${BRAND_ASSETS.tagline}`;
 
@@ -35,6 +35,7 @@ export function SiteLogo({
         variant={isLight ? "light" : "dark"}
         showTagline={layout === "footer"}
         size={wordmarkSize}
+        crisp={layout === "nav"}
       />
     </span>
   );

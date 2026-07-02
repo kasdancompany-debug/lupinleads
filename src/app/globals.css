@@ -140,6 +140,20 @@ body {
   color: transparent;
 }
 
+.brand-wordmark--crisp.brand-wordmark--dark .brand-wordmark__lupin {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #5fd39a;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+.brand-wordmark--crisp .brand-wordmark__leads {
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
 .brand-wordmark--dark .brand-wordmark__leads {
   color: var(--stone-white);
 }
