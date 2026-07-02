@@ -41,21 +41,123 @@ function featherAlphaFromBg(data, bg, tolerance, feather = 10) {
   }
 }
 
-async function removeCornerBg(buffer, tolerance, feather = 10) {
+function pixelLuminance(r, g, b) {
+  return 0.299 * r + 0.587 * g + 0.114 * b;
+}
+
+function pixelSaturation(r, g, b) {
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  return max === 0 ? 0 : (max - min) / max;
+}
+
+/** Undo white-matte premultiplication on semi-transparent edge pixels. */
+function defringeFromWhite(data) {
+  for (let i = 0; i < data.length; i += 4) {
+    const a = data[i + 3];
+    if (a <= 0 || a >= 255) continue;
+
+    const alpha = a / 255;
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+
+    data[i] = Math.min(255, Math.max(0, Math.round((r - 255 * (1 - alpha)) / alpha)));
+    data[i + 1] = Math.min(255, Math.max(0, Math.round((g - 255 * (1 - alpha)) / alpha)));
+    data[i + 2] = Math.min(255, Math.max(0, Math.round((b - 255 * (1 - alpha)) / alpha)));
+  }
+}
+
+/** Remove leftover light-gray / white halos after corner keying. */
+function removeLightMatte(data, { grayLuma = 205, whiteLuma = 238, maxSat = 0.24 } = {}) {
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+    if (a === 0) continue;
+
+    const lum = pixelLuminance(r, g, b);
+    const sat = pixelSaturation(r, g, b);
+    if (sat > maxSat) continue;
+
+    if (lum >= whiteLuma) {
+      data[i + 3] = 0;
+      continue;
+    }
+
+    if (lum >= grayLuma) {
+      const t = (lum - grayLuma) / (whiteLuma - grayLuma);
+      data[i + 3] = Math.round(a * (1 - t));
+    }
+  }
+}
+
+function polishTransparentEdges(data, info) {
+  const { width, height } = info;
+  const copy = Buffer.from(data);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4;
+      if (copy[idx + 3] === 0) continue;
+
+      let touchesTransparent = false;
+      for (let dy = -1; dy <= 1 && !touchesTransparent; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= width || ny >= height) {
+            touchesTransparent = true;
+            break;
+          }
+          const nIdx = (ny * width + nx) * 4;
+          if (copy[nIdx + 3] === 0) {
+            touchesTransparent = true;
+            break;
+          }
+        }
+      }
+
+      if (!touchesTransparent) continue;
+
+      const lum = pixelLuminance(copy[idx], copy[idx + 1], copy[idx + 2]);
+      const sat = pixelSaturation(copy[idx], copy[idx + 1], copy[idx + 2]);
+      if (lum >= 190 && sat <= 0.3) {
+        data[idx + 3] = Math.round(copy[idx + 3] * Math.max(0, 1 - (lum - 190) / 55));
+      }
+    }
+  }
+}
+
+async function removeCornerBg(buffer, tolerance, feather = 10, { matte = "auto" } = {}) {
   const { data, info } = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const bg = sampleCornerBg(data, info);
   featherAlphaFromBg(data, bg, tolerance, feather);
+  defringeFromWhite(data);
+
+  const isLightBg = pixelLuminance(bg.r, bg.g, bg.b) >= 180;
+  if (matte === "light" || (matte === "auto" && isLightBg)) {
+    removeLightMatte(data);
+    polishTransparentEdges(data, info);
+  }
+
   return sharp(data, { raw: info }).png().toBuffer();
 }
 
-async function saveTransparent(filename, crop, { trimThreshold = 0, tolerance = 34, feather = 10 } = {}) {
+async function saveTransparent(
+  filename,
+  crop,
+  { trimThreshold = 0, tolerance = 34, feather = 10, matte = "auto" } = {}
+) {
   let pipeline = sharp(sheet).extract(crop).png();
   if (trimThreshold > 0) {
     pipeline = pipeline.trim({ threshold: trimThreshold });
   }
   const raw = await pipeline.toBuffer();
-  const transparent = await removeCornerBg(raw, tolerance, feather);
-  await sharp(transparent).png().toFile(path.join(brandDir, filename));
+  const transparent = await removeCornerBg(raw, tolerance, feather, { matte });
+  await sharp(transparent).png({ compressionLevel: 9, adaptiveFiltering: true }).toFile(path.join(brandDir, filename));
   return writeMeta(filename);
 }
 
@@ -63,7 +165,8 @@ async function buildFavicons(markBuffer) {
   const trimmedMark = await removeCornerBg(
     await sharp(markBuffer).trim({ threshold: 32 }).png().toBuffer(),
     18,
-    8
+    8,
+    { matte: "light" }
   );
 
   for (const size of [16, 32, 180, 512]) {
@@ -105,9 +208,10 @@ async function buildFavicons(markBuffer) {
 
 async function main() {
   await saveTransparent("lupin-mark.png", { left: 415, top: 62, width: 195, height: 108 }, {
-    trimThreshold: 16,
-    tolerance: 18,
-    feather: 8,
+    trimThreshold: 20,
+    tolerance: 22,
+    feather: 6,
+    matte: "light",
   });
 
   const markBuffer = await sharp(path.join(brandDir, "lupin-mark.png")).png().toBuffer();
